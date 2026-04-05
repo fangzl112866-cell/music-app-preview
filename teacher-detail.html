@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的老师 - 详情页</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #1a1a2e; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+    .phone { width: 812px; height: 375px; background: #f5f6fa; border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .status-bar { height: 36px; background: #1a1a2e; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; color: #fff; font-size: 12px; flex-shrink: 0; }
+    .page-header { height: 52px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; padding: 0 16px; gap: 12px; flex-shrink: 0; }
+    .back-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; cursor: pointer; }
+    .header-center { flex: 1; }
+    .header-title { font-size: 17px; font-weight: 700; color: #fff; }
+    .header-sub { font-size: 11px; color: rgba(255,255,255,0.75); }
+    .header-icon-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; cursor: pointer; }
+    .tab-nav { display: flex; background: #fff; border-bottom: 1px solid #e9ecef; flex-shrink: 0; }
+    .tab-btn { flex: 1; padding: 10px 4px; border: none; background: none; font-size: 11px; font-weight: 600; color: #adb5bd; cursor: pointer; position: relative; transition: all 0.2s; }
+    .tab-btn.active { color: #667eea; }
+    .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24px; height: 3px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 3px 3px 0 0; }
+    .tab-btn .badge { display: inline-block; background: #ff6b6b; color: #fff; font-size: 9px; padding: 1px 4px; border-radius: 8px; margin-left: 2px; }
+    .content { flex: 1; overflow: hidden; position: relative; }
+    .tab-panel { position: absolute; inset: 0; overflow-y: auto; padding: 12px 16px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .tab-panel.active { opacity: 1; pointer-events: all; }
+    .section-title { font-size: 12px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .section-more { font-size: 11px; color: #667eea; cursor: pointer; }
+    .card-list { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    /* AI曲谱库 */
+    .ai-search-bar { background: #fff; border-radius: 10px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .ai-search-bar input { flex: 1; border: none; outline: none; font-size: 13px; color: #1a1a2e; background: none; }
+    .ai-search-bar input::placeholder { color: #adb5bd; }
+    .ai-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .ai-score-card { min-width: 125px; background: #fff; border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+    .ai-score-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+    .score-img { height: 60px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display: flex; align-items: center; justify-content: center; font-size: 26px; position: relative; }
+    .score-badge { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.5); color: #fff; font-size: 9px; padding: 1px 4px; border-radius: 3px; }
+    .score-info { padding: 8px; }
+    .score-name { font-size: 11px; font-weight: 600; color: #1a1a2e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .score-meta { font-size: 10px; color: #adb5bd; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+    .score-tag { background: #fff0f0; color: #ff6b6b; font-size: 9px; padding: 1px 4px; border-radius: 3px; }
+    .ai-gen-card { min-width: 125px; background: linear-gradient(135deg, #f8f0ff 0%, #f0f4ff 100%); border: 2px dashed #c4b5fd; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; padding: 12px 8px; }
+    .ai-gen-card:hover { border-color: #667eea; }
+    .ai-gen-icon { font-size: 22px; }
+    .ai-gen-text { font-size: 11px; font-weight: 600; color: #667eea; }
+    .ai-gen-sub { font-size: 9px; color: #a78bfa; text-align: center; }
+    /* 视频资源 */
+    .video-card { background: #fff; border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 6px rgba(0,0,0,0.05); margin-bottom: 8px; }
+    .video-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .video-thumb { height: 68px; background: linear-gradient(135deg, #2d3436 0%, #636e72 100%); position: relative; display: flex; align-items: center; justify-content: center; }
+    .video-thumb-bg { position: absolute; font-size: 36px; opacity: 0.3; }
+    .play-btn { width: 34px; height: 34px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; position: relative; z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .video-duration { position: absolute; bottom: 4px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; font-size: 9px; padding: 1px 5px; border-radius: 3px; z-index: 1; }
+    .video-info { padding: 8px 10px; }
+    .video-title { font-size: 12px; font-weight: 600; color: #1a1a2e; }
+    .video-meta { font-size: 10px; color: #adb5bd; margin-top: 2px; display: flex; gap: 8px; }
+    /* 文件资源 */
+    .file-item { background: #fff; border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 6px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .file-item:hover { background: #f8f9ff; }
+    .file-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .file-icon.pdf { background: #fff3e0; }
+    .file-icon.doc { background: #e3f2fd; }
+    .file-icon.img { background: #fce4ec; }
+    .file-icon.mp3 { background: #f3e5f5; }
+    .file-icon.zip { background: #e8f5e9; }
+    .file-detail { flex: 1; min-width: 0; }
+    .file-name { font-size: 12px; font-weight: 600; color: #1a1a2e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-meta { font-size: 10px; color: #adb5bd; margin-top: 2px; display: flex; gap: 6px; }
+    .file-action { width: 28px; height: 28px; border-radius: 50%; background: #f5f6fa; border: none; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .file-action:hover { background: #667eea; color: #fff; }
+    /* 作业 */
+    .homework-stats { display: flex; gap: 8px; margin-bottom: 12px; }
+    .stat-card { flex: 1; background: #fff; border-radius: 10px; padding: 10px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .stat-num { font-size: 18px; font-weight: 800; }
+    .stat-num.done { color: #11998e; }
+    .stat-num.pending { color: #fd9644; }
+    .stat-num.overdue { color: #ff6b6b; }
+    .stat-label { font-size: 10px; color: #adb5bd; margin-top: 1px; }
+    .homework-item { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 6px rgba(0,0,0,0.05); border-left: 3px solid transparent; }
+    .homework-item:hover { transform: translateX(3px); }
+    .homework-item.pending { border-left-color: #fd9644; }
+    .homework-item.done { border-left-color: #11998e; }
+    .homework-item.overdue { border-left-color: #ff6b6b; }
+    .hw-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+    .hw-title { font-size: 12px; font-weight: 600; color: #1a1a2e; flex: 1; }
+    .hw-status { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 600; flex-shrink: 0; }
+    .hw-status.pending { background: #fff3e0; color: #fd9644; }
+    .hw-status.done { background: #e8f5e9; color: #11998e; }
+    .hw-status.overdue { background: #ffebee; color: #ff6b6b; }
+    .hw-desc { font-size: 11px; color: #6c757d; margin-bottom: 5px; line-height: 1.4; }
+    .hw-footer { display: flex; gap: 10px; font-size: 10px; color: #adb5bd; }
+    .hw-deadline { display: flex; align-items: center; gap: 3px; }
+    .hw-deadline.overdue { color: #ff6b6b; font-weight: 600; }
+    /* 老师分享 */
+    .share-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+    .share-tab { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; background: #fff; color: #6c757d; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .share-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; box-shadow: 0 3px 10px rgba(102,126,234,0.3); }
+    .share-item { background: #fff; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; display: flex; gap: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+    .share-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .share-thumb { width: 54px; height: 54px; border-radius: 8px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .share-body { flex: 1; min-width: 0; }
+    .share-title { font-size: 12px; font-weight: 600; color: #1a1a2e; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .share-type { font-size: 10px; color: #667eea; margin-bottom: 3px; }
+    .share-time { font-size: 10px; color: #adb5bd; }
+    .share-badge { display: inline-flex; align-items: center; gap: 2px; background: #f0f4ff; color: #667eea; font-size: 9px; padding: 1px 5px; border-radius: 4px; margin-right: 4px; }
+    /* TabBar */
+    .tabbar { height: 46px; background: #fff; display: flex; border-top: 1px solid #e9ecef; flex-shrink: 0; }
+    .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #adb5bd; font-size: 11px; cursor: pointer; gap: 2px; }
+    .tab-item.active { color: #667eea; }
+    .tab-icon { font-size: 20px; }
+    /* 预览弹窗 */
+    .preview-modal { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 20; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .preview-modal.show { opacity: 1; pointer-events: all; }
+    .preview-box { background: #fff; border-radius: 14px; width: 340px; max-height: 280px; overflow: hidden; transform: scale(0.9); transition: transform 0.25s; }
+    .preview-modal.show .preview-box { transform: scale(1); }
+    .preview-header { padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e9ecef; }
+    .preview-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+    .preview-close { width: 26px; height: 26px; border-radius: 50%; background: #f5f6fa; border: none; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .preview-body { padding: 16px; text-align: center; }
+    .preview-icon { font-size: 44px; margin-bottom: 10px; }
+    .preview-desc { font-size: 12px; color: #6c757d; line-height: 1.6; margin-bottom: 10px; }
+    .preview-actions { display: flex; gap: 8px; justify-content: center; }
+    .preview-btn { padding: 8px 18px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+    .preview-btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+    .preview-btn-secondary { background: #f5f6fa; color: #6c757d; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+
+    <div class="page-header">
+      <button class="back-btn">←</button>
+      <div class="header-center">
+        <div class="header-title">李老师</div>
+        <div class="header-sub">钢琴 · 教授</div>
+      </div>
+      <button class="header-icon-btn">💬</button>
+      <button class="header-icon-btn">↗</button>
+    </div>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('score')">🎵 AI曲谱</button>
+      <button class="tab-btn" onclick="switchTab('video')">🎥 视频<b class="badge">3</b></button>
+      <button class="tab-btn" onclick="switchTab('file')">📁 文件</button>
+      <button class="tab-btn" onclick="switchTab('homework')">📝 作业<b class="badge">2</b></button>
+      <button class="tab-btn" onclick="switchTab('share')">🎁 分享</button>
+    </div>
+
+    <div class="content">
+      <!-- AI曲谱库 -->
+      <div class="tab-panel active" id="panel-score">
+        <div class="ai-search-bar">
+          <span>🔍</span>
+          <input type="text" placeholder="搜索曲目、作曲家...">
+          <button class="ai-btn">✨ AI</button>
+        </div>
+        <div class="section-title"><span>推荐练习曲</span><span class="section-more">全部 →</span></div>
+        <div class="card-list">
+          <div class="ai-score-card" onclick="showPreview('肖邦夜曲 Op.9-2','钢琴独奏名曲，旋律优美，情感丰富','🎹')">
+            <div class="score-img">🎹<span class="score-badge">★4.9</span></div>
+            <div class="score-info">
+              <div class="score-name">肖邦夜曲 Op.9-2</div>
+              <div class="score-meta"><span class="score-tag">钢琴</span><span>★★☆中级</span></div>
+            </div>
+          </div>
+          <div class="ai-score-card" onclick="showPreview('土耳其进行曲','莫扎特经典，节奏明快','🎼')">
+            <div class="score-img" style="background:linear-gradient(135deg,#ffeaa7,#fdcb6e)">🎼<span class="score-badge">★4.8</span></div>
+            <div class="score-info">
+              <div class="score-name">土耳其进行曲</div>
+              <div class="score-meta"><span class="score-tag">钢琴</span><span>★★入门</span></div>
+            </div>
+          </div>
+          <div class="ai-score-card" onclick="showPreview('梦中的婚礼','理查德·克莱德曼代表作','💒')">
+            <div class="score-img" style="background:linear-gradient(135deg,#fd79a8,#e84393)">💒<span class="score-badge">★4.7</span></div>
+            <div class="score-info">
+              <div class="score-name">梦中的婚礼</div>
+              <div class="score-meta"><span class="score-tag">钢琴</span><span>★★入门</span></div>
+            </div>
+          </div>
+          <div class="ai-gen-card" onclick="showPreview('✨ AI生成曲谱','描述你想要的感觉，AI为你创作','🤖')">
+            <div class="ai-gen-icon">✨</div>
+            <div class="ai-gen-text">AI生成曲谱</div>
+            <div class="ai-gen-sub">描述你想要的感觉</div>
+          </div>
+        </div>
+        <div class="section-title" style="margin-top:10px;"><span>AI智能推荐</span><span class="section-more">换一批 →</span></div>
+        <div class="card-list">
+          <div class="ai-score-card" onclick="showPreview('小星星变奏曲','莫扎特经典变奏曲','⭐')">
+            <div class="score-img" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7)">⭐</div>
+            <div class="score-info"><div class="score-name">小星星变奏曲</div><div class="score-meta"><span class="score-tag">AI</span><span>★入门</span></div></div>
+          </div>
+          <div class="ai-score-card" onclick="showPreview('献给爱丽丝','贝多芬著名钢琴曲','🌸')">
+            <div class="score-img" style="background:linear-gradient(135deg,#74b9ff,#0984e3)">🌸</div>
+            <div class="score-info"><div class="score-name">献给爱丽丝</div><div class="score-meta"><span class="score-tag">AI</span><span>★★☆中级</span></div></div>
+          </div>
+          <div class="ai-score-card" onclick="showPreview('天空之城','久石让配乐','🏰')">
+            <div class="score-img" style="background:linear-gradient(135deg,#55efc4,#00b894)">🏰</div>
+            <div class="score-info"><div class="score-name">天空之城</div><div class="score-meta"><span class="score-tag">AI</span><span>★★中级</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 视频资源 -->
+      <div class="tab-panel" id="panel-video">
+        <div class="section-title"><span>课程视频</span><span class="section-more">全部 →</span></div>
+        <div class="video-card" onclick="showPreview('视频：钢琴基础指法教学','系统讲解钢琴演奏的基础指法','🎥')">
+          <div class="video-thumb"><div class="video-thumb-bg">🎹</div><div class="play-btn">▶</div><div class="video-duration">12:34</div></div>
+          <div class="video-info"><div class="video-title">钢琴基础指法教学</div><div class="video-meta"><span>👁 2.3万</span><span>📅 3天前</span></div></div>
+        </div>
+        <div class="video-card" onclick="showPreview('视频：肖邦练习曲Op.10','深度解析技术难点','🎵')">
+          <div class="video-thumb" style="background:linear-gradient(135deg,#2d3436,#636e72)"><div class="video-thumb-bg">🎵</div><div class="play-btn">▶</div><div class="video-duration">18:45</div></div>
+          <div class="video-info"><div class="video-title">肖邦练习曲Op.10解析</div><div class="video-meta"><span>👁 1.5万</span><span>📅 1周前</span></div></div>
+        </div>
+        <div class="video-card" onclick="showPreview('视频：考级曲目指导','钢琴考级全面指导','🏆')">
+          <div class="video-thumb" style="background:linear-gradient(135deg,#2d3436,#636e72)"><div class="video-thumb-bg">🏆</div><div class="play-btn">▶</div><div class="video-duration">25:10</div></div>
+          <div class="video-info"><div class="video-title">钢琴考级曲目指导</div><div class="video-meta"><span>👁 3.8万</span><span>📅 2周前</span></div></div>
+        </div>
+      </div>
+
+      <!-- 文件资源 -->
+      <div class="tab-panel" id="panel-file">
+        <div class="section-title"><span>老师文件</span><span class="section-more">上传 →</span></div>
+        <div class="file-item" onclick="showPreview('PDF：肖邦练习曲乐谱','完整24首练习曲原版乐谱','📄')">
+          <div class="file-icon pdf">📄</div>
+          <div class="file-detail"><div class="file-name">肖邦练习曲完整乐谱.pdf</div><div class="file-meta"><span>PDF</span><span>2.4 MB</span><span>3天前</span></div></div>
+          <button class="file-action" onclick="event.stopPropagation();toast('下载成功')">↓</button>
+        </div>
+        <div class="file-item" onclick="showPreview('Word：学习笔记','教学笔记整理','📝')">
+          <div class="file-icon doc">📝</div>
+          <div class="file-detail"><div class="file-name">钢琴学习笔记整理.docx</div><div class="file-meta"><span>Word</span><span>856 KB</span><span>1周前</span></div></div>
+          <button class="file-action" onclick="event.stopPropagation();toast('下载成功')">↓</button>
+        </div>
+        <div class="file-item" onclick="showPreview('图片：手型参考','正确与错误手型对比图','🖼️')">
+          <div class="file-icon img">🖼️</div>
+          <div class="file-detail"><div class="file-name">正确手型参考图集.jpg</div><div class="file-meta"><span>图片</span><span>12张</span><span>2周前</span></div></div>
+          <button class="file-action" onclick="event.stopPropagation();toast('下载成功')">↓</button>
+        </div>
+        <div class="file-item" onclick="showPreview('音频：示范演奏','肖邦夜曲完整示范','🎧')">
+          <div class="file-icon mp3">🎧</div>
+          <div class="file-detail"><div class="file-name">肖邦夜曲示范演奏.mp3</div><div class="file-meta"><span>音频</span><span>4.2 MB</span><span>1个月前</span></div></div>
+          <button class="file-action" onclick="event.stopPropagation();toast('下载成功')">↓</button>
+        </div>
+        <div class="file-item" onclick="showPreview('压缩包：音乐理论资料','和声学、乐理、视唱练耳资料','📦')">
+          <div class="file-icon zip">📦</div>
+          <div class="file-detail"><div class="file-name">音乐理论资料包.zip</div><div class="file-meta"><span>压缩包</span><span>28.5 MB</span><span>2个月前</span></div></div>
+          <button class="file-action" onclick="event.stopPropagation();toast('下载成功')">↓</button>
+        </div>
+      </div>
+
+      <!-- 我的作业 -->
+      <div class="tab-panel" id="panel-homework">
+        <div class="homework-stats">
+          <div class="stat-card"><div class="stat-num done">5</div><div class="stat-label">已完成</div></div>
+          <div class="stat-card"><div class="stat-num pending">2</div><div class="stat-label">待完成</div></div>
+          <div class="stat-card"><div class="stat-num overdue">1</div><div class="stat-label">已逾期</div></div>
+        </div>
+        <div class="section-title"><span>最近作业</span><span class="section-more">全部 →</span></div>
+        <div class="homework-item overdue" onclick="showPreview('作业：练习肖邦夜曲','按示范视频练习，注意左手伴奏，需达80%熟练度','📝')">
+          <div class="hw-header">
+            <div class="hw-title">练习肖邦夜曲 Op.9-2</div>
+            <div class="hw-status overdue">已逾期</div>
+          </div>
+          <div class="hw-desc">按示范视频练习，需达80%熟练度后提交视频。</div>
+          <div class="hw-footer">
+            <div class="hw-deadline overdue">⏰ 截止：4月1日</div>
+            <div>📎 1份附件</div>
+          </div>
+        </div>
+        <div class="homework-item pending" onclick="showPreview('作业：土耳其进行曲','录制完整弹奏视频，注意节奏稳定性','📝')">
+          <div class="hw-header">
+            <div class="hw-title">土耳其进行曲 弹奏提交</div>
+            <div class="hw-status pending">待完成</div>
+          </div>
+          <div class="hw-desc">录制完整弹奏视频，注意节奏稳定性和表情记号。</div>
+          <div class="hw-footer">
+            <div class="hw-deadline">⏰ 截止：4月8日</div>
+            <div>📎 1份附件</div>
+          </div>
+        </div>
+        <div class="homework-item pending" onclick="showPreview('作业：每日音阶练习','每天练习C大调音阶，逐步提速','📝')">
+          <div class="hw-header">
+            <div class="hw-title">每日音阶练习</div>
+            <div class="hw-status pending">待完成</div>
+          </div>
+          <div class="hw-desc">每天练习C大调音阶，从60速度逐步提速。</div>
+          <div class="hw-footer">
+            <div class="hw-deadline">⏰ 每天</div>
+            <div>📎 1份附件</div>
+          </div>
+        </div>
+        <div class="homework-item done" onclick="showPreview('作业：C大调音阶','已完成本周练习任务','✅')">
+          <div class="hw-header">
+            <div class="hw-title">C大调音阶 练习</div>
+            <div class="hw-status done">已完成</div>
+          </div>
+          <div class="hw-desc">本周音阶练习任务全部完成，提交了练习视频。</div>
+          <div class="hw-footer">
+            <div class="hw-deadline">✓ 已完成</div>
+            <div>📅 3月25日</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 老师分享 -->
+      <div class="tab-panel" id="panel-share">
+        <div class="section-title"><span>老师分享给我的</span></div>
+        <div class="share-tabs">
+          <button class="share-tab active" onclick="filterShare('all', this)">全部</button>
+          <button class="share-tab" onclick="filterShare('video', this)">🎥 视频</button>
+          <button class="share-tab" onclick="filterShare('pdf', this)">📄 PDF</button>
+          <button class="share-tab" onclick="filterShare('img', this)">🖼️ 图片</button>
+        </div>
+
+        <div class="share-item" onclick="showPreview('视频：本周练习重点','李老师分享了本周练习的重点内容','🎥')" data-type="video">
+          <div class="share-thumb">🎥</div>
+          <div class="share-body">
+            <div class="share-title">本周练习重点</div>
+            <div class="share-type"><span class="share-badge">🎥 视频</span>12:34</div>
+            <div class="share-time">📅 今天 09:30</div>
+          </div>
+        </div>
+
+        <div class="share-item" onclick="showPreview('PDF：四月练习曲目单','李老师分享了四月要练习的曲目清单','📄')" data-type="pdf">
+          <div class="share-thumb">📄</div>
+          <div class="share-body">
+            <div class="share-title">四月练习曲目单</div>
+            <div class="share-type"><span class="share-badge">📄 PDF</span>2页</div>
+            <div class="share-time">📅 昨天 14:20</div>
+          </div>
+        </div>
+
+        <div class="share-item" onclick="showPreview('图片：手型纠正参考','李老师分享了一张手型纠正参考图','🖼️')" data-type="img">
+          <div class="share-thumb">🖼️</div>
+          <div class="share-body">
+            <div class="share-title          <div class="share-title">手型纠正参考图</div>
+            <div class="share-type"><span class="share-badge">🖼️ 图片</span></div>
+            <div class="share-time">📅 2天前 10:15</div>
+          </div>
+        </div>
+
+        <div class="share-item" onclick="showPreview('视频：节奏练习示范','节奏练习的详细示范','🎥')" data-type="video">
+          <div class="share-thumb">🎥</div>
+          <div class="share-body">
+            <div class="share-title">节奏练习示范</div>
+            <div class="share-type"><span class="share-badge">🎥 视频</span>8:20</div>
+            <div class="share-time">📅 3天前 16:45</div>
+          </div>
+        </div>
+
+        <div class="share-item" onclick="showPreview('PDF：乐理测试卷','本周乐理知识小测','📄')" data-type="pdf">
+          <div class="share-thumb">📄</div>
+          <div class="share-body">
+            <div class="share-title">乐理知识测试卷</div>
+            <div class="share-type"><span class="share-badge">📄 PDF</span>5页</div>
+            <div class="share-time">📅 1周前 11:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TabBar -->
+    <div class="tabbar">
+      <div class="tab-item"><div class="tab-icon">🏠</div>首页</div>
+      <div class="tab-item"><div class="tab-icon">📒</div>发现</div>
+      <div class="tab-item active"><div class="tab-icon">👤</div>我的</div>
+    </div>
+
+    <!-- 预览弹窗 -->
+    <div class="preview-modal" id="previewModal">
+      <div class="preview-box">
+        <div class="preview-header">
+          <div class="preview-title" id="previewTitle">标题</div>
+          <button class="preview-close" onclick="closePreview()">✕</button>
+        </div>
+        <div class="preview-body">
+          <div class="preview-icon" id="previewIcon">🎵</div>
+          <div class="preview-desc" id="previewDesc">描述内容</div>
+          <div class="preview-actions">
+            <button class="preview-btn preview-btn-secondary" onclick="closePreview()">关闭</button>
+            <button class="preview-btn preview-btn-primary" id="previewAction" onclick="handleAction()">查看详情</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div id="toast" style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a2e;color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:50;"></div>
+  </div>
+
+  <script>
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
+      document.getElementById('panel-' + name).classList.add('active');
+    }
+
+    let currentPreview = {};
+
+    function showPreview(title, desc, icon) {
+      currentPreview = { title, desc, icon };
+      document.getElementById('previewTitle').textContent = title;
+      document.getElementById('previewDesc').textContent = desc;
+      document.getElementById('previewIcon').textContent = icon;
+      document.getElementById('previewModal').classList.add('show');
+    }
+
+    function closePreview() {
+      document.getElementById('previewModal').classList.remove('show');
+    }
+
+    function handleAction() {
+      closePreview();
+      toast('打开中...');
+    }
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.opacity = '1';
+      t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateX(-50%) translateY(20px)';
+      }, 1800);
+    }
+
+    function filterShare(type, btn) {
+      document.querySelectorAll('.share-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.share-item').forEach(item => {
+        if (type === 'all' || item.dataset.type === type) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

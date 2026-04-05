@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>绑定老师 - 收到邀请</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone {
+      width: 812px;
+      height: 375px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      height: 36px;
+      background: #1a1a2e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      color: #fff;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      background: linear-gradient(160deg, #f0f4ff 0%, #e8ecf8 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 背景装饰 */
+    .bg-note {
+      position: absolute;
+      font-size: 80px;
+      opacity: 0.04;
+      user-select: none;
+    }
+    .bg-note:nth-child(1) { top: -10px; left: 20px; transform: rotate(-15deg); }
+    .bg-note:nth-child(2) { bottom: -10px; right: 40px; transform: rotate(10deg); }
+    .bg-note:nth-child(3) { top: 30px; right: 120px; transform: rotate(-5deg); font-size: 50px; }
+
+    /* 邀请卡片 */
+    .invite-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 32px;
+      box-shadow: 0 8px 32px rgba(102,126,234,0.15);
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      width: 100%;
+      max-width: 680px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 左侧老师信息 */
+    .teacher-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      min-width: 120px;
+    }
+
+    .teacher-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fd9644 0%, #fc5c7d 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(252,92,125,0.35);
+      position: relative;
+    }
+
+    .verified-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 22px;
+      height: 22px;
+      background: #667eea;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .teacher-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .teacher-tag {
+      background: #f0f4ff;
+      color: #667eea;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* 中间分隔 */
+    .divider {
+      width: 1px;
+      height: 80px;
+      background: #e9ecef;
+      flex-shrink: 0;
+    }
+
+    /* 右侧内容 */
+    .invite-body {
+      flex: 1;
+    }
+
+    .invite-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+    }
+
+    .invite-desc {
+      font-size: 13px;
+      color: #6c757d;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .invite-desc span {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 11px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      outline: none;
+    }
+
+    .btn-accept {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(102,126,234,0.35);
+    }
+
+    .btn-accept:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+    }
+
+    .btn-accept:active { transform: translateY(0); }
+
+    .btn-reject {
+      background: #fff;
+      color: #adb5bd;
+      border: 2px solid #dee2e6;
+    }
+
+    .btn-reject:hover {
+      background: #f8f9fa;
+      color: #6c757d;
+    }
+
+    /* 成功状态 */
+    .success-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #f0f4ff 0%, #e8ecf8 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .success-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      box-shadow: 0 6px 20px rgba(17,153,142,0.35);
+      animation: pop 0.4s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .success-sub {
+      font-size: 14px;
+      color: #6c757d;
+    }
+
+    .btn-goto {
+      margin-top: 8px;
+      padding: 11px 32px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(102,126,234,0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-goto:hover { transform: translateY(-2px); }
+
+    /* 拒绝确认弹窗 */
+    .modal-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-mask.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 32px;
+      text-align: center;
+      width: 320px;
+      transform: scale(0.9);
+      transition: transform 0.25s;
+    }
+
+    .modal-mask.show .modal { transform: scale(1); }
+
+    .modal-icon { font-size: 40px; margin-bottom: 12px; }
+    .modal-title { font-size: 17px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+    .modal-desc { font-size: 13px; color: #6c757d; margin-bottom: 20px; line-height: 1.5; }
+
+    .modal-btns { display: flex; gap: 12px; }
+
+    .modal-btn {
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .modal-btn-cancel {
+      background: #f8f9fa;
+      color: #6c757d;
+    }
+
+    .modal-btn-confirm {
+      background: #ff6b6b;
+      color: #fff;
+    }
+
+    .modal-btn-confirm:hover { background: #ff5252; }
+
+    /* TabBar */
+    .tabbar {
+      height: 46px;
+      background: #fff;
+      display: flex;
+      border-top: 1px solid #e9ecef;
+      flex-shrink: 0;
+    }
+
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #adb5bd;
+      font-size: 11px;
+      cursor: pointer;
+      gap: 2px;
+      transition: color 0.2s;
+    }
+
+    .tab-item.active { color: #667eea; }
+    .tab-item:hover { color: #667eea; }
+    .tab-icon { font-size: 20px; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>📶 🔋</span>
+    </div>
+
+    <div class="content">
+      <!-- 背景装饰 -->
+      <div class="bg-note">🎵</div>
+      <div class="bg-note">🎶</div>
+      <div class="bg-note">♪</div>
+
+      <!-- 邀请卡片 -->
+      <div class="invite-card" id="inviteCard">
+        <div class="teacher-section">
+          <div class="teacher-avatar">
+            李
+            <div class="verified-badge">✓</div>
+          </div>
+          <div class="teacher-name">李老师</div>
+          <div class="teacher-tag">钢琴 · 教授</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="invite-body">
+          <div class="invite-title">🎹 老师邀请你加入</div>
+          <div class="invite-desc">
+            <span>李老师</span> 邀请你成为他的学生，<br>
+            绑定后可查看专属乐谱和课程内容。
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-reject" onclick="showRejectModal()">拒绝</button>
+            <button class="btn btn-accept" onclick="acceptInvite()">✓ 接受绑定</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 成功状态 -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">✓</div>
+        <div class="success-title">绑定成功！</div>
+        <div class="success-sub">你已成为李老师的学生</div>
+        <button class="btn-goto" onclick="gotoTeachers()">查看我的老师 →</button>
+      </div>
+
+      <!-- 拒绝确认弹窗 -->
+      <div class="modal-mask" id="rejectModal">
+        <div class="modal">
+          <div class="modal-icon">🤔</div>
+          <div class="modal-title">确认拒绝邀请？</div>
+          <div class="modal-desc">拒绝后将不会绑定李老师，<br>如需绑定请联系老师重新发送邀请。</div>
+          <div class="modal-btns">
+            <button class="modal-btn modal-btn-cancel" onclick="closeModal()">再想想</button>
+            <button class="modal-btn modal-btn-confirm" onclick="confirmReject()">确认拒绝</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab-item"><div class="tab-icon">🏠</div>首页</div>
+      <div class="tab-item"><div class="tab-icon">📒</div>发现</div>
+      <div class="tab-item active"><div class="tab-icon">👤</div>我的</div>
+    </div>
+  </div>
+
+  <script>
+    function acceptInvite() {
+      const card = document.getElementById('inviteCard');
+      const overlay = document.getElementById('successOverlay');
+      card.style.transition = 'opacity 0.3s, transform 0.3s';
+      card.style.opacity = '0';
+      card.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        overlay.classList.add('show');
+      }, 300);
+    }
+
+    function gotoTeachers() {
+      window.location.href = 'my-teachers.html';
+    }
+
+    function showRejectModal() {
+      document.getElementById('rejectModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('rejectModal').classList.remove('show');
+    }
+
+    function confirmReject() {
+      closeModal();
+      const card = document.getElementById('inviteCard');
+      card.style.transition = 'opacity 0.4s, transform 0.4s';
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(-30px)';
+      setTimeout(() => {
+        card.innerHTML = `
+          <div style="text-align:center; width:100%; padding: 20px 0;">
+            <div style="font-size:48px; margin-bottom:12px;">👋</div>
+            <div style="font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:8px;">已拒绝邀请</div>
+            <div style="font-size:13px; color:#6c757d;">如需绑定，请联系老师重新发送邀请</div>
+          </div>
+        `;
+        card.style.opacity = '1';
+        card.style.transform = 'none';
+      }, 400);
+    }
+  </script>
+</body>
+</html>

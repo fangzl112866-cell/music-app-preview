@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>乐谱App - 原型预览</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, sans-serif; background: #1a1a2e; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    h1 { color: #fff; margin-bottom: 10px; font-size: 24px; }
+    .desc { color: #adb5bd; margin-bottom: 30px; font-size: 14px; text-align: center; }
+    .pages { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+    .page-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 28px;
+      text-decoration: none;
+      color: #1a1a2e;
+      transition: all 0.3s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      min-width: 180px;
+    }
+    .page-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(102,126,234,0.4);
+    }
+    .page-icon { font-size: 36px; margin-bottom: 10px; }
+    .page-title { font-size: 16px; font-weight: 700; }
+    .page-desc { font-size: 12px; color: #6c757d; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1>🎹 乐谱App 原型预览</h1>
+  <div class="desc">点击下方卡片查看页面设计（横向布局，建议电脑横屏或手机横屏查看）</div>
+  
+  <div class="pages">
+    <a href="bind-teacher-invite.html" class="page-card">
+      <div class="page-icon">📨</div>
+      <div class="page-title">绑定老师邀请</div>
+      <div class="page-desc">学生收到邀请页面</div>
+    </a>
+    
+    <a href="my-teachers.html" class="page-card">
+      <div class="page-icon">👨‍🏫</div>
+      <div class="page-title">我的老师</div>
+      <div class="page-desc">老师列表页</div>
+    </a>
+    
+    <a href="teacher-detail.html" class="page-card">
+      <div class="page-icon">📚</div>
+      <div class="page-title">老师详情</div>
+      <div class="page-desc">曲谱/视频/作业/分享</div>
+    </a>
+  </div>
+</body>
+</html>
