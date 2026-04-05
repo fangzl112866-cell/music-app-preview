@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的 - 乐谱App</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #1a1a2e; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+    .phone { width: 812px; height: 375px; background: #f5f6fa; border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .status-bar { height: 36px; background: #1a1a2e; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; color: #fff; font-size: 12px; flex-shrink: 0; }
+    .page-header { height: 52px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .header-title { font-size: 17px; font-weight: 700; color: #fff; }
+    
+    .content { flex: 1; display: flex; overflow: hidden; }
+    
+    /* 左侧 - 会员和个人信息 */
+    .profile-section { width: 220px; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+    .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #fd9644 0%, #fc5c7d 100%); display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; font-weight: 700; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .nickname { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .user-id { font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+    
+    .vip-card { background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); border-radius: 12px; padding: 12px 20px; width: 100%; text-align: center; box-shadow: 0 4px 12px rgba(255,170,0,0.3); }
+    .vip-icon { font-size: 20px; margin-bottom: 4px; }
+    .vip-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+    .vip-desc { font-size: 11px; color: rgba(26,26,46,0.7); }
+    
+    .stats-row { display: flex; gap: 16px; margin-top: 16px; }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 18px; font-weight: 800; color: #fff; }
+    .stat-label { font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+    
+    /* 右侧 - 功能入口 (横向滚动) */
+    .menu-section { flex: 1; padding: 20px; overflow-x: auto; overflow-y: hidden; }
+    .menu-scroll { display: flex; gap: 16px; height: 100%; align-items: stretch; }
+    
+    /* 功能卡片 - 缩小 */
+    .menu-card { min-width: 120px; width: 120px; background: #fff; border-radius: 12px; padding: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; flex-shrink: 0; position: relative; }
+    .menu-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+    
+    .menu-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; }
+    .menu-icon.teacher { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .menu-icon.invite { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .menu-icon.practice { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .menu-icon.doc { background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); }
+    .menu-icon.privacy { background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%); }
+    .menu-icon.about { background: linear-gradient(135deg, #fd9644 0%, #fc5c7d 100%); }
+    .menu-icon.settings { background: linear-gradient(135deg, #636e72 0%, #2d3436 100%); }
+    
+    .menu-title { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+    .menu-desc { font-size: 10px; color: #adb5bd; line-height: 1.3; margin-top: auto; }
+    
+    /* 红点通知 */
+    .menu-badge { position: absolute; top: 12px; right: 12px; min-width: 20px; height: 20px; background: #ff6b6b; color: #fff; font-size: 11px; font-weight: 700; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-shadow: 0 2px 8px rgba(255,107,107,0.4); }
+    
+    /* 特别强调的卡片 */
+    .menu-card.highlight { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .menu-card.highlight .menu-title { color: #fff; }
+    .menu-card.highlight .menu-desc { color: rgba(255,255,255,0.8); }
+    .menu-card.highlight .menu-icon { background: rgba(255,255,255,0.2); }
+    
+    /* 底部通知栏 */
+    .notify-bar { position: absolute; bottom: 56px; left: 0; right: 0; background: #fff; border-top: 1px solid #e9ecef; max-height: 80px; overflow-x: auto; overflow-y: hidden; z-index: 50; }
+    .notify-scroll { display: flex; gap: 0; }
+    
+    .notify-item { min-width: 280px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; border-right: 1px solid #f0f0f0; flex-shrink: 0; }
+    .notify-item:hover { background: #f8f9ff; }
+    .notify-item:last-child { border-right: none; }
+    
+    .notify-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .notify-icon.invite { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .notify-icon.pay { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    
+    .notify-content { flex: 1; min-width: 0; }
+    .notify-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+    .notify-desc { font-size: 11px; color: #adb5bd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .notify-badge { min-width: 20px; height: 20px; background: #ff6b6b; color: #fff; font-size: 11px; font-weight: 700; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 0 6px; flex-shrink: 0; }
+    
+    .notify-arrow { color: #adb5bd; font-size: 16px; flex-shrink: 0; }
+    
+    /* 底部导航 */
+    .bottom-nav { height: 56px; background: #fff; border-top: 1px solid #e9ecef; display: flex; flex-shrink: 0; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; transition: all 0.2s; }
+    .nav-item:hover { background: #f8f9fa; }
+    .nav-item.active .nav-icon { color: #667eea; }
+    .nav-item.active .nav-text { color: #667eea; font-weight: 600; }
+    .nav-icon { font-size: 20px; color: #adb5bd; }
+    .nav-text { font-size: 10px; color: #adb5bd; }
+    
+    /* 弹窗 - 横向布局 */
+    .modal-mask { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .modal-mask.show { opacity: 1; pointer-events: all; }
+    .modal { background: #fff; border-radius: 16px; width: 600px; max-width: 90%; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+    .modal-header { padding: 16px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .modal-close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 16px; cursor: pointer; }
+    .modal-body { padding: 20px; max-height: 350px; overflow-x: auto; overflow-y: hidden; }
+    .modal-footer { padding: 16px 20px; border-top: 1px solid #f0f0f0; display: flex; gap: 12px; justify-content: flex-end; }
+    
+    .invite-scroll { display: flex; gap: 16px; }
+    
+    /* 邀请卡片 - 横向 */
+    .invite-item { min-width: 200px; width: 200px; background: #f8f9fa; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; flex-shrink: 0; }
+    .invite-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .invite-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 700; }
+    .invite-info { flex: 1; }
+    .invite-teacher { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+    .invite-major { font-size: 12px; color: #667eea; font-weight: 600; }
+    .invite-time { font-size: 11px; color: #adb5bd; margin-bottom: 12px; }
+    .invite-actions { display: flex; gap: 8px; margin-top: auto; }
+    .btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; text-align: center; }
+    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+    .btn-secondary { background: #e8e8e8; color: #666; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102,126,234,0.3); }
+    
+    .empty-state { text-align: center; padding: 40px 20px; color: #adb5bd; }
+    .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-text { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="status-bar">
+      <span>14:52</span>
+      <span>📶 📡 🔋</span>
+    </div>
+    
+    <div class="page-header">
+      <div class="header-title">我的</div>
+    </div>
+    
+    <div class="content">
+      <!-- 左侧 - 会员和个人信息 -->
+      <div class="profile-section">
+        <div class="avatar">张</div>
+        <div class="nickname">张小明</div>
+        <div class="user-id">ID: 100868</div>
+        
+        <div class="vip-card">
+          <div class="vip-icon">👑</div>
+          <div class="vip-title">高级会员</div>
+          <div class="vip-desc">2026.12.31 到期</div>
+        </div>
+        
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-num">128</div>
+            <div class="stat-label">练习天数</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">56</div>
+            <div class="stat-label">完成曲目</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 右侧 - 功能入口 (横向滚动) -->
+      <div class="menu-section">
+        <div class="menu-scroll">
+          <!-- 我的老师 - 特别强调 -->
+          <div class="menu-card highlight" onclick="location.href='my-teachers.html'">
+            <div class="menu-icon">👨‍🏫</div>
+            <div class="menu-title">我的老师</div>
+            <div class="menu-desc">查看已绑定老师</div>
+          </div>
+          
+          <!-- 练习记录 -->
+          <div class="menu-card">
+            <div class="menu-icon practice">📊</div>
+            <div class="menu-title">练习记录</div>
+            <div class="menu-desc">练习统计和历史</div>
+          </div>
+          
+          <!-- 用户条款 -->
+          <div class="menu-card">
+            <div class="menu-icon doc">📄</div>
+            <div class="menu-title">用户条款</div>
+            <div class="menu-desc">服务协议条款</div>
+          </div>
+          
+          <!-- 隐私协议 -->
+          <div class="menu-card">
+            <div class="menu-icon privacy">🔒</div>
+            <div class="menu-title">隐私协议</div>
+            <div class="menu-desc">隐私保护政策</div>
+          </div>
+          
+          <!-- 关于我们 -->
+          <div class="menu-card">
+            <div class="menu-icon about">ℹ️</div>
+            <div class="menu-title">关于我们</div>
+            <div class="menu-desc">应用信息版本</div>
+          </div>
+          
+          <!-- 设置 -->
+          <div class="menu-card">
+            <div class="menu-icon settings">⚙️</div>
+            <div class="menu-title">设置</div>
+            <div class="menu-desc">应用设置偏好</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">首页</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🎵</span>
+        <span class="nav-text">曲谱库</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📝</span>
+        <span class="nav-text">作业</span>
+      </div>
+      <div class="nav-item active">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">我的</span>
+      </div>
+    </div>
+    
+    <!-- 底部通知栏 -->
+    <div class="notify-bar" id="notifyBar">
+      <div class="notify-scroll">
+        <div class="notify-item" onclick="showBindTeacherModal()">
+          <div class="notify-icon invite">📨</div>
+          <div class="notify-content">
+            <div class="notify-title">老师邀请</div>
+            <div class="notify-desc">李老师、王老师邀请您绑定</div>
+          </div>
+          <div class="notify-badge" id="notifyBadgeInvite">2</div>
+          <span class="notify-arrow">›</span>
+        </div>
+        
+        <div class="notify-item">
+          <div class="notify-icon pay">💳</div>
+          <div class="notify-content">
+            <div class="notify-title">待支付订单</div>
+            <div class="notify-desc">高级会员续费 ¥198/年</div>
+          </div>
+          <div class="notify-badge">1</div>
+          <span class="notify-arrow">›</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 绑定老师邀请弹窗 -->
+    <div class="modal-mask" id="bindTeacherModal">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">📨 老师邀请</div>
+          <button class="modal-close" onclick="closeBindTeacherModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="invite-scroll" id="inviteList">
+            <div class="invite-item">
+              <div class="invite-header">
+                <div class="invite-avatar">李</div>
+                <div class="invite-info">
+                  <div class="invite-teacher">李老师</div>
+                  <div class="invite-major">🎹 钢琴教授</div>
+                </div>
+              </div>
+              <div class="invite-time">邀请时间：2026-04-05 10:30</div>
+              <div class="invite-actions">
+                <button class="btn btn-secondary" onclick="rejectInvite(this)">拒绝</button>
+                <button class="btn btn-primary" onclick="acceptInvite(this)">接受</button>
+              </div>
+            </div>
+            
+            <div class="invite-item">
+              <div class="invite-header">
+                <div class="invite-avatar" style="background:linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">王</div>
+                <div class="invite-info">
+                  <div class="invite-teacher">王老师</div>
+                  <div class="invite-major" style="color:#11998e;">🎻 小提琴</div>
+                </div>
+              </div>
+              <div class="invite-time">邀请时间：2026-04-04 15:20</div>
+              <div class="invite-actions">
+                <button class="btn btn-secondary" onclick="rejectInvite(this)">拒绝</button>
+                <button class="btn btn-primary" onclick="acceptInvite(this)">接受</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeBindTeacherModal()">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let hasInvite = true;
+    let hasOrder = true;
+    
+    // 初始化通知栏
+    function initNotifyBar() {
+      const notifyBar = document.getElementById('notifyBar');
+      if (!hasInvite && !hasOrder) {
+        notifyBar.style.display = 'none';
+      }
+    }
+    
+    function showBindTeacherModal() {
+      if (!hasInvite) {
+        alert('暂无老师邀请');
+        return;
+      }
+      document.getElementById('bindTeacherModal').classList.add('show');
+    }
+    
+    function closeBindTeacherModal() {
+      document.getElementById('bindTeacherModal').classList.remove('show');
+    }
+    
+    function acceptInvite(btn) {
+      const item = btn.closest('.invite-item');
+      item.style.opacity = '0.5';
+      setTimeout(() => {
+        item.remove();
+        checkEmptyInvite();
+        alert('绑定成功！');
+      }, 300);
+    }
+    
+    function rejectInvite(btn) {
+      const item = btn.closest('.invite-item');
+      item.style.opacity = '0.5';
+      setTimeout(() => {
+        item.remove();
+        checkEmptyInvite();
+      }, 300);
+    }
+    
+    function checkEmptyInvite() {
+      const list = document.getElementById('inviteList');
+      if (list.children.length === 0) {
+        hasInvite = false;
+        document.getElementById('notifyBadgeInvite').textContent = '0';
+        // 如果没有通知了，隐藏通知栏
+        initNotifyBar();
+        list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">暂无老师邀请</div></div>';
+      }
+    }
+    
+    initNotifyBar();
+  </script>
+</body>
+</html>
