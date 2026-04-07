@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的订单 - 音乐陪练</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* 蓝绿渐变主题 */
+            --primary: #3BD2FF;
+            --primary-dark: #2BC4ED;
+            --primary-light: #E6F9FF;
+            --secondary: #4FD351;
+            --secondary-light: #E6FBF0;
+            --gold: #FFB800;
+            --gold-light: #FFF8E6;
+            --red: #FF5252;
+            --red-light: #FFEBEB;
+            --green: #4FD351;
+            --green-light: #E6FBF0;
+            --blue: #3BD2FF;
+            --blue-light: #E6F9FF;
+            --purple: #9B6DFF;
+            --purple-light: #F3EEFF;
+            --text-1: #1A1A1A;
+            --text-2: #5C5C5C;
+            --text-3: #9E9A9A;
+            --border: #E8F4FF;
+            --bg: #F0F9FF;
+            --card: #FFFFFF;
+        }
+
+        /* 渐变定义 */
+        .gradient-primary {
+            background: linear-gradient(135deg, rgba(59, 210, 255, 0.9) 0%, rgba(79, 211, 81, 0.9) 100%);
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-1);
+            overflow: hidden;
+        }
+
+        /* ══ 横屏手机模拟器框架 ══ */
+        .phone-frame {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg);
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            height: 44px;
+            background: var(--card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status-time {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* 顶部导航 */
+        .top-nav {
+            height: 56px;
+            background: var(--card);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-back:hover {
+            background: var(--primary-light);
+        }
+
+        .nav-back-icon {
+            font-size: 18px;
+        }
+
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+            margin-right: 60px;
+        }
+
+        /* 标签切换 */
+        .tab-bar {
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            background: var(--card);
+            flex-shrink: 0;
+        }
+
+        .tab-item {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: var(--bg);
+            color: var(--text-2);
+            font-family: inherit;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-item.active {
+            background: linear-gradient(135deg, #3BD2FF, #4FD351);
+            color: #fff;
+        }
+
+        .tab-item:not(.active):hover {
+            color: var(--primary-dark);
+        }
+
+        .tab-count {
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.08);
+        }
+
+        .tab-item.active .tab-count {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        /* ══ 订单网格布局（横向方块） ══ */
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .order-card {
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(59, 210, 255, 0.2);
+        }
+
+        .order-card.pending {
+            border-color: rgba(255, 82, 82, 0.25);
+        }
+
+        .order-card:hover.pending {
+            border-color: var(--red);
+        }
+
+        /* 卡片头部 */
+        .card-header {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-source {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .source-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .source-teacher {
+            background: linear-gradient(135deg, #B8F0FF, #C8F5D8);
+        }
+
+        .source-system {
+            background: linear-gradient(135deg, #D4C8FF, #E8E4FF);
+        }
+
+        .source-info {
+            overflow: hidden;
+        }
+
+        .source-name {
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .source-label {
+            font-size: 11px;
+            color: var(--text-3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .source-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .badge-teacher {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .badge-system {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .card-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .status-free {
+            background: var(--blue-light);
+            color: var(--blue);
+        }
+
+        .status-paid {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .status-pending {
+            background: var(--gold-light);
+            color: var(--gold);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.75; }
+        }
+
+        /* 卡片内容 */
+        .card-body {
+            padding: 14px 16px;
+        }
+
+        .order-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .order-extra {
+            font-size: 12px;
+            color: var(--text-2);
+            margin-bottom: 4px;
+        }
+
+        .order-id {
+            font-size: 11px;
+            color: var(--text-3);
+            margin-bottom: 4px;
+        }
+
+        .order-expire {
+            font-size: 11px;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* 卡片底部 */
+        .card-footer {
+            padding: 12px 16px;
+            background: #FAFAF8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .order-time {
+            font-size: 12px;
+            color: var(--text-2);
+        }
+
+        .order-price {
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .price-free { color: var(--blue); }
+        .price-paid { color: var(--green); }
+        .price-pending { color: var(--gold); }
+
+        .order-price small {
+            font-size: 12px;
+        }
+
+        /* ══ 详情弹窗 ══ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-sheet {
+            background: var(--card);
+            border-radius: 20px;
+            width: 480px;
+            max-height: 85vh;
+            overflow: hidden;
+            transform: scale(0.92);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal-sheet {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #3BD2FF, #4FD351);
+            padding: 20px 24px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .detail-section {
+            margin-bottom: 16px;
+        }
+
+        .detail-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: var(--text-2); }
+        .detail-value { font-weight: 600; }
+
+        .detail-total {
+            background: var(--primary-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-label { font-size: 14px; font-weight: 600; }
+        .total-price { font-size: 28px; font-weight: 900; }
+
+        /* 支付方式 */
+        .pay-method-section {
+            margin-top: 16px;
+        }
+
+        .pay-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pay-method:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .pay-method.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .pay-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .pay-icon-alipay { background: #1677FF; }
+        .pay-icon-wechat { background: #07C160; }
+
+        .pay-info { flex: 1; }
+        .pay-name { font-size: 14px; font-weight: 700; }
+        .pay-desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+        .pay-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .pay-method.selected .pay-check {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-price {
+            font-size: 13px;
+            color: var(--text-2);
+        }
+
+        .footer-price strong {
+            font-size: 20px;
+            color: var(--red);
+            margin-left: 4px;
+        }
+
+        .btn-pay {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #E04444, #C8353A);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 210, 255, 0.4);
+        }
+
+        .btn-close {
+            padding: 14px 24px;
+            background: var(--bg);
+            color: var(--text-2);
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* 成功弹窗 */
+        .success-body {
+            text-align: center;
+            padding: 24px 0;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--green-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px;
+            animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        @keyframes pop {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .success-title {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .success-sub {
+            font-size: 14px;
+            color: var(--text-2);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--text-1);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <span class="status-time" id="statusTime">11:25</span>
+    </div>
+
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+        <div class="nav-back" onclick="goBack()">
+            <span class="nav-back-icon">‹</span>
+            <span>我的</span>
+        </div>
+        <div class="nav-title">我的订单</div>
+    </div>
+
+    <!-- 标签切换 -->
+    <div class="tab-bar">
+        <button class="tab-item active" onclick="filterOrders(this, 'all')">
+            全部 <span class="tab-count">5</span>
+        </button>
+        <button class="tab-item" onclick="filterOrders(this, 'pending')">
+            待支付 <span class="tab-count">2</span>
+        </button>
+        <button class="tab-item" onclick="filterOrders(this, 'paid')">
+            已支付 <span class="tab-count">2</span>
+        </button>
+        <button class="tab-item" onclick="filterOrders(this, 'free')">
+            老师开通 <span class="tab-count">1</span>
+        </button>
+    </div>
+
+    <!-- 主内容：订单网格 -->
+    <div class="main-content">
+        <div class="order-grid" id="orderGrid">
+
+            <!-- 待支付1 - 老师创建 -->
+            <div class="order-card pending" data-type="pending" onclick="showDetail('pending', 1)">
+                <div class="card-header">
+                    <div class="card-source">
+                        <div class="source-icon source-teacher">🎻</div>
+                        <div class="source-info">
+                            <div class="source-name">陈雅婷 老师</div>
+                            <div class="source-label">中央音乐学院</div>
+                        </div>
+                    </div>
+                    <span class="source-badge badge-teacher">老师创建</span>
+                    <div class="card-status status-pending" style="margin-left:8px;">待支付</div>
+                </div>
+                <div class="card-body">
+                    <div class="order-name">小提琴专业版·季度会员</div>
+                    <div class="order-extra">包含：跟练 + 伴奏 + 识谱</div>
+                    <div class="order-id">订单号：MU20240407001</div>
+                    <div class="order-expire">有效期：90天 · 到期 2024-07-06</div>
+                </div>
+                <div class="card-footer">
+                    <div class="order-time">2024-04-07 10:30</div>
+                    <div class="order-price price-pending"><small>¥</small>299</div>
+                </div>
+            </div>
+
+            <!-- 待支付2 - 老师创建 -->
+            <div class="order-card pending" data-type="pending" onclick="showDetail('pending', 2)">
+                <div class="card-header">
+                    <div class="card-source">
+                        <div class="source-icon source-teacher">🎻</div>
+                        <div class="source-info">
+                            <div class="source-name">陈雅婷 老师</div>
+                            <div class="source-label">中央音乐学院</div>
+                        </div>
+                    </div>
+                    <span class="source-badge badge-teacher">老师创建</span>
+                    <div class="card-status status-pending" style="margin-left:8px;">待支付</div>
+                </div>
+                <div class="card-body">
+                    <div class="order-name">小提琴进阶班·月度会员</div>
+                    <div class="order-extra">包含：跟练 + 识谱 · 赠送入门曲谱集</div>
+                    <div class="order-id">订单号：MU20240403002</div>
+                    <div class="order-expire">有效期：30天 · 到期 2024-05-03</div>
+                </div>
+                <div class="card-footer">
+                    <div class="order-time">2024-04-03 14:20</div>
+                    <div class="order-price price-pending"><small>¥</small>99</div>
+                </div>
+            </div>
+
+            <!-- 已支付1 - 系统订单 -->
+            <div class="order-card" data-type="paid" onclick="showDetail('paid', 3)">
+                <div class="card-header">
+                    <div class="card-source">
+                        <div class="source-icon source-system">📱</div>
+                        <div class="source-info">
+                            <div class="source-name">音乐陪练 App</div>
+                            <div class="source-label">系统订单</div>
+                        </div>
+                    </div>
+                    <span class="source-badge badge-system">系统订单</span>
+                    <div class="card-status status-paid" style="margin-left:8px;">已支付</div>
+                </div>
+                <div class="card-body">
+                    <div class="order-name">小提琴体验版·周会员</div>
+                    <div class="order-extra">包含：基础跟练功能</div>
+                    <div class="order-id">订单号：MU20240320003</div>
+                    <div class="order-expire">有效期：7天 · 到期 2024-03-27</div>
+                </div>
+                <div class="card-footer">
+                    <div class="order-time">2024-03-20 09:15</div>
+                    <div class="order-price price-paid"><small>¥</small>29</div>
+                </div>
+            </div>
+
+            <!-- 已支付2 - 老师创建 -->
+            <div class="order-card" data-type="paid" onclick="showDetail('paid', 4)">
+                <div class="card-header">
+                    <div class="card-source">
+                        <div class="source-icon source-teacher">🎻</div>
+                        <div class="source-info">
+                            <div class="source-name">陈雅婷 老师</div>
+                            <div class="source-label">中央音乐学院</div>
+                        </div>
+                    </div>
+                    <span class="source-badge badge-teacher">老师创建</span>
+                    <div class="card-status status-paid" style="margin-left:8px;">已支付</div>
+                </div>
+                <div class="card-body">
+                    <div class="order-name">小提琴专业版·年度会员</div>
+                    <div class="order-extra">全功能 + 优先客服 · 赠送全套曲谱</div>
+                    <div class="order-id">订单号：MU20240315004</div>
+                    <div class="order-expire">有效期：365天 · 到期 2025-03-15</div>
+                </div>
+                <div class="card-footer">
+                    <div class="order-time">2024-03-15 11:00</div>
+                    <div class="order-price price-paid"><small>¥</small>899</div>
+                </div>
+            </div>
+
+            <!-- 老师开通 - 免费赠送 -->
+            <div class="order-card" data-type="free" onclick="showDetail('free', 5)">
+                <div class="card-header">
+                    <div class="card-source">
+                        <div class="source-icon source-teacher">🎻</div>
+                        <div class="source-info">
+                            <div class="source-name">陈雅婷 老师</div>
+                            <div class="source-label">中央音乐学院</div>
+                        </div>
+                    </div>
+                    <span class="source-badge badge-teacher">老师开通</span>
+                    <div class="card-status status-paid" style="margin-left:8px;">已开通</div>
+                </div>
+                <div class="card-body">
+                    <div class="order-name">小提琴专业版·赠送会员</div>
+                    <div class="order-extra">包含：跟练 + 伴奏 + 识谱</div>
+                    <div class="order-id">订单号：MU20240315005</div>
+                    <div class="order-expire">有效期：30天 · 到期 2024-04-14</div>
+                </div>
+                <div class="card-footer">
+                    <div class="order-time">2024-03-15 10:45</div>
+                    <div class="order-price price-free"><small>¥</small>0</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <div class="modal-title">📋 订单详情</div>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer" id="modalFooter"></div>
+    </div>
+</div>
+
+<!-- 成功弹窗 -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal-sheet">
+        <div class="modal-header" style="background: linear-gradient(135deg, #3DAB6E, #2D9460);">
+            <div class="modal-title">✅ 支付成功</div>
+            <button class="modal-close" onclick="closeSuccess()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="success-body">
+                <div class="success-icon">✓</div>
+                <div class="success-title">支付成功！</div>
+                <div class="success-sub">恭喜您成为小提琴专业版会员</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    // 时间
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('statusTime').textContent =
+            now.getHours().toString().padStart(2,'0') + ':' +
+            now.getMinutes().toString().padStart(2,'0');
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // 返回
+    function goBack() {
+        alert('返回「我的」页面');
+    }
+
+    // 筛选
+    function filterOrders(el, type) {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.querySelectorAll('.order-card').forEach(card => {
+            card.style.display = (type === 'all' || card.dataset.type === type) ? '' : 'none';
+        });
+    }
+
+    // 详情
+    let payMethod = 'alipay';
+
+    function showDetail(type, id) {
+        const body = document.getElementById('modalBody');
+        const footer = document.getElementById('modalFooter');
+
+        if (type === 'pending') {
+            if (id === 1) {
+                body.innerHTML = `
+                    <div class="detail-section">
+                        <div class="detail-title">订单信息</div>
+                        <div class="detail-row"><span class="detail-label">订单来源</span><span class="detail-value"><span style="background:var(--primary-light);color:var(--primary);padding:2px 8px;border-radius:4px;font-size:11px;">🎻 老师创建</span></span></div>
+                        <div class="detail-row"><span class="detail-label">创建时间</span><span class="detail-value">2024-04-07 10:30</span></div>
+                        <div class="detail-row"><span class="detail-label">学生姓名</span><span class="detail-value">张小明</span></div>
+                        <div class="detail-row"><span class="detail-label">订单名称</span><span class="detail-value">小提琴专业版·季度会员</span></div>
+                        <div class="detail-row"><span class="detail-label">会员时长</span><span class="detail-value">90天</span></div>
+                        <div class="detail-row"><span class="detail-label">到期时间</span><span class="detail-value">2024-07-06</span></div>
+                        <div class="detail-row"><span class="detail-label">包含权益</span><span class="detail-value">跟练 + 伴奏 + 识谱</span></div>
+                        <div class="detail-row"><span class="detail-label">附加内容</span><span class="detail-value">赠送：乐谱资料包 + 2节一对一辅导</span></div>
+                        <div class="detail-row"><span class="detail-label">订单号</span><span class="detail-value" style="color:var(--text-3)">MU20240407001</span></div>
+                        <div class="detail-row"><span class="detail-label">支付状态</span><span class="detail-value" style="color:var(--gold)">待支付</span></div>
+                        <div class="detail-row"><span class="detail-label">过期时间</span><span class="detail-value" style="color:var(--red)">2024-04-07 11:00（剩余 34:22）</span></div>
+                    </div>
+                    <div class="detail-total">
+                        <span class="total-label">应付金额</span>
+                        <span class="total-price" style="color:var(--red)">¥299</span>
+                    </div>
+                    <div class="pay-method-section">
+                        <div class="detail-title">选择支付方式</div>
+                        <div class="pay-method selected" onclick="selectMethod(this, 'alipay')">
+                            <div class="pay-icon pay-icon-alipay">💙</div>
+                            <div class="pay-info">
+                                <div class="pay-name">支付宝</div>
+                                <div class="pay-desc">推荐有支付宝账号的用户使用</div>
+                            </div>
+                            <div class="pay-check">✓</div>
+                        </div>
+                        <div class="pay-method" onclick="selectMethod(this, 'wechat')">
+                            <div class="pay-icon pay-icon-wechat">💚</div>
+                            <div class="pay-info">
+                                <div class="pay-name">微信支付</div>
+                                <div class="pay-desc">推荐有微信账号的用户使用</div>
+                            </div>
+                            <div class="pay-check"></div>
+                        </div>
+                    </div>
+                `;
+                footer.innerHTML = `<div class="footer-price">实付：<strong>¥299</strong></div><button class="btn-pay" onclick="doPay()">确认支付</button>`;
+            } else {
+                body.innerHTML = `
+                    <div class="detail-section">
+                        <div class="detail-title">订单信息</div>
+                        <div class="detail-row"><span class="detail-label">订单来源</span><span class="detail-value"><span style="background:var(--primary-light);color:var(--primary);padding:2px 8px;border-radius:4px;font-size:11px;">🎻 老师创建</span></span></div>
+                        <div class="detail-row"><span class="detail-label">创建时间</span><span class="detail-value">2024-04-03 14:20</span></div>
+                        <div class="detail-row"><span class="detail-label">学生姓名</span><span class="detail-value">张小明</span></div>
+                        <div class="detail-row"><span class="detail-label">订单名称</span><span class="detail-value">小提琴进阶班·月度会员</span></div>
+                        <div class="detail-row"><span class="detail-label">会员时长</span><span class="detail-value">30天</span></div>
+                        <div class="detail-row"><span class="detail-label">到期时间</span><span class="detail-value">2024-05-03</span></div>
+                        <div class="detail-row"><span class="detail-label">包含权益</span><span class="detail-value">跟练 + 识谱</span></div>
+                        <div class="detail-row"><span class="detail-label">附加内容</span><span class="detail-value">赠送：入门曲谱集</span></div>
+                        <div class="detail-row"><span class="detail-label">订单号</span><span class="detail-value" style="color:var(--text-3)">MU20240403002</span></div>
+                        <div class="detail-row"><span class="detail-label">支付状态</span><span class="detail-value" style="color:var(--gold)">待支付</span></div>
+                    </div>
+                    <div class="detail-total">
+                        <span class="total-label">应付金额</span>
+                        <span class="total-price" style="color:var(--red)">¥99</span>
+                    </div>
+                    <div class="pay-method-section">
+                        <div class="detail-title">选择支付方式</div>
+                        <div class="pay-method selected" onclick="selectMethod(this, 'alipay')">
+                            <div class="pay-icon pay-icon-alipay">💙</div>
+                            <div class="pay-info">
+                                <div class="pay-name">支付宝</div>
+                                <div class="pay-desc">推荐有支付宝账号的用户使用</div>
+                            </div>
+                            <div class="pay-check">✓</div>
+                        </div>
+                        <div class="pay-method" onclick="selectMethod(this, 'wechat')">
+                            <div class="pay-icon pay-icon-wechat">💚</div>
+                            <div class="pay-info">
+                                <div class="pay-name">微信支付</div>
+                                <div class="pay-desc">推荐有微信账号的用户使用</div>
+                            </div>
+                            <div class="pay-check"></div>
+                        </div>
+                    </div>
+                `;
+                footer.innerHTML = `<div class="footer-price">实付：<strong>¥99</strong></div><button class="btn-pay" onclick="doPay()">确认支付</button>`;
+            }
+        } else if (type === 'paid') {
+            if (id === 3) {
+                body.innerHTML = `
+                    <div class="detail-section">
+                        <div class="detail-title">订单信息</div>
+                        <div class="detail-row"><span class="detail-label">订单来源</span><span class="detail-value"><span style="background:#e8e4f8;color:#764ba2;padding:2px 8px;border-radius:4px;font-size:11px;">📱 系统订单</span></span></div>
+                        <div class="detail-row"><span class="detail-label">创建时间</span><span class="detail-value">2024-03-20 09:15</span></div>
+                        <div class="detail-row"><span class="detail-label">学生姓名</span><span class="detail-value">张小明</span></div>
+                        <div class="detail-row"><span class="detail-label">订单名称</span><span class="detail-value">小提琴体验版·周会员</span></div>
+                        <div class="detail-row"><span class="detail-label">会员时长</span><span class="detail-value">7天</span></div>
+                        <div class="detail-row"><span class="detail-label">到期时间</span><span class="detail-value">2024-03-27</span></div>
+                        <div class="detail-row"><span class="detail-label">包含权益</span><span class="detail-value">基础跟练功能</span></div>
+                        <div class="detail-row"><span class="detail-label">附加内容</span><span class="detail-value">—</span></div>
+                        <div class="detail-row"><span class="detail-label">订单号</span><span class="detail-value" style="color:var(--text-3)">MU20240320003</span></div>
+                        <div class="detail-row"><span class="detail-label">支付状态</span><span class="detail-value" style="color:var(--green)">已支付</span></div>
+                        <div class="detail-row"><span class="detail-label">支付时间</span><span class="detail-value">2024-03-20 09:18</span></div>
+                        <div class="detail-row"><span class="detail-label">支付方式</span><span class="detail-value">微信支付</span></div>
+                    </div>
+                    <div class="detail-total">
+                        <span class="total-label">实付金额</span>
+                        <span class="total-price" style="color:var(--green)">¥29</span>
+                    </div>
+                `;
+            } else {
+                body.innerHTML = `
+                    <div class="detail-section">
+                        <div class="detail-title">订单信息</div>
+                        <div class="detail-row"><span class="detail-label">订单来源</span><span class="detail-value"><span style="background:var(--primary-light);color:var(--primary);padding:2px 8px;border-radius:4px;font-size:11px;">🎻 老师创建</span></span></div>
+                        <div class="detail-row"><span class="detail-label">创建时间</span><span class="detail-value">2024-03-15 11:00</span></div>
+                        <div class="detail-row"><span class="detail-label">学生姓名</span><span class="detail-value">张小明</span></div>
+                        <div class="detail-row"><span class="detail-label">订单名称</span><span class="detail-value">小提琴专业版·年度会员</span></div>
+                        <div class="detail-row"><span class="detail-label">会员时长</span><span class="detail-value">365天</span></div>
+                        <div class="detail-row"><span class="detail-label">到期时间</span><span class="detail-value">2025-03-15</span></div>
+                        <div class="detail-row"><span class="detail-label">包含权益</span><span class="detail-value">跟练 + 伴奏 + 识谱 + 优先客服</span></div>
+                        <div class="detail-row"><span class="detail-label">附加内容</span><span class="detail-value">赠送：全套曲谱 + 12节一对一辅导</span></div>
+                        <div class="detail-row"><span class="detail-label">订单号</span><span class="detail-value" style="color:var(--text-3)">MU20240315004</span></div>
+                        <div class="detail-row"><span class="detail-label">支付状态</span><span class="detail-value" style="color:var(--green)">已支付</span></div>
+                        <div class="detail-row"><span class="detail-label">支付时间</span><span class="detail-value">2024-03-15 11:05</span></div>
+                        <div class="detail-row"><span class="detail-label">支付方式</span><span class="detail-value">支付宝</span></div>
+                    </div>
+                    <div class="detail-total">
+                        <span class="total-label">实付金额</span>
+                        <span class="total-price" style="color:var(--green)">¥899</span>
+                    </div>
+                `;
+            }
+            footer.innerHTML = `<button class="btn-close" onclick="closeModal()">关闭</button>`;
+        } else if (type === 'free') {
+            body.innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-title">订单信息</div>
+                    <div class="detail-row"><span class="detail-label">订单来源</span><span class="detail-value"><span style="background:var(--primary-light);color:var(--primary);padding:2px 8px;border-radius:4px;font-size:11px;">🎻 老师开通</span></span></div>
+                    <div class="detail-row"><span class="detail-label">创建时间</span><span class="detail-value">2024-03-15 10:45</span></div>
+                    <div class="detail-row"><span class="detail-label">学生姓名</span><span class="detail-value">张小明</span></div>
+                    <div class="detail-row"><span class="detail-label">订单名称</span><span class="detail-value">小提琴专业版·赠送会员</span></div>
+                    <div class="detail-row"><span class="detail-label">会员时长</span><span class="detail-value">30天</span></div>
+                    <div class="detail-row"><span class="detail-label">到期时间</span><span class="detail-value">2024-04-14</span></div>
+                    <div class="detail-row"><span class="detail-label">包含权益</span><span class="detail-value">跟练 + 伴奏 + 识谱</span></div>
+                    <div class="detail-row"><span class="detail-label">订单号</span><span class="detail-value" style="color:var(--text-3)">MU20240315005</span></div>
+                    <div class="detail-row"><span class="detail-label">开通状态</span><span class="detail-value" style="color:var(--green)">已开通</span></div>
+                    <div class="detail-row"><span class="detail-label">开通时间</span><span class="detail-value">2024-03-15 10:45</span></div>
+                </div>
+                <div class="detail-total">
+                    <span class="total-label">实付金额</span>
+                    <span class="total-price" style="color:var(--secondary)">¥0</span>
+                </div>
+            `;
+            footer.innerHTML = `<button class="btn-close" onclick="closeModal()">关闭</button>`;
+        }
+
+        document.getElementById('detailModal').classList.add('show');
+    }
+
+    function selectMethod(el, method) {
+        document.querySelectorAll('.pay-method').forEach(m => {
+            m.classList.remove('selected');
+            m.querySelector('.pay-check').textContent = '';
+        });
+        el.classList.add('selected');
+        el.querySelector('.pay-check').textContent = '✓';
+        payMethod = method;
+    }
+
+    function doPay() {
+        const methodName = payMethod === 'alipay' ? '支付宝' : '微信支付';
+        toast('正在唤起' + methodName + '支付...');
+        setTimeout(() => {
+            closeModal();
+            document.getElementById('successModal').classList.add('show');
+        }, 1500);
+    }
+
+    function closeModal() {
+        document.getElementById('detailModal').classList.remove('show');
+    }
+
+    function closeSuccess() {
+        document.getElementById('successModal').classList.remove('show');
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('show');
+        });
+    });
+
+    function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+</script>
+</body>
+</html>
