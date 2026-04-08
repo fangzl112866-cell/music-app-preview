@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>卓音智谱 - 直播教室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Music+Symbols&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0C0A14;
+  --surface: #16122A;
+  --surface2: #1E1835;
+  --surface3: #2A2445;
+  --primary: #FF6B35;
+  --primary-dim: rgba(255,107,53,0.12);
+  --accent: #FFD166;
+  --accent-dim: rgba(255,209,102,0.12);
+  --purple: #B06EFF;
+  --purple-dim: rgba(176,110,255,0.12);
+  --teal: #4ECDC4;
+  --teal-dim: rgba(78,205,196,0.12);
+  --green: #10B981;
+  --green-dim: rgba(16,185,129,0.12);
+  --red: #EF4444;
+  --red-dim: rgba(239,68,68,0.12);
+  --text-1: #FFFFFF;
+  --text-2: #A8A0C8;
+  --text-3: #6B6480;
+  --border: rgba(255,255,255,0.06);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: #1a1a2e;
+  color: var(--text-1);
+  width: 100vw; height: 100vh;
+  overflow: hidden; position: fixed; top: 0; left: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* 横屏手机外框 */
+.phone-frame {
+  width: 100%; height: 100%;
+  max-width: 750px; max-height: 430px;
+  background: var(--bg);
+  border-radius: 20px;
+  box-shadow: 0 0 0 12px #2d2d44, 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+
+/* ============================================================
+   顶部栏
+   ============================================================ */
+.top-bar {
+  height: 44px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px;
+  flex-shrink: 0;
+}
+.top-left { display: flex; align-items: center; gap: 12px; }
+.course-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--primary-dim);
+  padding: 4px 10px; border-radius: 6px;
+}
+.course-icon { font-size: 14px; }
+.course-name { font-size: 12px; font-weight: 700; color: var(--primary); }
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--red);
+  animation: pulse-live 1.5s ease-in-out infinite;
+}
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.live-text { font-size: 10px; font-weight: 700; color: var(--red); }
+
+.duration-badge {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--surface2);
+  padding: 4px 8px; border-radius: 5px;
+  font-size: 11px; color: var(--text-2);
+}
+.duration-badge span { color: var(--text-1); font-weight: 600; }
+
+.top-right { display: flex; align-items: center; gap: 8px; }
+.exit-btn {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--red-dim);
+  border: 1px solid rgba(239,68,68,0.2);
+  padding: 5px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 600; color: var(--red);
+  cursor: pointer; font-family: inherit;
+  transition: all 0.2s;
+}
+.exit-btn:hover { background: rgba(239,68,68,0.2); }
+
+/* ============================================================
+   主区域
+   ============================================================ */
+.main-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ============================================================
+   左侧：乐谱/课件区（最大面积）
+   ============================================================ */
+.score-area {
+  flex: 1;
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* 乐谱头部 */
+.score-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.score-title { font-size: 11px; font-weight: 700; color: var(--text-1); }
+.score-nav { display: flex; align-items: center; gap: 6px; }
+.score-nav-btn {
+  width: 24px; height: 24px; border-radius: 5px;
+  background: var(--surface3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; cursor: pointer; color: var(--text-2);
+  transition: all 0.15s;
+}
+.score-nav-btn:hover { background: var(--primary-dim); color: var(--primary); }
+.score-nav-btn.active { background: var(--primary); color: white; }
+
+/* 乐谱内容区 */
+.score-content {
+  flex: 1;
+  display: flex; flex-direction: column;
+  padding: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 绘画画布 */
+.draw-canvas {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.draw-canvas.active {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* 绘画工具栏 */
+.draw-toolbar {
+  position: absolute;
+  bottom: 12px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 10px;
+  background: rgba(22,18,42,0.95);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  z-index: 60;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s;
+}
+.draw-toolbar.show {
+  opacity: 1; visibility: visible;
+}
+.draw-tool-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.2s;
+}
+.draw-tool-btn:hover { background: var(--surface3); color: var(--text-1); }
+.draw-tool-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.draw-tool-btn svg { width: 16px; height: 16px; }
+
+/* 颜色选择器 */
+.draw-color-picker {
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 6px; margin: 0 4px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+.color-btn {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.color-btn:hover { transform: scale(1.1); }
+.color-btn.active { border-color: white; box-shadow: 0 0 0 2px var(--primary); }
+
+/* 乐谱显示 */
+.score-display {
+  flex: 1;
+  background: #0D0B12;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* 五线谱区域 */
+.staff-area {
+  flex: 1;
+  display: flex; flex-direction: column;
+  padding: 16px;
+  overflow-y: auto;
+}
+.staff-area::-webkit-scrollbar { width: 3px; }
+.staff-area::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* 乐谱行 */
+.staff-row {
+  display: flex; flex-direction: column;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+}
+.staff-row.active {
+  background: var(--primary-dim);
+  border-color: rgba(255,107,53,0.3);
+}
+.staff-row-label {
+  font-size: 10px; font-weight: 600; color: var(--text-3);
+  margin-bottom: 8px;
+}
+.staff-row.active .staff-row-label { color: var(--primary); }
+
+/* 五线谱 */
+.staff-lines {
+  display: flex; flex-direction: column;
+  position: relative;
+  height: 60px;
+}
+.staff-line {
+  flex: 1;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 音符 */
+.notes-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+.note {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.note.highlight {
+  background: var(--accent-dim);
+}
+.note-symbol { font-size: 20px; line-height: 1; }
+.note-name { font-size: 9px; color: var(--text-3); margin-top: 2px; }
+.note.highlight .note-name { color: var(--accent); font-weight: 700; }
+
+/* 指法标注 */
+.fingering-hint {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--teal);
+  font-size: 9px; font-weight: 700; color: white;
+  margin-left: 4px;
+}
+
+/* 乐谱底部信息 */
+.score-info {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.current-measure {
+  font-size: 10px; color: var(--text-3);
+}
+.current-measure span { color: var(--primary); font-weight: 700; }
+.ai-hint {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 10px; color: var(--teal);
+}
+.ai-hint svg { width: 12px; height: 12px; }
+
+/* ============================================================
+   右侧：视频区域
+   ============================================================ */
+.video-area {
+  width: 140px;
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* 老师视频 */
+.teacher-video {
+  flex: 1;
+  display: flex; flex-direction: column;
+  border-bottom: 1px solid var(--border);
+}
+.video-wrapper {
+  flex: 1;
+  background: linear-gradient(135deg, #1a1630 0%, #0d0b18 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.video-placeholder {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px;
+}
+.video-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.video-name {
+  font-size: 10px; font-weight: 600; color: var(--text-2);
+}
+.video-status {
+  position: absolute; top: 6px; left: 6px;
+  display: flex; align-items: center; gap: 3px;
+  background: rgba(0,0,0,0.6);
+  padding: 2px 6px; border-radius: 4px;
+  font-size: 9px; color: white;
+}
+.video-status .dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--green);
+}
+
+/* 视频放大按钮 */
+.video-expand-btn {
+  position: absolute; top: 6px; right: 6px;
+  width: 22px; height: 22px; border-radius: 5px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: white;
+  transition: all 0.2s;
+}
+.video-expand-btn:hover { background: rgba(0,0,0,0.7); }
+.video-expand-btn svg { width: 12px; height: 12px; }
+
+/* 老师视频全屏模式 - 限制在手机外框内 */
+.teacher-video.fullscreen {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  z-index: 200;
+}
+.teacher-video.fullscreen .video-wrapper {
+  background: #0d0b18;
+  border-radius: var(--radius-xs);
+}
+.teacher-video.fullscreen .video-avatar {
+  width: 80px; height: 80px; font-size: 36px;
+}
+.teacher-video.fullscreen .video-name {
+  font-size: 14px;
+}
+.teacher-video.fullscreen .video-expand-btn svg {
+  transform: rotate(180deg);
+}
+
+/* 学生视频 */
+.student-video {
+  height: 90px;
+  display: flex; flex-direction: column;
+}
+.student-video .video-wrapper {
+  background: linear-gradient(135deg, #1e1835 0%, #16122a 100%);
+}
+.student-video .video-avatar {
+  width: 32px; height: 32px; font-size: 14px;
+}
+
+/* 学生视频全屏模式 - 限制在手机外框内 */
+.student-video.fullscreen {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  z-index: 200;
+}
+.student-video.fullscreen .video-wrapper {
+  background: #0d0b18;
+  border-radius: var(--radius-xs);
+}
+.student-video.fullscreen .video-avatar {
+  width: 80px; height: 80px; font-size: 36px;
+}
+.student-video.fullscreen .video-name {
+  font-size: 14px;
+}
+.student-video.fullscreen .video-expand-btn svg {
+  transform: rotate(180deg);
+}
+
+/* 视频控制 */
+.video-controls {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 6px;
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+.vc-btn {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: var(--surface3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.15s; font-size: 12px;
+}
+.vc-btn:hover { background: var(--surface); color: var(--text-1); }
+.vc-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.vc-btn.off { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.2); }
+.vc-btn svg { width: 14px; height: 14px; }
+
+/* ============================================================
+   底部控制栏
+   ============================================================ */
+.bottom-bar {
+  height: 52px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px;
+  flex-shrink: 0;
+}
+
+.control-left, .control-center, .control-right {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.control-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.control-btn:hover { background: var(--surface2); }
+.control-btn.active { background: var(--primary-dim); border-color: rgba(255,107,53,0.2); }
+.control-btn.active .ctrl-icon { color: var(--primary); }
+.control-btn.off { background: var(--red-dim); border-color: rgba(239,68,68,0.2); }
+.control-btn.off .ctrl-icon { color: var(--red); }
+
+.ctrl-icon {
+  width: 22px; height: 22px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--text-2);
+  transition: all 0.15s;
+}
+.ctrl-label {
+  font-size: 9px; color: var(--text-3);
+}
+.control-btn.active .ctrl-label { color: var(--primary); }
+.control-btn.off .ctrl-label { color: var(--red); }
+
+/* 举手按钮特殊样式 */
+.raise-hand-btn {
+  position: relative;
+}
+.raise-hand-btn.raised .ctrl-icon {
+  background: var(--accent);
+  color: var(--bg);
+  animation: wave-hand 1s ease-in-out infinite;
+}
+@keyframes wave-hand {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* 播放控制 */
+.play-control {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2);
+  padding: 4px 10px; border-radius: 8px;
+}
+.play-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: white;
+  transition: all 0.2s; border: none;
+}
+.play-btn:hover { transform: scale(1.05); }
+.play-btn svg { width: 14px; height: 14px; }
+.progress-mini {
+  width: 60px; height: 3px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-mini-fill {
+  width: 35%; height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+}
+.time-mini {
+  font-size: 9px; color: var(--text-3);
+}
+
+/* ============================================================
+   AI 互动答题弹窗
+   ============================================================ */
+.quiz-overlay {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s;
+}
+.quiz-overlay.show { opacity: 1; visibility: visible; }
+
+.quiz-card {
+  width: 320px;
+  background: var(--surface);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.quiz-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.quiz-type {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; color: var(--purple);
+}
+.quiz-type svg { width: 12px; height: 12px; }
+.quiz-close {
+  width: 20px; height: 20px; border-radius: 4px;
+  background: var(--surface3); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.15s; font-size: 12px;
+}
+.quiz-close:hover { background: var(--red-dim); color: var(--red); }
+
+.quiz-body {
+  padding: 10px 12px;
+}
+.quiz-question {
+  font-size: 12px; font-weight: 600; color: var(--text-1);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* 选择题选项 */
+.quiz-options {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.quiz-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quiz-option:hover { border-color: var(--primary); }
+.quiz-option.selected {
+  background: var(--primary-dim);
+  border-color: var(--primary);
+}
+.quiz-option.correct {
+  background: var(--green-dim);
+  border-color: var(--green);
+}
+.quiz-option.wrong {
+  background: var(--red-dim);
+  border-color: var(--red);
+}
+.option-letter {
+  width: 20px; height: 20px; border-radius: 5px;
+  background: var(--surface3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--text-2);
+  flex-shrink: 0;
+}
+.quiz-option.selected .option-letter {
+  background: var(--primary); color: white;
+}
+.quiz-option.correct .option-letter {
+  background: var(--green); color: white;
+}
+.quiz-option.wrong .option-letter {
+  background: var(--red); color: white;
+}
+.option-text {
+  font-size: 11px; color: var(--text-1);
+}
+
+/* 填空题 */
+.fill-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px; color: var(--text-1);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.fill-input:focus { border-color: var(--primary); }
+.fill-input::placeholder { color: var(--text-3); }
+
+/* 连线题 */
+.match-area {
+  display: flex; gap: 20px;
+}
+.match-column {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.match-item {
+  padding: 8px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 11px; color: var(--text-1);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.match-item:hover { border-color: var(--primary); }
+.match-item.matched {
+  background: var(--teal-dim);
+  border-color: var(--teal);
+}
+
+/* 提交按钮 */
+.quiz-footer {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.quiz-hint {
+  font-size: 9px; color: var(--text-3);
+}
+.submit-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 12px;
+  background: var(--primary);
+  border: none; border-radius: 6px;
+  font-size: 11px; font-weight: 700; color: white;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.2s;
+}
+.submit-btn:hover { transform: scale(1.02); }
+.submit-btn svg { width: 12px; height: 12px; }
+
+/* ============================================================
+   AI 提示条
+   ============================================================ */
+.ai-tip-bar {
+  position: absolute;
+  left: 12px; right: 152px; bottom: 64px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 50;
+}
+.ai-tip-left {
+  display: flex; align-items: center; gap: 8px;
+}
+.ai-tip-icon {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: var(--teal-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.ai-tip-text {
+  font-size: 11px; color: var(--text-1);
+}
+.ai-tip-text span { color: var(--accent); font-weight: 700; }
+.ai-tip-close {
+  width: 20px; height: 20px; border-radius: 4px;
+  background: var(--surface2); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-3);
+  font-size: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- ========== 顶部栏 ========== -->
+  <header class="top-bar">
+    <div class="top-left">
+      <div class="course-badge">
+        <span class="course-icon">🎹</span>
+        <span class="course-name">钢琴1v1直播课</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px;">
+        <div class="live-dot"></div>
+        <span class="live-text">直播中</span>
+      </div>
+      <div class="duration-badge">
+        ⏱️ <span>00:15:32</span>
+      </div>
+    </div>
+    <div class="top-right">
+      <button class="exit-btn" onclick="exitClass()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        退出教室
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== 主区域 ========== -->
+  <div class="main-area">
+
+    <!-- ===== 左侧：乐谱区 ===== -->
+    <section class="score-area">
+      <!-- 乐谱头部 -->
+      <div class="score-header">
+        <div class="score-title">🎼 小星星 - 第1页</div>
+        <div class="score-nav">
+          <button class="score-nav-btn" title="上一页">‹</button>
+          <button class="score-nav-btn active">1</button>
+          <button class="score-nav-btn">2</button>
+          <button class="score-nav-btn" title="下一页">›</button>
+        </div>
+      </div>
+
+      <!-- 乐谱内容 -->
+      <div class="score-content">
+        <div class="score-display">
+          <div class="staff-area">
+            <!-- 第1-2小节（当前高亮） -->
+            <div class="staff-row active">
+              <div class="staff-row-label">📍 第1-2小节 · 当前演奏</div>
+              <div class="staff-lines">
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+              </div>
+              <div class="notes-row">
+                <div class="note highlight">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">C</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">C</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">G</span>
+                  <span class="fingering-hint">5</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">G</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">A</span>
+                  <span class="fingering-hint">1</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">A</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 第3-4小节 -->
+            <div class="staff-row">
+              <div class="staff-row-label">第3-4小节</div>
+              <div class="staff-lines">
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+              </div>
+              <div class="notes-row">
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">G</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅘𝅥</span>
+                  <span class="note-name">F</span>
+                  <span class="fingering-hint">4</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅘𝅥</span>
+                  <span class="note-name">F</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">E</span>
+                  <span class="fingering-hint">3</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">E</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">D</span>
+                  <span class="fingering-hint">2</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 第5-6小节 -->
+            <div class="staff-row">
+              <div class="staff-row-label">第5-6小节</div>
+              <div class="staff-lines">
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+                <div class="staff-line"></div>
+              </div>
+              <div class="notes-row">
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">D</span>
+                </div>
+                <div class="note">
+                  <span class="note-symbol">𝅗𝅥</span>
+                  <span class="note-name">C</span>
+                  <span class="fingering-hint">1</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 乐谱底部信息 -->
+        <div class="score-info">
+          <div class="current-measure">当前：<span>第1小节</span> / 共24小节</div>
+          <div class="ai-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            指法提示：C用1指，G用5指
+          </div>
+        </div>
+
+        <!-- 绘画覆盖层 -->
+        <canvas id="drawCanvas" class="draw-canvas"></canvas>
+
+        <!-- 绘画工具栏 -->
+        <div class="draw-toolbar" id="drawToolbar">
+          <button class="draw-tool-btn active" data-tool="pen" onclick="selectDrawTool('pen')" title="画笔">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          </button>
+          <button class="draw-tool-btn" data-tool="highlighter" onclick="selectDrawTool('highlighter')" title="荧光笔">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l6 6"/><path d="M21 3l-6 6"/><path d="M18 18l0 0"/></svg>
+          </button>
+          <button class="draw-tool-btn" data-tool="eraser" onclick="selectDrawTool('eraser')" title="橡皮擦">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16c-.8-.8-.8-2 0-2.8l10-10c.8-.8 2-.8 2.8 0l6 6c.8.8.8 2 0 2.8L13 21"/></svg>
+          </button>
+          <div class="draw-color-picker">
+            <button class="color-btn active" style="background: #FF6B35;" data-color="#FF6B35" onclick="selectDrawColor('#FF6B35')"></button>
+            <button class="color-btn" style="background: #FFD166;" data-color="#FFD166" onclick="selectDrawColor('#FFD166')"></button>
+            <button class="color-btn" style="background: #4ECDC4;" data-color="#4ECDC4" onclick="selectDrawColor('#4ECDC4')"></button>
+            <button class="color-btn" style="background: #B06EFF;" data-color="#B06EFF" onclick="selectDrawColor('#B06EFF')"></button>
+            <button class="color-btn" style="background: #FFFFFF;" data-color="#FFFFFF" onclick="selectDrawColor('#FFFFFF')"></button>
+          </div>
+          <button class="draw-tool-btn" onclick="clearCanvas()" title="清空">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+          <button class="draw-tool-btn" onclick="toggleDrawMode()" id="drawToggle" title="关闭绘画">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 右侧：视频区 ===== -->
+    <aside class="video-area">
+      <!-- 老师视频 -->
+      <div class="teacher-video" id="teacherVideo">
+        <div class="video-wrapper">
+          <div class="video-status">
+            <div class="dot"></div>
+            <span>直播中</span>
+          </div>
+          <button class="video-expand-btn" onclick="toggleTeacherFullscreen()" title="放大/缩小">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          </button>
+          <div class="video-placeholder">
+            <div class="video-avatar">👩‍🏫</div>
+            <div class="video-name">李婉清 老师</div>
+          </div>
+        </div>
+        <div class="video-controls">
+          <button class="vc-btn active" title="麦克风">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+          </button>
+          <button class="vc-btn active" title="摄像头">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 学生视频（自己） -->
+      <div class="student-video" id="studentVideo">
+        <div class="video-wrapper">
+          <button class="video-expand-btn" onclick="toggleStudentFullscreen()" title="放大/缩小">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          </button>
+          <div class="video-placeholder">
+            <div class="video-avatar">👦</div>
+            <div class="video-name">我</div>
+          </div>
+        </div>
+        <div class="video-controls">
+          <button class="vc-btn active" title="麦克风" onclick="toggleMic(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+          </button>
+          <button class="vc-btn active" title="摄像头" onclick="toggleCam(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- AI 提示条 -->
+    <div class="ai-tip-bar">
+      <div class="ai-tip-left">
+        <div class="ai-tip-icon">🎯</div>
+        <div class="ai-tip-text">老师提示：<span>第1小节，请用1指弹奏C音</span></div>
+      </div>
+      <button class="ai-tip-close" onclick="this.parentElement.style.display='none'">×</button>
+    </div>
+
+    <!-- 答题弹窗（默认隐藏） -->
+    <div class="quiz-overlay" id="quizOverlay">
+      <div class="quiz-card">
+        <div class="quiz-header">
+          <div class="quiz-type">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+            乐理选择题
+          </div>
+          <button class="quiz-close" onclick="closeQuiz()">×</button>
+        </div>
+        <div class="quiz-body">
+          <div class="quiz-question">以下哪个音符的时值最长？</div>
+          <div class="quiz-options">
+            <div class="quiz-option" onclick="selectOption(this, 'A')">
+              <div class="option-letter">A</div>
+              <div class="option-text">四分音符 𝅘𝅥𝅥</div>
+            </div>
+            <div class="quiz-option" onclick="selectOption(this, 'B')">
+              <div class="option-letter">B</div>
+              <div class="option-text">二分音符 𝅗𝅥</div>
+            </div>
+            <div class="quiz-option" onclick="selectOption(this, 'C')">
+              <div class="option-letter">C</div>
+              <div class="option-text">全音符 𝅝</div>
+            </div>
+            <div class="quiz-option" onclick="selectOption(this, 'D')">
+              <div class="option-letter">D</div>
+              <div class="option-text">八分音符 𝅘𝅥𝅮</div>
+            </div>
+          </div>
+        </div>
+        <div class="quiz-footer">
+          <div class="quiz-hint">请选择你认为正确的答案</div>
+          <button class="submit-btn" onclick="submitAnswer()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            提交答案
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-area -->
+
+  <!-- ========== 底部控制栏 ========== -->
+  <footer class="bottom-bar">
+    <div class="control-left">
+      <button class="control-btn active" id="micBtn" onclick="toggleMic(this)" title="麦克风">
+        <div class="ctrl-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+        </div>
+        <span class="ctrl-label">麦克风</span>
+      </button>
+      <button class="control-btn active" id="camBtn" onclick="toggleCam(this)" title="摄像头">
+        <div class="ctrl-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+        <span class="ctrl-label">摄像头</span>
+      </button>
+      <button class="control-btn raise-hand-btn" id="handBtn" onclick="toggleRaiseHand(this)" title="举手">
+        <div class="ctrl-icon">✋</div>
+        <span class="ctrl-label">举手</span>
+      </button>
+    </div>
+
+    <div class="control-center">
+      <button class="control-btn" onclick="toggleDrawMode()" id="drawBtn" title="画笔">
+        <div class="ctrl-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+        </div>
+        <span class="ctrl-label">画笔</span>
+      </button>
+    </div>
+
+    <div class="control-right">
+      <button class="control-btn" onclick="showDeviceTest()" title="设备调试">
+        <div class="ctrl-icon">⚙️</div>
+        <span class="ctrl-label">设备</span>
+      </button>
+      <button class="control-btn" onclick="toggleMainFullscreen()" title="全屏">
+        <div class="ctrl-icon" id="fullscreenIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </div>
+        <span class="ctrl-label">全屏</span>
+      </button>
+      <button class="control-btn" onclick="showQuiz()" title="答题">
+        <div class="ctrl-icon">📝</div>
+        <span class="ctrl-label">答题</span>
+      </button>
+      <button class="control-btn off" onclick="exitClass()" title="退出">
+        <div class="ctrl-icon" style="color: var(--red);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </div>
+        <span class="ctrl-label" style="color: var(--red);">退出</span>
+      </button>
+    </div>
+  </footer>
+
+</div><!-- /phone-frame -->
+
+<script>
+// 麦克风开关
+function toggleMic(btn) {
+  btn.classList.toggle('active');
+  btn.classList.toggle('off');
+  const isOff = btn.classList.contains('off');
+  // 同步小窗口按钮
+  const vcBtns = document.querySelectorAll('.vc-btn');
+  vcBtns.forEach(b => {
+    if (b.title === '麦克风') {
+      if (isOff) b.classList.remove('active');
+      else b.classList.add('active');
+    }
+  });
+}
+
+// 摄像头开关
+function toggleCam(btn) {
+  btn.classList.toggle('active');
+  btn.classList.toggle('off');
+  const isOff = btn.classList.contains('off');
+  // 同步小窗口按钮
+  const vcBtns = document.querySelectorAll('.vc-btn');
+  vcBtns.forEach(b => {
+    if (b.title === '摄像头') {
+      if (isOff) b.classList.remove('active');
+      else b.classList.add('active');
+    }
+  });
+}
+
+// 举手
+function toggleRaiseHand(btn) {
+  btn.classList.toggle('raised');
+  const label = btn.querySelector('.ctrl-label');
+  label.textContent = btn.classList.contains('raised') ? '已举手' : '举手';
+}
+
+// 播放/暂停
+function togglePlay(btn) {
+  const isPlaying = btn.innerHTML.includes('polygon');
+  if (isPlaying) {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+  } else {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+  }
+}
+
+// 显示答题弹窗
+function showQuiz() {
+  document.getElementById('quizOverlay').classList.add('show');
+}
+
+// 关闭答题弹窗
+function closeQuiz() {
+  document.getElementById('quizOverlay').classList.remove('show');
+}
+
+// 选择选项
+function selectOption(el, option) {
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// 提交答案
+function submitAnswer() {
+  const selected = document.querySelector('.quiz-option.selected');
+  if (!selected) {
+    alert('请先选择一个答案');
+    return;
+  }
+  // 模拟正确答案为C
+  const isCorrect = selected.querySelector('.option-letter').textContent === 'C';
+  if (isCorrect) {
+    selected.classList.add('correct');
+    setTimeout(() => {
+      alert('回答正确！🎉');
+      closeQuiz();
+    }, 500);
+  } else {
+    selected.classList.add('wrong');
+    setTimeout(() => {
+      alert('回答错误，正确答案是C（全音符）');
+    }, 500);
+  }
+}
+
+// 退出教室
+function exitClass() {
+  if (confirm('确定要退出教室吗？')) {
+    window.location.href = 'student-courses-v3.html';
+  }
+}
+
+// 页面加载时读取URL参数
+window.onload = function() {
+  const params = new URLSearchParams(window.location.search);
+  const course = params.get('course');
+  const lesson = params.get('lesson');
+  const id = params.get('id');
+
+  if (course) {
+    document.querySelector('.course-name').textContent = course;
+  }
+  if (lesson) {
+    document.querySelector('.course-name').textContent = '第' + lesson + '节直播课';
+  }
+};
+
+// 老师视频全屏切换
+function toggleTeacherFullscreen() {
+  const teacherVideo = document.getElementById('teacherVideo');
+  teacherVideo.classList.toggle('fullscreen');
+}
+
+// 学生视频全屏切换
+function toggleStudentFullscreen() {
+  const studentVideo = document.getElementById('studentVideo');
+  studentVideo.classList.toggle('fullscreen');
+}
+
+// 设备调试弹窗
+function showDeviceTest() {
+  alert('设备调试\n\n🎤 麦克风：正常\n📷 摄像头：正常\n🔊 扬声器：正常\n📶 网络：良好\n\n所有设备工作正常！');
+}
+</script>
+
+</body>
+</html>

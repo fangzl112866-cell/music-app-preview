@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>我的乐器课</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 背景与表面色 - 深色主题 */
+  --bg: #0C0A14;
+  --surface: #16122A;
+  --surface2: #1E1835;
+  --surface3: #2A2445;
+  
+  /* 主色调 */
+  --primary: #FF6B35;
+  --primary-dim: rgba(255,107,53,0.12);
+  --accent: #FFD166;
+  --accent-dim: rgba(255,209,102,0.12);
+  
+  /* 辅助色 */
+  --purple: #B06EFF;
+  --purple-dim: rgba(176,110,255,0.12);
+  --teal: #4ECDC4;
+  --teal-dim: rgba(78,205,196,0.12);
+  --pink: #FF6B9D;
+  --pink-dim: rgba(255,107,157,0.12);
+  --green: #10B981;
+  --green-dim: rgba(16,185,129,0.12);
+  --blue: #60A5FA;
+  --blue-dim: rgba(96,165,250,0.12);
+  --orange: #FF6B35;
+  --orange-dim: rgba(255,107,53,0.12);
+  
+  /* 文字色 */
+  --text-1: #FFFFFF;
+  --text-2: #A8A0C8;
+  --text-3: #6B6480;
+  
+  /* 边框 */
+  --border: rgba(255,255,255,0.06);
+  
+  /* 圆角 */
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: #1a1a2e;
+  color: var(--text-1);
+  width: 100vw; height: 100vh;
+  overflow: hidden; position: fixed; top: 0; left: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* 横屏手机外框 */
+.phone-frame {
+  width: 100%; height: 100%;
+  max-width: 750px; max-height: 430px;
+  background: var(--bg);
+  border-radius: 20px;
+  box-shadow: 0 0 0 12px #2d2d44, 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ============================================================
+   TOP NAV
+   ============================================================ */
+.top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; height: 56px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  flex-shrink: 0; z-index: 10;
+}
+.top-nav-left { display: flex; align-items: center; gap: 12px; }
+.app-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: white;
+}
+.nav-title { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 600; }
+
+.back-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.2s; margin-right: 4px;
+}
+.back-btn:hover { background: var(--surface3); color: var(--text-1); }
+.back-btn svg { width: 16px; height: 16px; }.top-nav-right { display: flex; align-items: center; gap: 10px; }
+.notif-btn {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; position: relative;
+}
+.notif-dot {
+  position: absolute; top: 7px; right: 7px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--primary); border: 1.5px solid var(--surface);
+}
+.nav-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, #A78BFA, #60A5FA);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white; cursor: pointer;
+}
+
+/* ============================================================
+   BODY
+   ============================================================ */
+.page-body { flex: 1; display: flex; overflow: hidden; }
+
+/* ============================================================
+   LEFT — today alert
+   ============================================================ */
+.today-panel {
+  width: 190px; min-width: 190px;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.today-panel-header { padding: 12px 12px 8px; flex-shrink: 0; }
+.today-panel-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;
+}
+
+.today-card {
+  margin: 0 8px 6px;
+  border-radius: var(--radius-xs); padding: 9px 11px;
+  background: var(--surface2); border: 1px solid var(--border);
+  overflow: hidden; position: relative; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.today-card.live { border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.07); }
+.today-card-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.today-card-instrument { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+.today-card-name { font-size: 11px; font-weight: 700; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.today-card-time { font-size: 10px; color: var(--text-2); }
+.live-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+.live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--primary); animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+.live-text { font-size: 10px; font-weight: 700; color: var(--primary); }
+.today-enter {
+  width: 100%; margin-top: 5px;
+  background: var(--primary); color: white;
+  border: none; border-radius: 6px;
+  padding: 4px 6px; font-size: 10px; font-weight: 700;
+@keyframes pulse-enter {
+  0%, 100% { box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
+  50% { box-shadow: 0 2px 16px rgba(255,107,53,0.6), 0 0 0 4px rgba(255,107,53,0.12); }
+}
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px;
+  font-family: inherit;
+}
+.today-enter svg { width: 10px; height: 10px; }
+
+/* ============================================================
+   RIGHT — course list
+   ============================================================ */
+.course-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 12px 16px 0; }
+.course-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; }
+.course-panel-title { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; }
+.course-count { font-size: 11px; color: var(--text-3); background: var(--surface2); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); }
+
+/* Filter pills */
+.filter-pills { display: flex; gap: 5px; margin-bottom: 10px; flex-shrink: 0; overflow-x: auto; }
+.filter-pills::-webkit-scrollbar { display: none; }
+.pill {
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  border: 1px solid var(--border); background: var(--surface2); color: var(--text-2);
+  white-space: nowrap; font-family: inherit;
+}
+.pill.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 10px rgba(255,107,53,0.3); }
+
+/* Course scroll */
+.course-scroll { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+.course-scroll::-webkit-scrollbar { width: 4px; }
+.course-scroll::-webkit-scrollbar-track { background: transparent; }
+.course-scroll::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* ============================================================
+   COURSE GRID — 2-3 column card grid
+   ============================================================ */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.course-card {
+  background: var(--surface);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+}
+.course-card:hover { border-color: rgba(255,107,53,0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.course-card.live-card { border-color: rgba(255,123,84,0.4); box-shadow: 0 4px 20px rgba(255,123,84,0.15); }
+.course-card.done-card { opacity: 0.65; }
+
+/* Card hero (top colored area) */
+.card-hero {
+  padding: 8px 10px 6px;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  min-height: 58px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.card-hero-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.card-live-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 9px; font-weight: 700; color: var(--primary);
+  align-self: flex-start;
+}
+.card-hero-center { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.card-instrument-icon {
+  width: 26px; height: 26px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.card-course-name {
+  font-size: 12px; font-weight: 700; color: var(--text-1);
+  flex: 1; line-height: 1.25;
+}
+.card-type-tag { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 5px; flex-shrink: 0; }
+.tag-1v1 { background: rgba(255,107,53,0.15); color: var(--primary); }
+.tag-1vn { background: rgba(176,110,255,0.15); color: var(--purple); }
+.tag-done { background: rgba(255,255,255,0.05); color: var(--text-3); }
+
+/* Card body */
+.card-body { padding: 7px 10px; display: flex; flex-direction: column; gap: 5px; }
+.card-teacher { font-size: 10px; color: var(--text-2); }
+.card-progress { display: flex; align-items: center; gap: 5px; }
+.card-progress-label { font-size: 9px; color: var(--text-3); white-space: nowrap; }
+.card-progress-label span { color: var(--primary); font-weight: 700; }
+.card-progress-bar { flex: 1; height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden; min-width: 30px; }
+.card-progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+.card-progress-pct { font-size: 9px; color: var(--text-3); white-space: nowrap; }
+
+/* Instrument tag inline */
+.inst-tag {
+  display: inline-flex; align-items: center;
+  font-size: 9px; padding: 1px 4px;
+  border-radius: 4px; margin-left: 3px;
+  font-family: inherit;
+}
+/* Next class strip */
+.card-next-strip {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 5px 8px;
+  margin-top: 1px;
+}
+.card-next-strip.done-strip { background: rgba(255,255,255,0.02); }
+.card-next-info { display: flex; flex-direction: column; gap: 0px; }
+.card-next-label { font-size: 9px; font-weight: 700; color: var(--text-1); }
+.card-next-time { font-size: 9px; color: var(--text-3); }
+
+.card-enter-btn {
+  width: 24px; height: 24px; border-radius: 6px;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s;
+}
+.card-enter-btn svg { width: 11px; height: 11px; }
+
+.card-enter-btn.primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(255,107,53,0.3); animation: pulse-enter 2s ease-in-out infinite; }
+.card-enter-btn.teal { background: var(--teal); color: white; box-shadow: 0 2px 8px rgba(78,205,196,0.3); }
+.card-enter-btn.orange { background: var(--orange); color: white; box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
+.card-enter-btn.purple { background: var(--purple); color: white; box-shadow: 0 2px 8px rgba(176,110,255,0.3); }
+.card-enter-btn.ghost { background: transparent; color: var(--text-3); border: 1px solid var(--border); opacity: 0.4; cursor: default; }
+.card-enter-btn:hover { opacity: 0.85; transform: scale(1.05); }
+
+/* ============================================================
+   BOTTOM TAB NAV
+   ============================================================ */
+.tab-nav {
+  display: flex; background: var(--surface);
+  border-top: 1px solid var(--border); padding: 6px 0;
+  flex-shrink: 0; z-index: 10;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; padding: 6px 0;
+  cursor: pointer; transition: all 0.2s;
+  border: none; background: transparent;
+  color: var(--text-3); font-size: 10px; font-weight: 500; font-family: inherit;
+}
+.tab-item.active { color: var(--primary); }
+.tab-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
+.tab-item.active .tab-icon { background: var(--primary-dim); }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <button class="back-btn" onclick="goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="nav-title">我的音乐课</div>
+    </div>
+    <div class="top-nav-right">
+      <button class="notif-btn">🔔<span class="notif-dot"></span></button>
+      <div class="nav-avatar">林</div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="page-body">
+
+    <!-- ===== LEFT: today alert ===== -->
+    <aside class="today-panel">
+      <div class="today-panel-header">
+        <div class="today-panel-title">今日上课</div>
+
+        <div class="today-card live">
+          <div class="today-card-accent" style="background: #FF6B9D;"></div>
+          <div class="today-card-instrument" style="color: #FF6B9D;">🎻 小提琴</div>
+          <div class="today-card-name">小提琴演奏进阶班</div>
+          <div class="today-card-time">14:30 · 李婉清</div>
+          <div class="live-row"><span class="live-dot"></span><span class="live-text">正在上课</span></div>
+          <button class="today-enter" onclick="event.stopPropagation(); joinLive('小提琴演奏进阶班')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            进入
+          </button>
+        </div>
+
+        <div class="today-card">
+          <div class="today-card-accent" style="background: #4ECDC4;"></div>
+          <div class="today-card-instrument" style="color: #4ECDC4;">🎹 钢琴</div>
+          <div class="today-card-name">钢琴即兴伴奏课</div>
+          <div class="today-card-time">19:00 · 陈艺</div>
+          <button class="today-enter" style="background: #4ECDC4;" onclick="event.stopPropagation(); joinLive('钢琴即兴伴奏课')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            进入
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== RIGHT: course grid ===== -->
+    <section class="course-panel">
+      <div class="course-panel-header">
+        <div class="course-panel-title">我的音乐课程</div>
+        <div class="course-count">6 门课程</div>
+      </div>
+
+      <!-- 乐器标签显示在老师名后，列表即是导航 -->
+
+      <div class="course-scroll">
+        <div class="course-grid">
+
+          <!-- Card 1: LIVE -->
+          <div class="course-card live-card" onclick="goToDetail('violin-advanced')">
+            <div class="card-hero" style="background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,107,157,0.05));">
+              <div class="card-hero-accent" style="background: #FF6B9D;"></div>
+              <div class="card-live-badge"><span class="live-dot"></span>上课中</div>
+              <div class="card-hero-center">
+                <div class="card-instrument-icon" style="background: rgba(255,107,157,0.15);">🎻</div>
+                <div class="card-course-name">小提琴演奏进阶班</div>
+                <span class="card-type-tag tag-1v1">1v1</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-teacher">👩‍🏫 李婉清 老师 <span class="inst-tag" style="background:rgba(255,107,157,0.15);color:#FF6B9D;">🎻</span></div>
+              <div class="card-progress">
+                <span class="card-progress-label"><span>7</span>/16节</span>
+                <div class="card-progress-bar"><div class="card-progress-fill" style="width: 43.75%; background: linear-gradient(90deg, #FF6B9D, #FFB3CC);"></div></div>
+                <span class="card-progress-pct">44%</span>
+              </div>
+              <div class="card-next-strip">
+                <div class="card-next-info">
+                  <span class="card-next-label" style="color: #FF6B9D;">🔴 进行中</span>
+                  <span class="card-next-time">剩余约38分钟</span>
+                </div>
+                <button class="card-enter-btn primary" onclick="event.stopPropagation(); joinLive('小提琴演奏进阶班')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Today 19:00 -->
+          <div class="course-card" onclick="goToDetail('piano-accompany')">
+            <div class="card-hero" style="background: linear-gradient(135deg, rgba(78,205,196,0.18), rgba(78,205,196,0.05));">
+              <div class="card-hero-accent" style="background: #4ECDC4;"></div>
+              <div class="card-hero-center" style="margin-top: 14px;">
+                <div class="card-instrument-icon" style="background: rgba(78,205,196,0.15);">🎹</div>
+                <div class="card-course-name">钢琴即兴伴奏课</div>
+                <span class="card-type-tag tag-1v1">1v1</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-teacher">👩‍🏫 陈艺 老师 <span class="inst-tag" style="background:rgba(78,205,196,0.15);color:#4ECDC4;">🎹</span></div>
+              <div class="card-progress">
+                <span class="card-progress-label"><span>12</span>/20节</span>
+                <div class="card-progress-bar"><div class="card-progress-fill" style="width: 60%; background: linear-gradient(90deg, #4ECDC4, #7FE8E0);"></div></div>
+                <span class="card-progress-pct">60%</span>
+              </div>
+              <div class="card-next-strip">
+                <div class="card-next-info">
+                  <span class="card-next-label">⏰ 今天 19:00</span>
+                  <span class="card-next-time">第13/20节 · 流行歌曲伴奏</span>
+                </div>
+                <button class="card-enter-btn teal" onclick="event.stopPropagation(); joinLive('钢琴即兴伴奏课')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Tomorrow 09:00 -->
+          <div class="course-card" onclick="goToDetail('guitar-basic')">
+            <div class="card-hero" style="background: linear-gradient(135deg, rgba(255,107,53,0.18), rgba(255,107,53,0.05));">
+              <div class="card-hero-accent" style="background: #FF6B35;"></div>
+              <div class="card-hero-center" style="margin-top: 14px;">
+                <div class="card-instrument-icon" style="background: rgba(255,107,53,0.15);">🎸</div>
+                <div class="card-course-name">古典吉他入门</div>
+                <span class="card-type-tag tag-1vn">1v6</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-teacher">👨‍🏫 林涛 老师 <span class="inst-tag" style="background:rgba(255,107,53,0.15);color:#FF6B35;">🎸</span></div>
+              <div class="card-progress">
+                <span class="card-progress-label"><span>3</span>/12节</span>
+                <div class="card-progress-bar"><div class="card-progress-fill" style="width: 25%; background: linear-gradient(90deg, #FF6B35, #FF9B6A);"></div></div>
+                <span class="card-progress-pct">25%</span>
+              </div>
+              <div class="card-next-strip">
+                <div class="card-next-info">
+                  <span class="card-next-label">⏰ 明天 09:00</span>
+                  <span class="card-next-time">第4/12节 · 分解和弦</span>
+                </div>
+                <button class="card-enter-btn orange" onclick="event.stopPropagation(); joinLive('古典吉他入门')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Friday 15:00 -->
+          <div class="course-card" onclick="goToDetail('flute-basic')">
+            <div class="card-hero" style="background: linear-gradient(135deg, rgba(176,110,255,0.18), rgba(176,110,255,0.05));">
+              <div class="card-hero-accent" style="background: #B06EFF;"></div>
+              <div class="card-hero-center" style="margin-top: 14px;">
+                <div class="card-instrument-icon" style="background: rgba(176,110,255,0.15);">🎺</div>
+                <div class="card-course-name">竹笛基础课</div>
+                <span class="card-type-tag tag-1vn">1v6</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-teacher">👩‍🏫 刘芳 老师 <span class="inst-tag" style="background:rgba(176,110,255,0.15);color:#B06EFF;">🎺</span></div>
+              <div class="card-progress">
+                <span class="card-progress-label"><span>2</span>/10节</span>
+                <div class="card-progress-bar"><div class="card-progress-fill" style="width: 20%; background: linear-gradient(90deg, #B06EFF, #C99EFF);"></div></div>
+                <span class="card-progress-pct">20%</span>
+              </div>
+              <div class="card-next-strip">
+                <div class="card-next-info">
+                  <span class="card-next-label">⏰ 周五 15:00</span>
+                  <span class="card-next-time">第3/10节 · 气息训练</span>
+                </div>
+                <button class="card-enter-btn purple" onclick="event.stopPropagation(); joinLive('竹笛基础课')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Pending schedule -->
+          <div class="course-card" onclick="goToDetail('cello-ensemble')">
+            <div class="card-hero" style="background: linear-gradient(135deg, rgba(96,165,250,0.12), rgba(96,165,250,0.03));">
+              <div class="card-hero-accent" style="background: #60A5FA;"></div>
+              <div class="card-hero-center" style="margin-top: 14px;">
+                <div class="card-instrument-icon" style="background: rgba(96,165,250,0.1);">🎻</div>
+                <div class="card-course-name">大提琴重奏课</div>
+                <span class="card-type-tag tag-1vn">1v6</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-teacher">👨‍🏫 周明 老师 <span class="inst-tag" style="background:rgba(96,165,250,0.15);color:#60A5FA;">🎻</span></div>
+              <div class="card-progress">
+                <span class="card-progress-label"><span>4</span>/8节</span>
+                <div class="card-progress-bar"><div class="card-progress-fill" style="width: 50%; background: linear-gradient(90deg, #60A5FA, #93C5FD);"></div></div>
+                <span class="card-progress-pct">50%</span>
+              </div>
+              <div class="card-next-strip done-strip">
+                <div class="card-next-info">
+                  <span class="card-next-label" style="color: var(--text-3);">📭 待排课</span>
+                  <span class="card-next-time">等待老师安排</span>
+                </div>
+                <button class="card-enter-btn ghost">—</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6: Completed -->
+          <div class="course-card done-card" onclick="goToDetail('ukulele-basic')">
+            <div class="card-hero" style="background: linear-gradient(135deg, rgba(100,100,120,0.12), rgba(100,100,120,0.03));">
+              <div class="card-hero-accent" style="background: var(--text-3);"></div>
+              <div class="card-hero-center" style="margin-top: 14px;">
+                <div class="card-instrument-icon" style="background: rgba(255,255,255,0.04);">🪕</div>
+                <div class="card-course-name" style="text-decoration: line-through; opacity: 0.5;">尤克里里基础课</div>
+                <span class="card-type-tag tag-done">1v1</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-teacher" style="opacity: 0.5;">👩‍🏫 周瑶 老师 <span class="inst-tag" style="background:rgba(255,255,255,0.05);color:#9999B8;">🪕</span></div>
+              <div class="card-progress">
+                <span class="card-progress-label" style="color: #10B981;"><span>10</span>/10节</span>
+                <div class="card-progress-bar"><div class="card-progress-fill" style="width: 100%; background: linear-gradient(90deg, #10B981, #059669);"></div></div>
+                <span class="card-progress-pct" style="color: #10B981;">100%</span>
+              </div>
+              <div class="card-next-strip done-strip">
+                <div class="card-next-info">
+                  <span class="card-next-label" style="color: #10B981;">✅ 已结课</span>
+                  <span class="card-next-time">共 10 节 · 已完成</span>
+                </div>
+                <button class="card-enter-btn ghost" style="opacity: 0.4;">✅</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /course-grid -->
+      </div><!-- /course-scroll -->
+    </section>
+  </div><!-- /page-body -->
+
+  <!-- BOTTOM TAB NAV -->
+  <nav class="tab-nav">
+    <button class="tab-item active">
+      <div class="tab-icon">📚</div>课程
+    </button>
+    <button class="tab-item" onclick="goToSchedule()">
+      <div class="tab-icon">📅</div>课表
+    </button>
+    <button class="tab-item">
+      <div class="tab-icon">🛒</div>课程市场
+    </button>
+    <button class="tab-item">
+      <div class="tab-icon">💬</div>客服
+    </button>
+    <button class="tab-item">
+      <div class="tab-icon">🤖</div>AI小助手
+    </button>
+  </nav>
+
+</div><!-- /phone-frame -->
+
+<script>
+function goBack() {
+  // 返回 App 原主页
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    alert('返回 App 主页');
+  }
+}
+function joinLive(courseName) {
+  // 跳转到直播间
+  window.location.href = 'live-classroom.html?course=' + encodeURIComponent(courseName);
+}
+function goToDetail(courseId) {
+  // 跳转到课程详情页
+  window.location.href = 'course-detail-v6.html?id=' + courseId;
+}
+function goToSchedule() {
+  // 跳转到课表页
+  window.location.href = 'schedule-page.html';
+}
+</script>
+</body>
+</html>

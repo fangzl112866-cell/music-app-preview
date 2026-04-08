@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>课程详情 - 小提琴演奏进阶班</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 背景与表面色 - 深色主题 */
+  --bg: #0C0A14;
+  --surface: #16122A;
+  --surface2: #1E1835;
+  --surface3: #2A2445;
+  
+  /* 主色调 */
+  --primary: #FF6B35;
+  --primary-dim: rgba(255,107,53,0.12);
+  --accent: #FFD166;
+  --accent-dim: rgba(255,209,102,0.12);
+  
+  /* 辅助色 */
+  --purple: #B06EFF;
+  --purple-dim: rgba(176,110,255,0.12);
+  --teal: #4ECDC4;
+  --teal-dim: rgba(78,205,196,0.12);
+  --pink: #FF6B9D;
+  --pink-dim: rgba(255,107,157,0.12);
+  --green: #10B981;
+  --green-dim: rgba(16,185,129,0.12);
+  --blue: #60A5FA;
+  --blue-dim: rgba(96,165,250,0.12);
+  --orange: #FF6B35;
+  --orange-dim: rgba(255,107,53,0.12);
+  
+  /* 文字色 */
+  --text-1: #FFFFFF;
+  --text-2: #A8A0C8;
+  --text-3: #6B6480;
+  
+  /* 边框 */
+  --border: rgba(255,255,255,0.06);
+  
+  /* 圆角 */
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: #1a1a2e;
+  color: var(--text-1);
+  width: 100vw; height: 100vh;
+  overflow: hidden; position: fixed; top: 0; left: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* 横屏手机外框 */
+.phone-frame {
+  width: 100%; height: 100%;
+  max-width: 750px; max-height: 430px;
+  background: var(--bg);
+  border-radius: 20px;
+  box-shadow: 0 0 0 12px #2d2d44, 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ============================================================
+   TOP NAV (与列表页完全一致)
+   ============================================================ */
+.top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; height: 56px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  flex-shrink: 0; z-index: 10;
+}
+.top-nav-left { display: flex; align-items: center; gap: 12px; }
+.back-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.2s; margin-right: 4px;
+}
+.back-btn:hover { background: var(--surface3); color: var(--text-1); }
+.back-btn svg { width: 16px; height: 16px; }
+.nav-title { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 600; }
+.top-nav-right { display: flex; align-items: center; gap: 10px; }
+.action-btn {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; color: var(--text-2);
+  transition: all 0.2s; position: relative;
+}
+.action-btn:hover { background: var(--surface3); color: var(--text-1); }
+
+/* AI小助手按钮 */
+.ai-assistant-btn {
+  background: linear-gradient(135deg, var(--purple-dim), var(--primary-dim));
+  border: 1px solid rgba(176,110,255,0.3);
+  color: var(--purple);
+}
+.ai-assistant-btn:hover {
+  background: linear-gradient(135deg, rgba(176,110,255,0.25), rgba(255,107,53,0.25));
+  color: var(--text-1);
+}
+.ai-assistant-btn svg { width: 18px; height: 18px; }
+
+/* AI总结弹窗 */
+.ai-summary-popup {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s;
+}
+.ai-summary-popup.show { opacity: 1; visibility: visible; }
+.ai-summary-content {
+  width: 420px; max-width: 90%;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s;
+}
+.ai-summary-popup.show .ai-summary-content { transform: scale(1); }
+.ai-summary-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--purple-dim), var(--primary-dim));
+  border-bottom: 1px solid var(--border);
+}
+.ai-summary-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; color: var(--text-1);
+}
+.ai-summary-title svg { width: 18px; height: 18px; color: var(--purple); }
+.ai-summary-close {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--surface2); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-3);
+  transition: all 0.2s;
+}
+.ai-summary-close:hover { background: var(--surface3); color: var(--text-1); }
+.ai-summary-close svg { width: 14px; height: 14px; }
+.ai-summary-body {
+  padding: 16px 18px;
+  max-height: 320px; overflow-y: auto;
+}
+.ai-stat-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 14px;
+}
+.ai-stat-card {
+  background: var(--surface2);
+  border-radius: var(--radius-xs);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+}
+.ai-stat-label { font-size: 10px; color: var(--text-3); margin-bottom: 4px; }
+.ai-stat-value { font-size: 16px; font-weight: 600; color: var(--text-1); }
+.ai-stat-value span { font-size: 11px; font-weight: 400; color: var(--text-2); }
+.ai-stat-card.highlight { background: var(--primary-dim); border-color: rgba(255,107,53,0.3); }
+.ai-stat-card.highlight .ai-stat-value { color: var(--primary); }
+.ai-section { margin-bottom: 14px; }
+.ai-section-title {
+  font-size: 11px; font-weight: 600; color: var(--text-2);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.ai-section-title svg { width: 12px; height: 12px; color: var(--accent); }
+.ai-piece-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.ai-piece-tag {
+  padding: 5px 10px;
+  background: var(--surface3);
+  border-radius: 6px;
+  font-size: 11px; color: var(--text-2);
+}
+.ai-tip-box {
+  background: var(--accent-dim);
+  border-radius: var(--radius-xs);
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+}
+.ai-tip-text { font-size: 11px; color: var(--text-2); line-height: 1.6; }
+.ai-tip-text strong { color: var(--accent); }
+
+/* ============================================================
+   BODY (与列表页完全一致)
+   ============================================================ */
+.page-body { flex: 1; display: flex; overflow: hidden; }
+
+/* ============================================================
+   LEFT — course info (40%)
+   ============================================================ */
+.info-panel {
+  width: 40%;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+.info-scroll {
+  flex: 1; overflow-y: auto; padding: 16px;
+}
+.info-scroll::-webkit-scrollbar { width: 4px; }
+.info-scroll::-webkit-scrollbar-track { background: transparent; }
+.info-scroll::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* ============================================================
+   BLOCK 1: 课程 + 老师
+   ============================================================ */
+.block-course-teacher {
+  background: linear-gradient(135deg, rgba(255,107,157,0.12), rgba(255,107,157,0.03));
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,107,157,0.12);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* Course Hero */
+.course-hero {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.course-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(255,107,157,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+.course-info { flex: 1; }
+.course-name {
+  font-size: 16px; font-weight: 700; color: var(--text-1);
+  margin-bottom: 6px;
+}
+.course-tags {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.course-type-tag {
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+  background: rgba(255,107,157,0.15); color: #FF6B9D;
+}
+.course-stats {
+  display: flex; gap: 12px;
+}
+.stat-item {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--text-2);
+}
+.stat-val {
+  font-weight: 700; color: var(--text-1);
+}
+
+/* Teacher */
+.teacher-row {
+  display: flex; align-items: center; gap: 12px;
+}
+.teacher-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B9D, #FFB3CC);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.teacher-info { flex: 1; }
+.teacher-name {
+  font-size: 13px; font-weight: 700; color: var(--text-1);
+  margin-bottom: 3px;
+}
+.teacher-title {
+  font-size: 11px; color: var(--text-2);
+}
+
+/* ============================================================
+   BLOCK 2: 进度
+   ============================================================ */
+.block-progress {
+  background: var(--surface2);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.block-title {
+  font-size: 11px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.progress-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.progress-title {
+  font-size: 13px; font-weight: 600; color: var(--text-1);
+}
+.progress-pct {
+  font-size: 14px; font-weight: 700; color: var(--primary);
+}
+.progress-bar-wrap {
+  height: 6px; background: var(--surface3);
+  border-radius: 3px; overflow: hidden;
+  margin-bottom: 10px;
+}
+.progress-bar {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, #FF6B9D, #FFB3CC);
+}
+.progress-stats {
+  display: flex; gap: 16px;
+}
+.progress-stat {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--text-2);
+}
+.progress-stat-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.progress-stat-dot.done { background: var(--green); }
+.progress-stat-dot.ongoing { background: var(--primary); }
+.progress-stat-dot.pending { background: var(--text-3); }
+
+/* ============================================================
+   BLOCK 3: 价格 + 操作
+   ============================================================ */
+.block-price-action {
+  background: var(--surface2);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+/* Price */
+.price-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.price-left { display: flex; flex-direction: column; gap: 2px; }
+.price-val {
+  font-size: 20px; font-weight: 700; color: var(--primary);
+}
+.price-label {
+  font-size: 11px; color: var(--text-3);
+}
+.price-source {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600;
+  padding: 5px 10px; border-radius: 6px;
+  background: rgba(255,123,84,0.1); color: var(--primary);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex; gap: 10px;
+}
+.action-btn-main {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px; font-weight: 600; color: var(--text-1);
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: inherit;
+}
+.action-btn-main:hover {
+  background: var(--surface3); border-color: var(--primary);
+}
+.action-btn-main.primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; border: none;
+}
+.action-btn-main.primary:hover {
+  opacity: 0.9;
+}
+
+/* ============================================================
+   BLOCK 4: 简介
+   ============================================================ */
+.block-intro {
+  background: var(--surface2);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  padding: 14px;
+}
+.intro-text {
+  font-size: 11px; line-height: 1.7; color: var(--text-2);
+}
+
+/* ============================================================
+   RIGHT — lesson list (60%)
+   ============================================================ */
+.lesson-panel {
+  width: 60%;
+  display: flex; flex-direction: column; overflow: hidden;
+  padding: 12px 16px 0;
+}
+.lesson-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; flex-shrink: 0;
+}
+.lesson-panel-title {
+  font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700;
+}
+.lesson-count {
+  font-size: 11px; color: var(--text-3);
+  background: var(--surface2); padding: 3px 10px;
+  border-radius: 20px; border: 1px solid var(--border);
+}
+
+/* Lesson List */
+.lesson-scroll {
+  flex: 1; overflow-y: auto; padding-bottom: 8px;
+}
+.lesson-scroll::-webkit-scrollbar { width: 4px; }
+.lesson-scroll::-webkit-scrollbar-track { background: transparent; }
+.lesson-scroll::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+.lesson-list {
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+/* Lesson Card */
+.lesson-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.lesson-card:hover {
+  border-color: rgba(255,107,53,0.15);
+}
+.lesson-card.live {
+  border-color: rgba(255,107,53,0.4);
+  background: rgba(255,107,53,0.04);
+  box-shadow: 0 4px 20px rgba(255,107,53,0.12);
+}
+.lesson-card.done { opacity: 0.6; }
+
+.lesson-num {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  background: var(--surface2); color: var(--text-2);
+  flex-shrink: 0;
+}
+.lesson-card.live .lesson-num {
+  background: var(--primary); color: white;
+  animation: pulse-num 2s ease-in-out infinite;
+}
+.lesson-card.done .lesson-num {
+  background: var(--green); color: white;
+}
+@keyframes pulse-num {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,123,84,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(255,123,84,0); }
+}
+
+.lesson-main { flex: 1; min-width: 0; }
+.lesson-name {
+  font-size: 12px; font-weight: 600; color: var(--text-1);
+  margin-bottom: 4px;
+}
+.lesson-meta {
+  display: flex; align-items: center; gap: 10px;
+}
+.lesson-time {
+  font-size: 10px; color: var(--text-2);
+}
+.lesson-status {
+  font-size: 9px; font-weight: 600;
+  padding: 2px 7px; border-radius: 4px;
+}
+.status-done { background: var(--green-dim); color: var(--green); }
+.status-live { background: rgba(255,107,53,0.15); color: #FF6B35; }
+.status-pending { background: var(--surface3); color: var(--text-3); }
+.status-scheduled { background: var(--blue-dim); color: var(--blue); }
+
+.lesson-action {
+  width: 36px; height: 36px; border-radius: 10px;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s;
+  font-size: 14px;
+}
+.lesson-action svg { width: 14px; height: 14px; }
+.lesson-action.enter {
+  background: var(--primary); color: white;
+  box-shadow: 0 2px 8px rgba(255,123,84,0.3);
+  animation: pulse-enter 2s ease-in-out infinite;
+}
+.lesson-action.review {
+  background: var(--teal); color: white;
+}
+.lesson-action.wait {
+  background: var(--surface3); color: var(--text-3);
+  cursor: default;
+}
+/* AI总结按钮 */
+.lesson-action.ai-sum {
+  background: var(--purple-dim);
+  color: var(--purple);
+  border: 1px solid rgba(176,110,255,0.3);
+  margin-left: 6px;
+}
+.lesson-action.ai-sum:hover {
+  background: rgba(176,110,255,0.25);
+  color: var(--text-1);
+}
+@keyframes pulse-enter {
+  0%, 100% { box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
+  50% { box-shadow: 0 2px 16px rgba(255,107,53,0.6), 0 0 0 4px rgba(255,107,53,0.12); }
+}
+
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <button class="back-btn" onclick="goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="nav-title">课程详情</div>
+    </div>
+    <div class="top-nav-right">
+      <button class="action-btn ai-assistant-btn" onclick="openAIAssistant()" title="AI小助手">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+          <circle cx="9" cy="13" r="1"/>
+          <circle cx="15" cy="13" r="1"/>
+          <path d="M9 17h6"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="page-body">
+
+    <!-- ===== LEFT: course info (40%) ===== -->
+    <aside class="info-panel">
+      <div class="info-scroll">
+
+        <!-- BLOCK 1: 课程 + 老师 -->
+        <div class="block-course-teacher">
+          <div class="course-hero">
+            <div class="course-icon">🎻</div>
+            <div class="course-info">
+              <div class="course-name">小提琴演奏进阶班</div>
+              <div class="course-tags">
+                <span class="course-type-tag">1v1</span>
+              </div>
+              <div class="course-stats">
+                <div class="stat-item"><span class="stat-val">16</span>节</div>
+                <div class="stat-item"><span class="stat-val">45</span>分钟/节</div>
+                <div class="stat-item">已上<span class="stat-val">7</span>节</div>
+              </div>
+            </div>
+          </div>
+          <div class="teacher-row">
+            <div class="teacher-avatar">👩‍🏫</div>
+            <div class="teacher-info">
+              <div class="teacher-name">李婉清 老师</div>
+              <div class="teacher-title">中央音乐学院 · 小提琴专业 · 10年教龄</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOCK 2: 进度 -->
+        <div class="block-progress">
+          <div class="block-title">学习进度</div>
+          <div class="progress-header">
+            <div class="progress-title">已完成 7/16 节</div>
+            <div class="progress-pct">44%</div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" style="width: 43.75%;"></div>
+          </div>
+          <div class="progress-stats">
+            <div class="progress-stat">
+              <div class="progress-stat-dot done"></div>
+              <span>已上完 6 节</span>
+            </div>
+            <div class="progress-stat">
+              <div class="progress-stat-dot ongoing"></div>
+              <span>进行中 1 节</span>
+            </div>
+            <div class="progress-stat">
+              <div class="progress-stat-dot pending"></div>
+              <span>待上课 9 节</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOCK 3: 价格 + 操作 -->
+        <div class="block-price-action">
+          <div class="price-row">
+            <div class="price-left">
+              <div class="price-val">¥4,800</div>
+              <div class="price-label">¥300/节 × 16节</div>
+            </div>
+            <div class="price-source">
+              🛒 课程市场购买
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="action-btn-main" onclick="goMarketDetail()">
+              <span>📋</span> 课程详情
+            </button>
+            <button class="action-btn-main primary" onclick="rebuy()">
+              <span>🔄</span> 续购课程
+            </button>
+          </div>
+        </div>
+
+        <!-- BLOCK 4: 简介 -->
+        <div class="block-intro">
+          <div class="block-title">课程简介</div>
+          <div class="intro-text">
+            本课程适合已掌握小提琴基础演奏技巧的学员。课程内容包括：高难度指法训练、双音与和弦演奏、揉弦技巧、音乐表现力训练、经典曲目讲解等。通过系统学习，学员将能够演奏中级至高级难度的经典小提琴曲目。
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- ===== RIGHT: lesson list (60%) ===== -->
+    <section class="lesson-panel">
+      <div class="lesson-panel-header">
+        <div class="lesson-panel-title">课程列表</div>
+        <div class="lesson-count">16 节课</div>
+      </div>
+
+      <div class="lesson-scroll">
+        <div class="lesson-list">
+
+          <!-- Lesson 1-6: Done -->
+          <div class="lesson-card done">
+            <div class="lesson-num">1</div>
+            <div class="lesson-main">
+              <div class="lesson-name">基础指法复习与提升</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/01 14:30</span>
+                <span class="lesson-status status-done">✅ 已上完</span>
+              </div>
+            </div>
+            <button class="lesson-action review" title="回看">▶</button>
+            <button class="lesson-action ai-sum" onclick="event.stopPropagation(); showAISummary(1)" title="AI总结">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                <circle cx="9" cy="13" r="1"/>
+                <circle cx="15" cy="13" r="1"/>
+                <path d="M9 17h6"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="lesson-card done">
+            <div class="lesson-num">2</div>
+            <div class="lesson-main">
+              <div class="lesson-name">双音演奏技巧入门</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/03 14:30</span>
+                <span class="lesson-status status-done">✅ 已上完</span>
+              </div>
+            </div>
+            <button class="lesson-action review" title="回看">▶</button>
+            <button class="lesson-action ai-sum" onclick="event.stopPropagation(); showAISummary(2)" title="AI总结">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                <circle cx="9" cy="13" r="1"/>
+                <circle cx="15" cy="13" r="1"/>
+                <path d="M9 17h6"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="lesson-card done">
+            <div class="lesson-num">3</div>
+            <div class="lesson-main">
+              <div class="lesson-name">双音练习曲讲解</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/05 14:30</span>
+                <span class="lesson-status status-done">✅ 已上完</span>
+              </div>
+            </div>
+            <button class="lesson-action review" title="回看">▶</button>
+            <button class="lesson-action ai-sum" onclick="event.stopPropagation(); showAISummary(3)" title="AI总结">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                <circle cx="9" cy="13" r="1"/>
+                <circle cx="15" cy="13" r="1"/>
+                <path d="M9 17h6"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="lesson-card done">
+            <div class="lesson-num">4</div>
+            <div class="lesson-main">
+              <div class="lesson-name">揉弦技巧基础</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/08 14:30</span>
+                <span class="lesson-status status-done">✅ 已上完</span>
+              </div>
+            </div>
+            <button class="lesson-action review" title="回看">▶</button>
+            <button class="lesson-action ai-sum" onclick="event.stopPropagation(); showAISummary(4)" title="AI总结">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                <circle cx="9" cy="13" r="1"/>
+                <circle cx="15" cy="13" r="1"/>
+                <path d="M9 17h6"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="lesson-card done">
+            <div class="lesson-num">5</div>
+            <div class="lesson-main">
+              <div class="lesson-name">揉弦技巧进阶</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/10 14:30</span>
+                <span class="lesson-status status-done">✅ 已上完</span>
+              </div>
+            </div>
+            <button class="lesson-action review" title="回看">▶</button>
+            <button class="lesson-action ai-sum" onclick="event.stopPropagation(); showAISummary(5)" title="AI总结">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                <circle cx="9" cy="13" r="1"/>
+                <circle cx="15" cy="13" r="1"/>
+                <path d="M9 17h6"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="lesson-card done">
+            <div class="lesson-num">6</div>
+            <div class="lesson-main">
+              <div class="lesson-name">换把位技巧训练</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/12 14:30</span>
+                <span class="lesson-status status-done">✅ 已上完</span>
+              </div>
+            </div>
+            <button class="lesson-action review" title="回看">▶</button>
+            <button class="lesson-action ai-sum" onclick="event.stopPropagation(); showAISummary(6)" title="AI总结">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                <circle cx="9" cy="13" r="1"/>
+                <circle cx="15" cy="13" r="1"/>
+                <path d="M9 17h6"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Lesson 7: LIVE NOW -->
+          <div class="lesson-card live">
+            <div class="lesson-num">7</div>
+            <div class="lesson-main">
+              <div class="lesson-name">经典曲目《梁祝》讲解（上）</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">今天 14:30</span>
+                <span class="lesson-status status-live">🔴 上课中</span>
+              </div>
+            </div>
+            <button class="lesson-action enter" onclick="joinLive(7)" title="进入课堂">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+
+          <!-- Lesson 8-12: Scheduled -->
+          <div class="lesson-card">
+            <div class="lesson-num">8</div>
+            <div class="lesson-main">
+              <div class="lesson-name">经典曲目《梁祝》讲解（下）</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/17 14:30</span>
+                <span class="lesson-status status-scheduled">⏰ 待上课</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-num">9</div>
+            <div class="lesson-main">
+              <div class="lesson-name">颤音技巧训练</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/19 14:30</span>
+                <span class="lesson-status status-scheduled">⏰ 待上课</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-num">10</div>
+            <div class="lesson-main">
+              <div class="lesson-name">音乐表现力训练</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/22 14:30</span>
+                <span class="lesson-status status-scheduled">⏰ 待上课</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-num">11</div>
+            <div class="lesson-main">
+              <div class="lesson-name">经典曲目《卡农》讲解</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/24 14:30</span>
+                <span class="lesson-status status-scheduled">⏰ 待上课</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-num">12</div>
+            <div class="lesson-main">
+              <div class="lesson-name">装饰音演奏技巧</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">04/26 14:30</span>
+                <span class="lesson-status status-scheduled">⏰ 待上课</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <!-- Lesson 13-16: Pending -->
+          <div class="lesson-card">
+            <div class="lesson-num">13</div>
+            <div class="lesson-main">
+              <div class="lesson-name">高难度练习曲讲解</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">待排课</span>
+                <span class="lesson-status status-pending">⏳ 待分配</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-num">14</div>
+            <div class="lesson-main">
+              <div class="lesson-name">经典曲目《流浪者之歌》</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">待排课</span>
+                <span class="lesson-status status-pending">⏳ 待分配</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-num">15</div>
+            <div class="lesson-main">
+              <div class="lesson-name">综合技巧复习</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">待排课</span>
+                <span class="lesson-status status-pending">⏳ 待分配</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+          <div class="lesson-card">
+            <div class="lesson-num">16</div>
+            <div class="lesson-main">
+              <div class="lesson-name">结课汇报演奏指导</div>
+              <div class="lesson-meta">
+                <span class="lesson-time">待排课</span>
+                <span class="lesson-status status-pending">⏳ 待分配</span>
+              </div>
+            </div>
+            <button class="lesson-action wait">—</button>
+          </div>
+
+        </div><!-- /lesson-list -->
+      </div><!-- /lesson-scroll -->
+    </section>
+  </div><!-- /page-body -->
+
+</div><!-- /phone-frame -->
+
+<!-- AI总结弹窗 -->
+<div class="ai-summary-popup" id="aiSummaryPopup">
+  <div class="ai-summary-content">
+    <div class="ai-summary-header">
+      <div class="ai-summary-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+          <circle cx="9" cy="13" r="1"/>
+          <circle cx="15" cy="13" r="1"/>
+          <path d="M9 17h6"/>
+        </svg>
+        AI课堂总结
+      </div>
+      <button class="ai-summary-close" onclick="closeAISummary()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ai-summary-body">
+      <div class="ai-stat-grid">
+        <div class="ai-stat-card highlight">
+          <div class="ai-stat-label">上课时长</div>
+          <div class="ai-stat-value">42<span>分钟</span></div>
+        </div>
+        <div class="ai-stat-card">
+          <div class="ai-stat-label">答题正确率</div>
+          <div class="ai-stat-value">85<span>%</span></div>
+        </div>
+        <div class="ai-stat-card">
+          <div class="ai-stat-label">错题数</div>
+          <div class="ai-stat-value">3<span>道</span></div>
+        </div>
+        <div class="ai-stat-card">
+          <div class="ai-stat-label">课堂互动</div>
+          <div class="ai-stat-value">12<span>次</span></div>
+        </div>
+      </div>
+      <div class="ai-section">
+        <div class="ai-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          演奏曲目
+        </div>
+        <div class="ai-piece-list">
+          <span class="ai-piece-tag">🎵 音阶练习 C大调</span>
+          <span class="ai-piece-tag">🎵 双音练习曲</span>
+          <span class="ai-piece-tag">🎵 小提琴协奏曲片段</span>
+        </div>
+      </div>
+      <div class="ai-section">
+        <div class="ai-section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          薄弱环节
+        </div>
+        <div class="ai-piece-list">
+          <span class="ai-piece-tag" style="background: rgba(255,107,53,0.15); color: var(--primary);">换把位流畅度</span>
+          <span class="ai-piece-tag" style="background: rgba(255,107,53,0.15); color: var(--primary);">揉弦幅度控制</span>
+        </div>
+      </div>
+      <div class="ai-tip-box">
+        <div class="ai-tip-text">
+          <strong>💡 学习建议：</strong>本节课换把位技巧有进步，但流畅度还需加强。建议课后多练习《换把位练习曲》第3-5小节，每天15分钟慢练，逐步加速。
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function goBack() {
+  // 返回课程列表页
+  window.location.href = 'student-courses-v3.html';
+}
+function joinLive(lessonNum) {
+  // 跳转到直播间
+  window.location.href = 'live-classroom.html?lesson=' + lessonNum;
+}
+function goMarketDetail() {
+  alert('进入课程市场查看详情…');
+}
+function rebuy() {
+  alert('进入续购流程…');
+}
+// AI总结弹窗
+function showAISummary(lessonNum) {
+  document.getElementById('aiSummaryPopup').classList.add('show');
+}
+function closeAISummary() {
+  document.getElementById('aiSummaryPopup').classList.remove('show');
+}
+// AI小助手
+function openAIAssistant() {
+  alert('打开AI小助手…');
+}
+</script>
+</body>
+</html>

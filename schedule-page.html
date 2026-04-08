@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>我的课表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 背景与表面色 - 深色主题 */
+  --bg: #0C0A14;
+  --surface: #16122A;
+  --surface2: #1E1835;
+  --surface3: #2A2445;
+  
+  /* 主色调 */
+  --primary: #FF6B35;
+  --primary-dim: rgba(255,107,53,0.12);
+  --accent: #FFD166;
+  --accent-dim: rgba(255,209,102,0.12);
+  
+  /* 辅助色 */
+  --purple: #B06EFF;
+  --purple-dim: rgba(176,110,255,0.12);
+  --teal: #4ECDC4;
+  --teal-dim: rgba(78,205,196,0.12);
+  --pink: #FF6B9D;
+  --pink-dim: rgba(255,107,157,0.12);
+  --green: #10B981;
+  --green-dim: rgba(16,185,129,0.12);
+  --blue: #60A5FA;
+  --blue-dim: rgba(96,165,250,0.12);
+  
+  /* 文字色 */
+  --text-1: #FFFFFF;
+  --text-2: #A8A0C8;
+  --text-3: #6B6480;
+  
+  /* 边框 */
+  --border: rgba(255,255,255,0.06);
+  
+  /* 圆角 */
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: #1a1a2e;
+  color: var(--text-1);
+  width: 100vw; height: 100vh;
+  overflow: hidden; position: fixed; top: 0; left: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* 横屏手机外框 */
+.phone-frame {
+  width: 100%; height: 100%;
+  max-width: 750px; max-height: 430px;
+  background: var(--bg);
+  border-radius: 20px;
+  box-shadow: 0 0 0 12px #2d2d44, 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ============================================================
+   TOP NAV
+   ============================================================ */
+.top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; height: 56px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  flex-shrink: 0; z-index: 10;
+}
+.top-nav-left { display: flex; align-items: center; gap: 12px; }
+.back-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.2s; margin-right: 4px;
+}
+.back-btn:hover { background: var(--surface3); color: var(--text-1); }
+.back-btn svg { width: 16px; height: 16px; }
+.nav-title { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 600; }
+.top-nav-right { display: flex; align-items: center; gap: 10px; }
+.action-btn {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; color: var(--text-2);
+  transition: all 0.2s;
+}
+.action-btn:hover { background: var(--surface3); color: var(--text-1); }
+
+/* ============================================================
+   BODY
+   ============================================================ */
+.page-body { flex: 1; display: flex; overflow: hidden; }
+
+/* ============================================================
+   LEFT — 日期选择器 (190px，与列表页一致)
+   ============================================================ */
+.date-panel {
+  width: 190px; min-width: 190px;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* 月份选择 */
+.month-selector {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.month-btn {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.2s;
+}
+.month-btn:hover { background: var(--surface3); color: var(--text-1); }
+.month-btn svg { width: 14px; height: 14px; }
+.month-label {
+  font-size: 14px; font-weight: 700; color: var(--text-1);
+}
+
+/* 日期网格 */
+.date-grid {
+  padding: 10px;
+  flex-shrink: 0;
+}
+.weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 2px; margin-bottom: 6px;
+}
+.weekday {
+  text-align: center; font-size: 9px; font-weight: 600;
+  color: var(--text-3); padding: 4px 0;
+}
+.days {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.day {
+  aspect-ratio: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 8px; cursor: pointer;
+  transition: all 0.15s;
+  font-size: 11px; font-weight: 500;
+}
+.day.other-month { color: var(--text-3); opacity: 0.4; cursor: default; }
+.day.today {
+  background: var(--primary); color: white; font-weight: 700;
+}
+.day.selected:not(.today) {
+  background: var(--surface3); color: var(--text-1);
+}
+.day.has-class::after {
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent); margin-top: 2px;
+}
+.day.today.has-class::after { background: white; }
+.day:hover:not(.other-month):not(.today) {
+  background: var(--surface2);
+}
+
+/* 今日课程 */
+.today-section {
+  flex: 1; overflow: hidden;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column;
+}
+.today-header {
+  padding: 10px 12px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-3);
+  flex-shrink: 0;
+}
+.today-list {
+  flex: 1; overflow-y: auto;
+}
+.today-list::-webkit-scrollbar { width: 2px; }
+.today-list::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+.today-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer; transition: background 0.15s;
+}
+.today-item:hover { background: var(--surface2); }
+.today-time {
+  font-size: 10px; font-weight: 600; color: var(--text-2);
+  width: 40px; flex-shrink: 0;
+}
+.today-info { flex: 1; min-width: 0; }
+.today-name {
+  font-size: 11px; font-weight: 600; color: var(--text-1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.today-meta {
+  font-size: 9px; color: var(--text-3);
+}
+.today-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   RIGHT — 课程列表（横向卡片）
+   ============================================================ */
+.class-panel {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  padding: 12px 16px 0;
+}
+.class-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; flex-shrink: 0;
+}
+.class-panel-title {
+  font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700;
+}
+.class-date-badge {
+  font-size: 11px; color: var(--text-3);
+  background: var(--surface2); padding: 3px 10px;
+  border-radius: 20px; border: 1px solid var(--border);
+}
+.class-date-badge.today {
+  background: var(--primary-dim); color: var(--primary); border-color: transparent;
+}
+
+/* 课程滚动 */
+.class-scroll {
+  flex: 1; overflow-y: auto; padding-bottom: 8px;
+}
+.class-scroll::-webkit-scrollbar { width: 4px; }
+.class-scroll::-webkit-scrollbar-track { background: transparent; }
+.class-scroll::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* 课程列表 */
+.class-list {
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* 课程卡片 - 横向布局 */
+.class-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  transition: all 0.2s; cursor: pointer;
+}
+.class-card:hover {
+  border-color: rgba(255,107,53,0.2);
+}
+.class-card.live {
+  border-color: rgba(255,107,53,0.4);
+  background: rgba(255,107,53,0.08);
+}
+.class-card.past { opacity: 0.5; }
+
+/* 时间 */
+.class-time-block {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 50px; flex-shrink: 0;
+}
+.class-time-start {
+  font-size: 14px; font-weight: 700; color: var(--text-1);
+}
+.class-time-end {
+  font-size: 10px; color: var(--text-3);
+}
+.class-time-block.live .class-time-start { color: var(--primary); }
+
+/* 分隔线 */
+.class-divider {
+  width: 2px; height: 40px; border-radius: 1px;
+  background: var(--surface3); flex-shrink: 0;
+}
+.class-card.live .class-divider { background: var(--primary); }
+
+/* 课程信息 */
+.class-info {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 12px;
+}
+.class-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.class-content { flex: 1; min-width: 0; }
+.class-name {
+  font-size: 13px; font-weight: 700; color: var(--text-1);
+  margin-bottom: 3px;
+}
+.class-meta {
+  display: flex; align-items: center; gap: 8px;
+}
+.class-teacher {
+  font-size: 11px; color: var(--text-2);
+}
+.class-tag {
+  font-size: 9px; font-weight: 700;
+  padding: 2px 6px; border-radius: 4px;
+}
+.tag-1v1 { background: var(--primary-dim); color: var(--primary); }
+.tag-1v6 { background: var(--purple-dim); color: var(--purple); }
+
+/* 操作区 */
+.class-action {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 4px; flex-shrink: 0;
+}
+.class-status {
+  font-size: 10px; font-weight: 600;
+}
+.class-status.done { color: var(--green); }
+.class-status.live { color: var(--primary); }
+.class-status.pending { color: var(--text-3); }
+.enter-btn {
+  padding: 6px 14px; border-radius: 7px;
+  background: var(--primary); color: white;
+  border: none; font-size: 11px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  font-family: inherit;
+  animation: pulse-enter 2s ease-in-out infinite;
+}
+@keyframes pulse-enter {
+  0%, 100% { box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
+  50% { box-shadow: 0 2px 16px rgba(255,107,53,0.6), 0 0 0 4px rgba(255,107,53,0.12); }
+}
+.enter-btn svg { width: 12px; height: 12px; }
+
+/* 空状态 */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+.empty-icon { font-size: 56px; margin-bottom: 16px; }
+.empty-title { font-size: 15px; font-weight: 700; color: var(--text-1); margin-bottom: 8px; }
+.empty-text { font-size: 12px; color: var(--text-3); }
+
+/* ============================================================
+   BOTTOM TAB NAV
+   ============================================================ */
+.tab-nav {
+  display: flex; background: var(--surface);
+  border-top: 1px solid var(--border); padding: 6px 0;
+  flex-shrink: 0; z-index: 10;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; padding: 6px 0;
+  cursor: pointer; transition: all 0.2s;
+  border: none; background: transparent;
+  color: var(--text-3); font-size: 10px; font-weight: 500; font-family: inherit;
+}
+.tab-item.active { color: var(--primary); }
+.tab-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
+.tab-item.active .tab-icon { background: var(--primary-dim); }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <button class="back-btn" onclick="goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="nav-title">我的课表</div>
+    </div>
+    <div class="top-nav-right">
+      <button class="action-btn" onclick="selectToday()" title="今日">📅</button>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="page-body">
+
+    <!-- ===== LEFT: 日期选择器 ===== -->
+    <aside class="date-panel">
+      <!-- 月份选择 -->
+      <div class="month-selector">
+        <button class="month-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="month-label">2026年4月</span>
+        <button class="month-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- 日期网格 -->
+      <div class="date-grid">
+        <div class="weekdays">
+          <span class="weekday">日</span>
+          <span class="weekday">一</span>
+          <span class="weekday">二</span>
+          <span class="weekday">三</span>
+          <span class="weekday">四</span>
+          <span class="weekday">五</span>
+          <span class="weekday">六</span>
+        </div>
+        <div class="days" id="daysGrid">
+          <span class="day other-month">30</span>
+          <span class="day other-month">31</span>
+          <span class="day has-class" onclick="selectDay(1, true)">1</span>
+          <span class="day" onclick="selectDay(2, false)">2</span>
+          <span class="day has-class" onclick="selectDay(3, true)">3</span>
+          <span class="day" onclick="selectDay(4, false)">4</span>
+          <span class="day has-class" onclick="selectDay(5, true)">5</span>
+          <span class="day" onclick="selectDay(6, false)">6</span>
+          <span class="day" onclick="selectDay(7, false)">7</span>
+          <span class="day has-class" onclick="selectDay(8, true)">8</span>
+          <span class="day" onclick="selectDay(9, false)">9</span>
+          <span class="day has-class" onclick="selectDay(10, true)">10</span>
+          <span class="day" onclick="selectDay(11, false)">11</span>
+          <span class="day has-class" onclick="selectDay(12, true)">12</span>
+          <span class="day" onclick="selectDay(13, false)">13</span>
+          <span class="day" onclick="selectDay(14, false)">14</span>
+          <span class="day today has-class selected" onclick="selectDay(15, true)">15</span>
+          <span class="day" onclick="selectDay(16, false)">16</span>
+          <span class="day has-class" onclick="selectDay(17, true)">17</span>
+          <span class="day" onclick="selectDay(18, false)">18</span>
+          <span class="day has-class" onclick="selectDay(19, true)">19</span>
+          <span class="day" onclick="selectDay(20, false)">20</span>
+          <span class="day" onclick="selectDay(21, false)">21</span>
+          <span class="day has-class" onclick="selectDay(22, true)">22</span>
+          <span class="day" onclick="selectDay(23, false)">23</span>
+          <span class="day has-class" onclick="selectDay(24, true)">24</span>
+          <span class="day" onclick="selectDay(25, false)">25</span>
+          <span class="day has-class" onclick="selectDay(26, true)">26</span>
+          <span class="day" onclick="selectDay(27, false)">27</span>
+          <span class="day" onclick="selectDay(28, false)">28</span>
+          <span class="day" onclick="selectDay(29, false)">29</span>
+          <span class="day has-class" onclick="selectDay(30, true)">30</span>
+          <span class="day other-month">1</span>
+          <span class="day other-month">2</span>
+          <span class="day other-month">3</span>
+        </div>
+      </div>
+
+      <!-- 今日课程 -->
+      <div class="today-section">
+        <div class="today-header">今日课程</div>
+        <div class="today-list">
+          <div class="today-item" onclick="goToDetail('violin')">
+            <div class="today-time">14:30</div>
+            <div class="today-info">
+              <div class="today-name">小提琴演奏进阶</div>
+              <div class="today-meta">李婉清 · 第7节</div>
+            </div>
+            <div class="today-dot" style="background: var(--primary);"></div>
+          </div>
+          <div class="today-item" onclick="goToDetail('piano')">
+            <div class="today-time">19:00</div>
+            <div class="today-info">
+              <div class="today-name">钢琴即兴伴奏</div>
+              <div class="today-meta">陈艺 · 第12节</div>
+            </div>
+            <div class="today-dot" style="background: var(--teal);"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== RIGHT: 课程列表 ===== -->
+    <section class="class-panel">
+      <div class="class-panel-header">
+        <div class="class-panel-title" id="panelTitle">4月15日 周三</div>
+        <div class="class-date-badge today" id="panelBadge">今日</div>
+      </div>
+
+      <div class="class-scroll">
+        <div class="class-list" id="classList">
+
+          <!-- 09:00 - 已上完 -->
+          <div class="class-card past">
+            <div class="class-time-block">
+              <div class="class-time-start">09:00</div>
+              <div class="class-time-end">09:45</div>
+            </div>
+            <div class="class-divider"></div>
+            <div class="class-info" onclick="goToDetail('guitar')">
+              <div class="class-icon" style="background: rgba(255,107,53,0.15);">🎸</div>
+              <div class="class-content">
+                <div class="class-name">古典吉他入门</div>
+                <div class="class-meta">
+                  <span class="class-teacher">林涛 老师</span>
+                  <span class="class-tag tag-1v6">1v6</span>
+                </div>
+              </div>
+            </div>
+            <div class="class-action">
+              <span class="class-status done">✅ 已上完</span>
+            </div>
+          </div>
+
+          <!-- 10:00 - 已上完 -->
+          <div class="class-card past">
+            <div class="class-time-block">
+              <div class="class-time-start">10:00</div>
+              <div class="class-time-end">10:45</div>
+            </div>
+            <div class="class-divider"></div>
+            <div class="class-info" onclick="goToDetail('drum')">
+              <div class="class-icon" style="background: rgba(255,107,157,0.15);">🥁</div>
+              <div class="class-content">
+                <div class="class-name">非洲鼓打击乐</div>
+                <div class="class-meta">
+                  <span class="class-teacher">Mike 老师</span>
+                  <span class="class-tag tag-1v6">1v6</span>
+                </div>
+              </div>
+            </div>
+            <div class="class-action">
+              <span class="class-status done">✅ 已上完</span>
+            </div>
+          </div>
+
+          <!-- 14:30 - 上课中 -->
+          <div class="class-card live">
+            <div class="class-time-block live">
+              <div class="class-time-start">14:30</div>
+              <div class="class-time-end">15:15</div>
+            </div>
+            <div class="class-divider"></div>
+            <div class="class-info" onclick="goToDetail('violin')">
+              <div class="class-icon" style="background: rgba(255,107,157,0.15);">🎻</div>
+              <div class="class-content">
+                <div class="class-name">小提琴演奏进阶班</div>
+                <div class="class-meta">
+                  <span class="class-teacher">李婉清 老师</span>
+                  <span class="class-tag tag-1v1">1v1</span>
+                </div>
+              </div>
+            </div>
+            <div class="class-action">
+              <span class="class-status live">🔴 上课中</span>
+              <button class="enter-btn" onclick="event.stopPropagation(); joinLive('violin')">
+                进入<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- 15:00 - 待上课 -->
+          <div class="class-card">
+            <div class="class-time-block">
+              <div class="class-time-start">15:00</div>
+              <div class="class-time-end">15:45</div>
+            </div>
+            <div class="class-divider"></div>
+            <div class="class-info" onclick="goToDetail('ukulele')">
+              <div class="class-icon" style="background: rgba(176,110,255,0.15);">🪕</div>
+              <div class="class-content">
+                <div class="class-name">尤克里里亲子课</div>
+                <div class="class-meta">
+                  <span class="class-teacher">周瑶 老师</span>
+                  <span class="class-tag tag-1v6">1v6</span>
+                </div>
+              </div>
+            </div>
+            <div class="class-action">
+              <span class="class-status pending">⏰ 待上课</span>
+            </div>
+          </div>
+
+          <!-- 19:00 - 待上课 -->
+          <div class="class-card">
+            <div class="class-time-block">
+              <div class="class-time-start">19:00</div>
+              <div class="class-time-end">19:45</div>
+            </div>
+            <div class="class-divider"></div>
+            <div class="class-info" onclick="goToDetail('piano')">
+              <div class="class-icon" style="background: rgba(78,205,196,0.15);">🎹</div>
+              <div class="class-content">
+                <div class="class-name">钢琴即兴伴奏课</div>
+                <div class="class-meta">
+                  <span class="class-teacher">陈艺 老师</span>
+                  <span class="class-tag tag-1v1">1v1</span>
+                </div>
+              </div>
+            </div>
+            <div class="class-action">
+              <span class="class-status pending">⏰ 待上课</span>
+            </div>
+          </div>
+
+        </div><!-- /class-list -->
+      </div><!-- /class-scroll -->
+    </section>
+  </div><!-- /page-body -->
+
+  <!-- BOTTOM TAB NAV -->
+  <nav class="tab-nav">
+    <button class="tab-item" onclick="goToCourses()">
+      <div class="tab-icon">📚</div>课程
+    </button>
+    <button class="tab-item active">
+      <div class="tab-icon">📅</div>课表
+    </button>
+    <button class="tab-item">
+      <div class="tab-icon">🛒</div>课程市场
+    </button>
+    <button class="tab-item">
+      <div class="tab-icon">💬</div>客服
+    </button>
+    <button class="tab-item">
+      <div class="tab-icon">🤖</div>AI小助手
+    </button>
+  </nav>
+
+</div><!-- /phone-frame -->
+
+<script>
+// 星期映射
+const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+
+// 日期数据（模拟）
+const dayData = {
+  1: { hasClass: true, classes: [{ time: '09:00', end: '09:45', name: '小提琴演奏进阶', teacher: '李婉清', tag: '1v1', icon: '🎻', status: 'done' }] },
+  3: { hasClass: true, classes: [{ time: '14:30', end: '15:15', name: '古典吉他入门', teacher: '林涛', tag: '1v6', icon: '🎸', status: 'pending' }] },
+  5: { hasClass: true, classes: [{ time: '10:00', end: '10:45', name: '钢琴即兴伴奏', teacher: '陈艺', tag: '1v1', icon: '🎹', status: 'pending' }] },
+  8: { hasClass: true, classes: [{ time: '14:30', end: '15:15', name: '小提琴演奏进阶', teacher: '李婉清', tag: '1v1', icon: '🎻', status: 'pending' }] },
+  10: { hasClass: true, classes: [{ time: '19:00', end: '19:45', name: '竹笛基础课', teacher: '刘芳', tag: '1v6', icon: '🎺', status: 'pending' }] },
+  12: { hasClass: true, classes: [{ time: '15:00', end: '15:45', name: '尤克里里亲子课', teacher: '周瑶', tag: '1v6', icon: '🪕', status: 'pending' }] },
+  15: { hasClass: true, classes: [
+    { time: '09:00', end: '09:45', name: '古典吉他入门', teacher: '林涛', tag: '1v6', icon: '🎸', status: 'done' },
+    { time: '10:00', end: '10:45', name: '非洲鼓打击乐', teacher: 'Mike', tag: '1v6', icon: '🥁', status: 'done' },
+    { time: '14:30', end: '15:15', name: '小提琴演奏进阶班', teacher: '李婉清', tag: '1v1', icon: '🎻', status: 'live' },
+    { time: '15:00', end: '15:45', name: '尤克里里亲子课', teacher: '周瑶', tag: '1v6', icon: '🪕', status: 'pending' },
+    { time: '19:00', end: '19:45', name: '钢琴即兴伴奏课', teacher: '陈艺', tag: '1v1', icon: '🎹', status: 'pending' }
+  ]},
+  17: { hasClass: true, classes: [{ time: '14:30', end: '15:15', name: '小提琴演奏进阶', teacher: '李婉清', tag: '1v1', icon: '🎻', status: 'pending' }] },
+  19: { hasClass: true, classes: [{ time: '10:00', end: '10:45', name: '古典吉他入门', teacher: '林涛', tag: '1v6', icon: '🎸', status: 'pending' }] },
+  22: { hasClass: true, classes: [{ time: '19:00', end: '19:45', name: '钢琴即兴伴奏', teacher: '陈艺', tag: '1v1', icon: '🎹', status: 'pending' }] },
+  24: { hasClass: true, classes: [{ time: '15:00', end: '15:45', name: '竹笛基础课', teacher: '刘芳', tag: '1v6', icon: '🎺', status: 'pending' }] },
+  26: { hasClass: true, classes: [{ time: '14:30', end: '15:15', name: '小提琴演奏进阶', teacher: '李婉清', tag: '1v1', icon: '🎻', status: 'pending' }] },
+  30: { hasClass: true, classes: [{ time: '10:00', end: '10:45', name: '大提琴重奏课', teacher: '周明', tag: '1v6', icon: '🎻', status: 'pending' }] }
+};
+
+let selectedDay = 15;
+
+function selectDay(day, hasClass) {
+  // 更新选中状态
+  const days = document.querySelectorAll('.day:not(.other-month)');
+  days.forEach(d => d.classList.remove('selected'));
+  event.target.classList.add('selected');
+  
+  selectedDay = day;
+  
+  // 更新标题
+  const weekday = weekdays[new Date(2026, 3, day).getDay()];
+  document.getElementById('panelTitle').textContent = `4月${day}日 周${weekday}`;
+  
+  // 更新徽章
+  const badge = document.getElementById('panelBadge');
+  if (day === 15) {
+    badge.textContent = '今日';
+    badge.classList.add('today');
+  } else {
+    badge.textContent = hasClass ? '有课' : '无课';
+    badge.classList.remove('today');
+  }
+  
+  // 更新课程列表
+  renderClassList(day, hasClass);
+}
+
+function renderClassList(day, hasClass) {
+  const list = document.getElementById('classList');
+  
+  if (!hasClass || !dayData[day]) {
+    // 无课日期显示空状态
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📅</div>
+        <div class="empty-title">今日无课</div>
+        <div class="empty-text">4月${day}日暂无课程安排<br>好好休息一下吧~</div>
+      </div>
+    `;
+    return;
+  }
+  
+  const classes = dayData[day].classes;
+  const colors = ['rgba(255,107,53,0.15)', 'rgba(255,107,157,0.15)', 'rgba(78,205,196,0.15)', 'rgba(176,110,255,0.15)'];
+  
+  list.innerHTML = classes.map((c, i) => {
+    const isPast = c.status === 'done';
+    const isLive = c.status === 'live';
+    const color = colors[i % colors.length];
+    
+    let statusHtml = '';
+    if (c.status === 'done') {
+      statusHtml = `<span class="class-status done">✅ 已上完</span>`;
+    } else if (c.status === 'live') {
+      statusHtml = `
+        <span class="class-status live">🔴 上课中</span>
+        <button class="enter-btn" onclick="event.stopPropagation(); joinLive('${c.name}')">
+          进入<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      `;
+    } else {
+      statusHtml = `<span class="class-status pending">⏰ 待上课</span>`;
+    }
+    
+    return `
+      <div class="class-card ${isPast ? 'past' : ''} ${isLive ? 'live' : ''}" onclick="goToDetail('${c.name}')">
+        <div class="class-time-block ${isLive ? 'live' : ''}">
+          <div class="class-time-start">${c.time}</div>
+          <div class="class-time-end">${c.end}</div>
+        </div>
+        <div class="class-divider"></div>
+        <div class="class-info">
+          <div class="class-icon" style="background: ${color};">${c.icon}</div>
+          <div class="class-content">
+            <div class="class-name">${c.name}</div>
+            <div class="class-meta">
+              <span class="class-teacher">${c.teacher} 老师</span>
+              <span class="class-tag tag-${c.tag === '1v1' ? '1v1' : '1v6'}">${c.tag}</span>
+            </div>
+          </div>
+        </div>
+        <div class="class-action">
+          ${statusHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectToday() {
+  selectDay(15, true);
+  const days = document.querySelectorAll('.day:not(.other-month)');
+  days.forEach(d => d.classList.remove('selected'));
+  document.querySelector('.day.today').classList.add('selected');
+}
+
+function goBack() {
+  window.location.href = 'student-courses-v3.html';
+}
+function goToCourses() {
+  window.location.href = 'student-courses-v3.html';
+}
+function goToDetail(courseId) {
+  window.location.href = 'course-detail-v6.html?id=' + courseId;
+}
+function joinLive(courseId) {
+  // 跳转到直播间
+  window.location.href = 'live-classroom.html?id=' + courseId;
+}
+</script>
+</body>
+</html>
