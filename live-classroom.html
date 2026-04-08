@@ -36,23 +36,51 @@
 
 body {
   font-family: 'Noto Sans SC', sans-serif;
-  background: #1a1a2e;
+  background: var(--bg);
   color: var(--text-1);
-  width: 100vw; height: 100vh;
-  overflow: hidden; position: fixed; top: 0; left: 0;
-  display: flex; align-items: center; justify-content: center;
+  margin: 0; padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
-/* 横屏手机外框 */
+/* 横屏手机外框 - 桌面预览用 */
 .phone-frame {
-  width: 100%; height: 100%;
-  max-width: 750px; max-height: 430px;
+  width: 100%;
+  height: 100vh;
+  height: -webkit-fill-available;
   background: var(--bg);
-  border-radius: 20px;
-  box-shadow: 0 0 0 12px #2d2d44, 0 20px 60px rgba(0,0,0,0.5);
   overflow: hidden;
   display: flex; flex-direction: column;
   position: relative;
+}
+
+/* 桌面端：显示手机外框效果 */
+@media (min-width: 769px) and (min-height: 431px) {
+  body {
+    background: #1a1a2e;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .phone-frame {
+    max-width: 750px;
+    max-height: 430px;
+    border-radius: 20px;
+    box-shadow: 0 0 0 12px #2d2d44, 0 20px 60px rgba(0,0,0,0.5);
+  }
+}
+
+/* 竖屏手机适配 */
+@media (max-width: 500px), (max-aspect-ratio: 3/4) {
+  .video-area {
+    width: 80px;
+  }
+  .ai-tip-bar {
+    right: 92px;
+  }
+  .draw-toolbar {
+    flex-wrap: wrap;
+    max-width: 90%;
+  }
 }
 
 /* ============================================================
@@ -170,6 +198,72 @@ body {
   opacity: 1;
 }
 
+/* 白板背景 */
+.whiteboard-bg {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: #FFFFFF;
+  z-index: 45;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s;
+}
+.whiteboard-bg.show {
+  opacity: 1; visibility: visible;
+}
+
+/* PDF背景 */
+.pdf-bg {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: #F5F5F5;
+  z-index: 45;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center;
+}
+.pdf-bg.show {
+  opacity: 1; visibility: visible;
+}
+.pdf-placeholder {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  color: #999;
+  font-size: 12px;
+}
+.pdf-placeholder svg {
+  width: 48px; height: 48px;
+  opacity: 0.5;
+}
+
+/* 图片背景 */
+.image-bg {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: #1a1a2e;
+  z-index: 45;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center;
+}
+.image-bg.show {
+  opacity: 1; visibility: visible;
+}
+.image-bg img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.image-placeholder {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  color: var(--text-3);
+  font-size: 12px;
+}
+.image-placeholder svg {
+  width: 48px; height: 48px;
+  opacity: 0.5;
+}
+
 /* 绘画工具栏 */
 .draw-toolbar {
   position: absolute;
@@ -201,6 +295,32 @@ body {
   border-color: var(--primary);
 }
 .draw-tool-btn svg { width: 16px; height: 16px; }
+
+/* 背景选择器 */
+.draw-bg-selector {
+  display: flex; align-items: center; gap: 2px;
+}
+.bg-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2);
+  transition: all 0.2s;
+}
+.bg-btn:hover { background: var(--surface3); color: var(--text-1); }
+.bg-btn.active {
+  background: var(--teal);
+  color: white;
+  border-color: var(--teal);
+}
+.bg-btn svg { width: 14px; height: 14px; }
+
+/* 分隔线 */
+.draw-divider {
+  width: 1px; height: 20px;
+  background: var(--border);
+  margin: 0 4px;
+}
 
 /* 颜色选择器 */
 .draw-color-picker {
@@ -377,12 +497,14 @@ body {
 .video-expand-btn:hover { background: rgba(0,0,0,0.7); }
 .video-expand-btn svg { width: 12px; height: 12px; }
 
-/* 老师视频全屏模式 - 限制在手机外框内 */
+/* 老师视频全屏模式 - 覆盖整个主区域 */
 .teacher-video.fullscreen {
   position: absolute;
-  left: 0; top: 0; right: 0; bottom: 0;
+  left: 0; top: 0;
   width: 100%; height: 100%;
   z-index: 200;
+  background: #0d0b18;
+  border-radius: var(--radius-xs);
 }
 .teacher-video.fullscreen .video-wrapper {
   background: #0d0b18;
@@ -397,6 +519,10 @@ body {
 .teacher-video.fullscreen .video-expand-btn svg {
   transform: rotate(180deg);
 }
+.teacher-video.fullscreen .video-controls {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+}
 
 /* 学生视频 */
 .student-video {
@@ -410,12 +536,14 @@ body {
   width: 32px; height: 32px; font-size: 14px;
 }
 
-/* 学生视频全屏模式 - 限制在手机外框内 */
+/* 学生视频全屏模式 - 覆盖整个主区域 */
 .student-video.fullscreen {
   position: absolute;
-  left: 0; top: 0; right: 0; bottom: 0;
+  left: 0; top: 0;
   width: 100%; height: 100%;
   z-index: 200;
+  background: #0d0b18;
+  border-radius: var(--radius-xs);
 }
 .student-video.fullscreen .video-wrapper {
   background: #0d0b18;
@@ -429,6 +557,17 @@ body {
 }
 .student-video.fullscreen .video-expand-btn svg {
   transform: rotate(180deg);
+}
+.student-video.fullscreen .video-controls {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+}
+
+/* 主区域全屏样式 */
+.main-area.fullscreen {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  z-index: 150;
 }
 
 /* 视频控制 */
@@ -897,8 +1036,44 @@ body {
         <!-- 绘画覆盖层 -->
         <canvas id="drawCanvas" class="draw-canvas"></canvas>
 
+        <!-- 白板背景层 -->
+        <div class="whiteboard-bg" id="whiteboardBg"></div>
+
+        <!-- PDF背景层 -->
+        <div class="pdf-bg" id="pdfBg">
+          <div class="pdf-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+            <span>点击上传PDF课件</span>
+          </div>
+        </div>
+
+        <!-- 图片背景层 -->
+        <div class="image-bg" id="imageBg">
+          <div class="image-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>点击上传图片</span>
+          </div>
+        </div>
+
         <!-- 绘画工具栏 -->
         <div class="draw-toolbar" id="drawToolbar">
+          <!-- 背景选择 -->
+          <div class="draw-bg-selector">
+            <button class="bg-btn active" data-bg="score" onclick="selectDrawBg('score')" title="乐谱">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </button>
+            <button class="bg-btn" data-bg="whiteboard" onclick="selectDrawBg('whiteboard')" title="白板">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+            </button>
+            <button class="bg-btn" data-bg="pdf" onclick="selectDrawBg('pdf')" title="PDF">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </button>
+            <button class="bg-btn" data-bg="image" onclick="selectDrawBg('image')" title="图片">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+          </div>
+          <div class="draw-divider"></div>
+          <!-- 工具选择 -->
           <button class="draw-tool-btn active" data-tool="pen" onclick="selectDrawTool('pen')" title="画笔">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
           </button>
@@ -908,6 +1083,8 @@ body {
           <button class="draw-tool-btn" data-tool="eraser" onclick="selectDrawTool('eraser')" title="橡皮擦">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16c-.8-.8-.8-2 0-2.8l10-10c.8-.8 2-.8 2.8 0l6 6c.8.8.8 2 0 2.8L13 21"/></svg>
           </button>
+          <div class="draw-divider"></div>
+          <!-- 颜色选择 -->
           <div class="draw-color-picker">
             <button class="color-btn active" style="background: #FF6B35;" data-color="#FF6B35" onclick="selectDrawColor('#FF6B35')"></button>
             <button class="color-btn" style="background: #FFD166;" data-color="#FFD166" onclick="selectDrawColor('#FFD166')"></button>
@@ -915,6 +1092,8 @@ body {
             <button class="color-btn" style="background: #B06EFF;" data-color="#B06EFF" onclick="selectDrawColor('#B06EFF')"></button>
             <button class="color-btn" style="background: #FFFFFF;" data-color="#FFFFFF" onclick="selectDrawColor('#FFFFFF')"></button>
           </div>
+          <div class="draw-divider"></div>
+          <!-- 操作按钮 -->
           <button class="draw-tool-btn" onclick="clearCanvas()" title="清空">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </button>
@@ -1207,6 +1386,300 @@ function toggleStudentFullscreen() {
 function showDeviceTest() {
   alert('设备调试\n\n🎤 麦克风：正常\n📷 摄像头：正常\n🔊 扬声器：正常\n📶 网络：良好\n\n所有设备工作正常！');
 }
+
+// ============================================================
+// 绘画功能
+// ============================================================
+let isDrawing = false;
+let drawMode = false;
+let currentTool = 'pen';
+let currentColor = '#FF6B35';
+let currentBg = 'score'; // score, whiteboard, pdf, image
+let lastX = 0;
+let lastY = 0;
+
+// 绘画历史记录（用于同步）
+let drawHistory = [];
+
+const canvas = document.getElementById('drawCanvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+
+function initCanvas() {
+  if (!canvas || !ctx) return;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  
+  // 重绘历史记录
+  redrawHistory();
+}
+
+function redrawHistory() {
+  if (!ctx || !canvas) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  drawHistory.forEach(stroke => {
+    if (stroke.points.length < 2) return;
+    
+    ctx.beginPath();
+    ctx.strokeStyle = stroke.color;
+    ctx.lineWidth = stroke.width;
+    ctx.globalAlpha = stroke.alpha;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+    for (let i = 1; i < stroke.points.length; i++) {
+      ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+    }
+    ctx.stroke();
+  });
+  
+  ctx.globalAlpha = 1;
+}
+
+function toggleDrawMode() {
+  drawMode = !drawMode;
+  const canvasEl = document.getElementById('drawCanvas');
+  const toolbar = document.getElementById('drawToolbar');
+  const drawBtn = document.getElementById('drawBtn');
+
+  if (drawMode) {
+    initCanvas();
+    canvasEl.classList.add('active');
+    toolbar.classList.add('show');
+    drawBtn.classList.add('active');
+  } else {
+    canvasEl.classList.remove('active');
+    toolbar.classList.remove('show');
+    drawBtn.classList.remove('active');
+  }
+}
+
+function selectDrawTool(tool) {
+  currentTool = tool;
+  document.querySelectorAll('.draw-tool-btn[data-tool]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tool === tool);
+  });
+}
+
+function selectDrawColor(color) {
+  currentColor = color;
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.color === color);
+  });
+}
+
+function selectDrawBg(bg) {
+  currentBg = bg;
+  
+  // 更新按钮状态
+  document.querySelectorAll('.bg-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.bg === bg);
+  });
+  
+  // 切换背景显示
+  const scoreDisplay = document.querySelector('.score-display');
+  const whiteboardBg = document.getElementById('whiteboardBg');
+  const pdfBg = document.getElementById('pdfBg');
+  const imageBg = document.getElementById('imageBg');
+  
+  // 隐藏所有背景
+  whiteboardBg.classList.remove('show');
+  pdfBg.classList.remove('show');
+  imageBg.classList.remove('show');
+  scoreDisplay.style.opacity = '1';
+  
+  // 显示选中的背景
+  if (bg === 'whiteboard') {
+    whiteboardBg.classList.add('show');
+    scoreDisplay.style.opacity = '0';
+  } else if (bg === 'pdf') {
+    pdfBg.classList.add('show');
+    scoreDisplay.style.opacity = '0';
+  } else if (bg === 'image') {
+    imageBg.classList.add('show');
+    scoreDisplay.style.opacity = '0';
+  }
+  
+  // 同步背景切换到其他端
+  syncDrawAction({ type: 'bgChange', bg: bg });
+}
+
+function clearCanvas() {
+  if (!ctx || !canvas) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawHistory = [];
+  
+  // 同步清空操作
+  syncDrawAction({ type: 'clear' });
+}
+
+let currentStroke = null;
+
+function startDraw(e) {
+  if (!drawMode || !ctx) return;
+  isDrawing = true;
+  const pos = getPos(e);
+  lastX = pos.x;
+  lastY = pos.y;
+  
+  // 开始新的笔画
+  currentStroke = {
+    tool: currentTool,
+    color: currentTool === 'eraser' ? '#0D0B12' : currentColor,
+    width: currentTool === 'pen' ? 3 : (currentTool === 'highlighter' ? 12 : 20),
+    alpha: currentTool === 'highlighter' ? 0.4 : 1,
+    points: [{ x: lastX, y: lastY }],
+    bg: currentBg
+  };
+}
+
+function draw(e) {
+  if (!isDrawing || !drawMode || !ctx) return;
+  const pos = getPos(e);
+
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(pos.x, pos.y);
+
+  if (currentTool === 'pen') {
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = 1;
+  } else if (currentTool === 'highlighter') {
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = 12;
+    ctx.globalAlpha = 0.4;
+  } else if (currentTool === 'eraser') {
+    ctx.strokeStyle = currentBg === 'whiteboard' ? '#FFFFFF' : '#0D0B12';
+    ctx.lineWidth = 20;
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.stroke();
+  
+  // 记录点
+  if (currentStroke) {
+    currentStroke.points.push({ x: pos.x, y: pos.y });
+  }
+  
+  lastX = pos.x;
+  lastY = pos.y;
+}
+
+function endDraw() {
+  if (!isDrawing) return;
+  isDrawing = false;
+  
+  // 保存笔画到历史
+  if (currentStroke && currentStroke.points.length > 1) {
+    drawHistory.push(currentStroke);
+    
+    // 同步笔画到其他端
+    syncDrawAction({ type: 'stroke', stroke: currentStroke });
+  }
+  
+  currentStroke = null;
+}
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: clientX - rect.left,
+    y: clientY - rect.top
+  };
+}
+
+// 同步绘画操作到其他端（老师/学生）
+function syncDrawAction(action) {
+  // 这里可以通过WebSocket发送到服务器，再广播给其他端
+  // 示例：发送到服务器
+  /*
+  if (window.websocket && window.websocket.readyState === WebSocket.OPEN) {
+    window.websocket.send(JSON.stringify({
+      type: 'drawSync',
+      action: action,
+      timestamp: Date.now()
+    }));
+  }
+  */
+  
+  // 本地存储，用于演示
+  console.log('Sync draw action:', action);
+  
+  // 模拟：存储到localStorage，另一端可以读取
+  const syncData = {
+    action: action,
+    timestamp: Date.now(),
+    userId: 'current-user'
+  };
+  localStorage.setItem('drawSync', JSON.stringify(syncData));
+}
+
+// 接收来自其他端的绘画操作
+function receiveDrawAction(action) {
+  if (action.type === 'stroke') {
+    // 接收到笔画，重绘
+    drawHistory.push(action.stroke);
+    redrawHistory();
+  } else if (action.type === 'clear') {
+    // 接收到清空操作
+    drawHistory = [];
+    if (ctx && canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  } else if (action.type === 'bgChange') {
+    // 接收到背景切换
+    selectDrawBg(action.bg);
+  }
+}
+
+// 监听其他端的绘画操作（通过storage事件模拟）
+window.addEventListener('storage', (e) => {
+  if (e.key === 'drawSync' && e.newValue) {
+    const data = JSON.parse(e.newValue);
+    if (data.userId !== 'current-user') {
+      receiveDrawAction(data.action);
+    }
+  }
+});
+
+// 绑定绘画事件
+if (canvas) {
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseout', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+}
+
+// 主区域全屏切换（限制在phone-frame内）
+function toggleMainFullscreen() {
+  const mainArea = document.querySelector('.main-area');
+  const fullscreenIcon = document.getElementById('fullscreenIcon');
+  
+  mainArea.classList.toggle('fullscreen');
+  
+  // 切换图标
+  const isFullscreen = mainArea.classList.contains('fullscreen');
+  if (isFullscreen) {
+    fullscreenIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+  } else {
+    fullscreenIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+  }
+}
+
+// 窗口resize时重新初始化画布
+window.addEventListener('resize', () => {
+  if (drawMode) initCanvas();
+});
 </script>
 
 </body>
