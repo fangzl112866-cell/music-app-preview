@@ -1,0 +1,3975 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>机构端 - 网课管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 背景与表面色 - 深色主题 */
+  --bg: #0C0A14;
+  --surface: #16122A;
+  --surface2: #1E1835;
+  --surface3: #2A2445;
+  --surface4: #352E50;
+  
+  /* 主色调 */
+  --primary: #FF6B35;
+  --primary-dim: rgba(255,107,53,0.12);
+  --accent: #FFD166;
+  --accent-dim: rgba(255,209,102,0.12);
+  
+  /* 辅助色 */
+  --purple: #B06EFF;
+  --purple-dim: rgba(176,110,255,0.12);
+  --teal: #4ECDC4;
+  --teal-dim: rgba(78,205,196,0.12);
+  --pink: #FF6B9D;
+  --pink-dim: rgba(255,107,157,0.12);
+  --green: #10B981;
+  --green-dim: rgba(16,185,129,0.12);
+  --blue: #60A5FA;
+  --blue-dim: rgba(96,165,250,0.12);
+  --red: #EF4444;
+  --red-dim: rgba(239,68,68,0.12);
+  
+  /* 文字色 */
+  --text-1: #FFFFFF;
+  --text-2: #A8A0C8;
+  --text-3: #6B6480;
+  
+  /* 边框 */
+  --border: rgba(255,255,255,0.06);
+  
+  /* 圆角 */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  display: flex;
+}
+
+/* ============================================================
+   左侧边栏
+   ============================================================ */
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Logo区域 */
+.sidebar-logo {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.logo-sub {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* 导航菜单 */
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+  overflow-y: auto;
+}
+
+.nav-section {
+  margin-bottom: 8px;
+}
+
+.nav-section-title {
+  padding: 8px 20px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  margin: 2px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background: var(--surface2);
+  color: var(--text-1);
+}
+
+.nav-item.active {
+  background: var(--primary-dim);
+  color: var(--primary);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 3px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--primary);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* 侧边栏底部 */
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #A78BFA, #60A5FA);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.user-role {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* ============================================================
+   右侧主内容区
+   ============================================================ */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 顶部工具栏 */
+.top-bar {
+  height: 60px;
+  padding: 0 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  min-width: 240px;
+}
+
+.search-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-1);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.search-box input::placeholder {
+  color: var(--text-3);
+}
+
+.search-icon {
+  color: var(--text-3);
+  font-size: 14px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255,107,53,0.3);
+}
+
+.btn-primary:hover {
+  background: #FF7F4F;
+  box-shadow: 0 4px 12px rgba(255,107,53,0.4);
+}
+
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--surface3);
+}
+
+/* ============================================================
+   内容区域
+   ============================================================ */
+.content-area {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+/* 统计卡片 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.stat-card.clickable:hover {
+  border-color: var(--primary);
+  background: var(--surface2);
+}
+
+.stat-card.clickable .stat-label::after {
+  content: '↗ 点击查看';
+  display: block;
+  font-size: 11px;
+  color: var(--primary);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  margin-top: 2px;
+}
+
+.stat-card.clickable:hover .stat-label::after {
+  opacity: 1;
+}
+
+.clickable-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.click-hint {
+  font-size: 12px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.stat-card.clickable:hover .click-hint {
+  opacity: 1;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.stat-icon.orange { background: var(--orange-dim); }
+.stat-icon.purple { background: var(--purple-dim); }
+.stat-icon.teal { background: var(--teal-dim); }
+.stat-icon.green { background: var(--green-dim); }
+
+.stat-trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stat-trend.up { color: var(--green); }
+.stat-trend.down { color: var(--red); }
+
+.stat-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+/* 工具栏 */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 8px;
+}
+
+.pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-family: inherit;
+}
+
+.pill.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.pill:hover:not(.active) {
+  background: var(--surface2);
+  color: var(--text-1);
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.sort-select option {
+  background: var(--surface);
+}
+
+/* 课程表格 */
+.table-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: var(--surface2);
+}
+
+/* 课程卡片单元格 */
+.course-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.course-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.course-name {
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.course-create-time {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+
+.course-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.course-tag {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.tag-1v1 {
+  background: var(--primary-dim);
+  color: var(--primary);
+}
+
+.tag-1vn {
+  background: var(--purple-dim);
+  color: var(--purple);
+}
+
+/* 今日课程按钮 */
+.today-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--teal-dim);
+  border: 1px solid rgba(78,205,196,0.3);
+  border-radius: var(--radius-sm);
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.today-btn:hover {
+  background: rgba(78,205,196,0.2);
+  box-shadow: 0 2px 8px rgba(78,205,196,0.3);
+}
+
+.today-btn .live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 今日课程弹窗 */
+.today-modal {
+  width: 700px;
+  max-height: 80vh;
+}
+
+.today-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.today-course-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.today-course-item:hover {
+  background: var(--surface3);
+}
+
+.today-course-item.live {
+  border-color: rgba(255,107,53,0.3);
+  background: rgba(255,107,53,0.05);
+}
+
+.today-time-block {
+  min-width: 80px;
+  text-align: center;
+  padding: 8px 12px;
+  background: var(--surface3);
+  border-radius: var(--radius-xs);
+}
+
+.today-time {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.today-duration {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.today-course-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.today-course-name {
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.today-course-teacher {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.today-course-students {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.today-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.enter-class-btn {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(255,107,53,0.3);
+}
+
+.enter-class-btn:hover {
+  background: #FF7F4F;
+}
+
+.enter-class-btn.teal {
+  background: var(--teal);
+  box-shadow: 0 2px 8px rgba(78,205,196,0.3);
+}
+
+.enter-class-btn.gray {
+  background: var(--surface3);
+  color: var(--text-2);
+  box-shadow: none;
+}
+
+/* 状态标签 */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.status-badge.live {
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+.status-badge.active {
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+.status-badge.pending {
+  background: var(--red-dim);
+  color: var(--red);
+}
+
+.status-badge.draft {
+  background: var(--surface3);
+  color: var(--text-3);
+}
+
+.status-badge.done {
+  background: var(--surface3);
+  color: var(--text-3);
+}
+
+/* 已结课整行灰色 */
+tr.done-row > td {
+  opacity: 0.55;
+}
+
+tr.done-row .course-name {
+  color: var(--text-3) !important;
+}
+
+tr.done-row .action-btn {
+  opacity: 0.5;
+}
+
+tr.done-row:hover > td {
+  opacity: 0.75;
+}
+
+/* 进度条 */
+.progress-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 100px;
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+.progress-text {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* 操作按钮 */
+.action-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  background: var(--surface3);
+  color: var(--text-1);
+  border-color: var(--text-3);
+}
+
+.action-btn.primary {
+  background: var(--primary-dim);
+  color: var(--primary);
+  border-color: rgba(255,107,53,0.2);
+}
+
+.action-btn.primary:hover {
+  background: rgba(255,107,53,0.2);
+  border-color: var(--primary);
+}
+
+.action-btn.teal {
+  background: var(--teal-dim);
+  color: var(--teal);
+  border-color: rgba(78,205,196,0.2);
+}
+
+.action-btn.teal:hover {
+  background: rgba(78,205,196,0.2);
+  border-color: var(--teal);
+}
+
+.action-btn.danger {
+  border-color: transparent;
+}
+
+.action-btn.danger:hover {
+  background: var(--red-dim);
+  color: var(--red);
+  border-color: var(--red);
+}
+
+/* 分页 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.pagination-info {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.page-btn:hover {
+  background: var(--surface2);
+  color: var(--text-1);
+}
+
+.page-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   新建/编辑课程弹窗
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  width: 640px;
+  max-height: 85vh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transform: scale(0.95);
+  transition: transform 0.3s;
+}
+
+.modal-overlay.show .modal {
+  transform: scale(1);
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  border: none;
+  background: var(--surface2);
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: var(--surface3);
+  color: var(--text-1);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(85vh - 140px);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+
+.form-label.required::after {
+  content: ' *';
+  color: var(--red);
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+}
+
+.form-input::placeholder {
+  color: var(--text-3);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-select {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+.form-select option {
+  background: var(--surface);
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+}
+
+.form-textarea:focus {
+  border-color: var(--primary);
+}
+
+/* 乐器选择 */
+.instrument-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.instrument-type-input-wrap {
+  display: flex;
+  gap: 8px;
+}
+
+.instrument-type-input-wrap .form-select {
+  flex: 1;
+}
+
+.instrument-custom-input {
+  flex: 1;
+  display: none !important;
+}
+
+.instrument-custom-input.show {
+  display: block !important;
+}
+
+.instrument-option {
+  padding: 12px 8px;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.instrument-option:hover {
+  border-color: var(--text-3);
+}
+
+.instrument-option.selected {
+  border-color: var(--primary);
+  background: var(--primary-dim);
+}
+
+.instrument-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.instrument-name {
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.instrument-option.selected .instrument-name {
+  color: var(--primary);
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* 小弹窗 */
+.modal.modal-sm .modal {
+  width: 400px;
+}
+
+.modal-sm .modal {
+  width: 400px !important;
+}
+
+/* 删除确认弹窗 */
+.delete-confirm-text {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-1);
+  padding: 20px 0;
+}
+
+.delete-warning-text {
+  text-align: center;
+  font-size: 13px;
+  color: var(--orange);
+  padding: 0 0 10px;
+  margin-top: -10px;
+}
+
+.btn-danger {
+  background: rgba(255, 59, 48, 0.15) !important;
+  color: var(--red) !important;
+  border: 1px solid var(--red) !important;
+}
+
+.btn-danger:hover {
+  background: rgba(255, 59, 48, 0.25) !important;
+}
+
+/* 本月上课数据弹窗 */
+.monthly-stats-modal .modal {
+  width: 560px;
+  max-height: 90vh;
+}
+
+.monthly-stats-body {
+  padding: 20px !important;
+}
+
+.monthly-overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.monthly-stat-item {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+}
+
+.monthly-stat-item.clickable {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.monthly-stat-item.clickable:hover {
+  background: var(--surface3);
+  transform: translateY(-2px);
+}
+
+.monthly-stat-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-1);
+  font-family: 'Sora', sans-serif;
+}
+
+.monthly-stat-num.green { color: var(--green); }
+.monthly-stat-num.orange { color: var(--orange); }
+.monthly-stat-num.purple { color: var(--purple); }
+
+.monthly-stat-label {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+/* 日历日期详情弹窗 */
+.day-detail-modal .modal {
+  width: 420px;
+}
+
+.day-detail-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.day-lesson-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.day-lesson-item:last-child {
+  margin-bottom: 0;
+}
+
+.day-lesson-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: var(--surface3);
+}
+
+.day-lesson-info {
+  flex: 1;
+}
+
+.day-lesson-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.day-lesson-student {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.day-lesson-time {
+  font-size: 12px;
+  color: var(--text-2);
+  text-align: right;
+}
+
+.day-lesson-status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+.day-lesson-status.done { background: rgba(52, 199, 120, 0.15); color: var(--green); }
+.day-lesson-status.cancel { background: rgba(176, 110, 255, 0.15); color: var(--purple); }
+
+/* 统计详情弹窗 */
+.stat-detail-modal .modal {
+  width: 500px;
+}
+
+.stat-detail-body {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.stat-detail-section {
+  margin-bottom: 16px;
+}
+
+.stat-detail-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+.stat-lesson-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.stat-lesson-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: var(--surface3);
+}
+
+.stat-lesson-content {
+  flex: 1;
+}
+
+.stat-lesson-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.stat-lesson-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.stat-lesson-extra {
+  text-align: right;
+}
+
+.stat-lesson-student {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.stat-lesson-date {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.monthly-calendar {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.calendar-header span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  padding: 6px 0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  color: var(--text-2);
+  gap: 2px;
+  position: relative;
+  background: var(--surface3);
+}
+
+.calendar-day.empty {
+  background: transparent;
+}
+
+.calendar-day.today {
+  border: 2px solid var(--primary);
+}
+
+.calendar-day.has-class {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.calendar-day.has-class:hover {
+  background: var(--surface4);
+  transform: scale(1.05);
+}
+
+.calendar-day.done { background: rgba(52, 199, 120, 0.15); color: var(--green); }
+.calendar-day.live { background: rgba(255, 107, 53, 0.15); color: var(--primary); }
+.calendar-day.pending { background: rgba(255, 209, 102, 0.15); color: var(--orange); }
+.calendar-day.cancel { background: rgba(176, 110, 255, 0.15); color: var(--purple); }
+
+.calendar-day-num {
+  font-weight: 600;
+  line-height: 1;
+}
+
+.calendar-day-count {
+  font-size: 9px;
+  opacity: 0.8;
+}
+
+.calendar-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.done { background: var(--green); }
+.legend-dot.live { background: var(--primary); }
+.legend-dot.pending { background: var(--orange); }
+.legend-dot.cancel { background: var(--purple); }
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--surface4);
+}
+
+/* ============================================================
+   课节设置弹窗
+   ============================================================ */
+/* ============================================================
+   课节设置弹窗样式
+   ============================================================ */
+.lesson-settings-modal .modal {
+  width: 1050px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.lesson-settings-header {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--primary), #FF8F5C);
+  flex-shrink: 0;
+}
+
+.lesson-settings-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.lesson-settings-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 课程信息概览 */
+.lesson-course-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.lesson-course-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.lesson-course-details {
+  flex: 1;
+}
+
+.lesson-course-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.lesson-course-meta {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.lesson-course-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.lesson-stat {
+  text-align: center;
+}
+
+.lesson-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.lesson-stat-label {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+/* 课节列表区域 */
+.lesson-list-section {
+  padding: 20px 24px;
+}
+
+.lesson-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.lesson-list-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+/* 课节表格 */
+.lesson-table-wrapper {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.lesson-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lesson-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.lesson-table th.lesson-num-col { width: 50px; text-align: center; }
+.lesson-table th.lesson-name-col { width: 130px; }
+.lesson-table th.lesson-date-col { width: 140px; }
+.lesson-table th.lesson-time-col { width: 160px; }
+.lesson-table th.lesson-teacher-col { width: 110px; }
+.lesson-table th.lesson-attend-col { width: 100px; }
+.lesson-table th.lesson-status-col { width: 80px; }
+.lesson-table th.lesson-action-col { width: 80px; }
+
+.lesson-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.lesson-table tr:last-child td {
+  border-bottom: none;
+}
+
+.lesson-table tr.editable {
+  background: var(--surface);
+}
+
+.lesson-table tr.editable:hover {
+  background: rgba(255, 107, 53, 0.05);
+}
+
+.lesson-table tr.disabled {
+  background: var(--bg);
+}
+
+.lesson-table tr.disabled td {
+  color: var(--text-3);
+}
+
+.lesson-num {
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+.lesson-name {
+  font-weight: 500;
+}
+
+.lesson-name-input {
+  width: 120px;
+  padding: 6px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  color: var(--text-1);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.lesson-name-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.lesson-date-input,
+.lesson-time-input {
+  padding: 6px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  color: var(--text-1);
+  font-size: 13px;
+}
+
+.lesson-date-input {
+  width: 130px;
+}
+
+.lesson-time-input {
+  width: 75px;
+  text-align: center;
+}
+
+.lesson-date-input:focus,
+.lesson-time-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.lesson-date-input:disabled,
+.lesson-time-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--surface2);
+}
+
+.lesson-time-sep {
+  color: var(--text-3);
+  font-size: 13px;
+  margin: 0 4px;
+}
+
+.lesson-duration-unit {
+  font-size: 11px;
+  color: var(--text-3);
+  padding: 4px 8px;
+  background: var(--bg);
+  border-radius: var(--radius-xs);
+  margin-left: 6px;
+}
+
+.lesson-teacher-select {
+  padding: 6px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  color: var(--text-1);
+  font-size: 13px;
+  min-width: 100px;
+}
+
+.lesson-teacher-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* 学员出勤 - 可点击 */
+.lesson-attendance-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lesson-attendance-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  transition: all 0.2s;
+  background: var(--surface2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lesson-attendance-text::after {
+  content: '→';
+  font-size: 12px;
+  color: var(--text-3);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all 0.2s;
+}
+
+.lesson-attendance-text:hover {
+  background: var(--primary-dim);
+  color: var(--primary);
+}
+
+.lesson-attendance-text:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--primary);
+}
+
+.lesson-attendance-text:active {
+  transform: scale(0.98);
+}
+
+.lesson-attendance-text:empty::after {
+  content: '→';
+  opacity: 0.3;
+}
+
+/* 状态标签 */
+.lesson-status-tag {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  min-width: 70px;
+}
+
+.lesson-status-tag.done {
+  background: rgba(52, 199, 120, 0.15);
+  color: var(--green);
+}
+
+.lesson-status-tag.pending {
+  background: rgba(255, 149, 0, 0.15);
+  color: var(--orange);
+}
+
+.lesson-status-tag.unset {
+  background: rgba(142, 142, 147, 0.15);
+  color: var(--text-2);
+}
+
+/* 操作按钮 */
+.lesson-actions-cell {
+  display: flex;
+  gap: 6px;
+}
+
+.lesson-action-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: var(--surface2);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.lesson-action-btn:hover {
+  background: var(--primary-dim);
+}
+
+.lesson-action-btn.save {
+  background: rgba(52, 199, 120, 0.15);
+  color: var(--green);
+}
+
+.lesson-action-btn.save:hover {
+  background: var(--green);
+  color: white;
+}
+
+.lesson-action-btn.delete {
+  background: rgba(255, 59, 48, 0.15);
+  color: var(--red);
+}
+
+.lesson-action-btn.delete:hover {
+  background: var(--red);
+  color: white;
+}
+
+.lesson-action-btn.record {
+  background: rgba(0, 122, 255, 0.15);
+  color: #007AFF;
+}
+
+.lesson-action-btn.record:hover {
+  background: #007AFF;
+  color: white;
+}
+
+/* 弹窗底部 - 固定在底部 */
+.lesson-settings-footer {
+  padding: 16px 24px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.lesson-settings-footer .lesson-add-btn {
+  padding: 10px 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lesson-settings-footer .lesson-add-btn:hover {
+  background: #E55A28;
+}
+
+.lesson-settings-footer .btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.lesson-settings-footer .btn-secondary {
+  background: var(--surface2);
+  color: var(--text-2);
+}
+
+.lesson-settings-footer .btn-secondary:hover {
+  background: var(--surface3);
+  color: var(--text-1);
+}
+
+.lesson-settings-footer .btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.lesson-settings-footer .btn-primary:hover {
+  background: #E55A28;
+}
+
+/* 学员出勤详情弹窗 */
+.attendance-detail-modal .modal {
+  width: 480px;
+  max-height: 70vh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+}
+
+.attendance-detail-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface2);
+}
+
+.attendance-detail-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.attendance-detail-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.attendance-student {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.attendance-student:last-child {
+  margin-bottom: 0;
+}
+
+.attendance-student-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.attendance-student-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.attendance-student-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.attendance-status {
+  padding: 5px 14px;
+  border-radius: var(--radius-xs);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.attendance-status.present {
+  background: rgba(52, 199, 120, 0.15);
+  color: var(--green);
+}
+
+.attendance-status.absent {
+  background: rgba(255, 59, 48, 0.15);
+  color: var(--red);
+}
+
+.attendance-status.leave {
+  background: rgba(255, 149, 0, 0.15);
+  color: var(--orange);
+}
+
+/* 出勤状态切换按钮 */
+.attendance-status-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.attendance-btn {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--surface2);
+  color: var(--text-2);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.attendance-btn:hover {
+  background: var(--surface3);
+}
+
+.attendance-btn.active.present {
+  background: rgba(52, 199, 120, 0.2);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.attendance-btn.active.leave {
+  background: rgba(255, 149, 0, 0.2);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.attendance-btn.active.absent {
+  background: rgba(255, 59, 48, 0.2);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* 添加课节数量选择弹窗 */
+.add-lessons-modal .modal {
+  width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.add-lessons-header {
+  padding: 18px 20px;
+  background: linear-gradient(135deg, var(--primary), #FF8F5C);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-lessons-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.add-lessons-body {
+  padding: 20px;
+}
+
+.add-lessons-label {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+
+.add-lessons-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-lessons-option {
+  padding: 14px 12px;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-lessons-option:hover {
+  border-color: var(--primary);
+  background: var(--primary-dim);
+}
+
+.add-lessons-option.selected {
+  border-color: var(--primary);
+  background: var(--primary-dim);
+}
+
+.add-lessons-option-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.add-lessons-option-label {
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.add-lessons-custom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.add-lessons-custom-label {
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.add-lessons-custom-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.add-lessons-custom-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.add-lessons-custom-unit {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.add-lessons-footer {
+  padding: 16px 20px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.add-lessons-footer .btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.add-lessons-footer .btn-secondary {
+  background: var(--surface3);
+  color: var(--text-2);
+}
+
+.add-lessons-footer .btn-secondary:hover {
+  background: var(--surface4);
+  color: var(--text-1);
+}
+
+.add-lessons-footer .btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.add-lessons-footer .btn-primary:hover {
+  background: #E55A28;
+}
+</style>
+</head>
+<body>
+
+<!-- 左侧边栏 -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🎵</div>
+    <div class="logo-text">
+      <div class="logo-title">音艺SaaS</div>
+      <div class="logo-sub">机构管理平台</div>
+    </div>
+  </div>
+  
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">工作台</div>
+      <div class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>数据概览</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📅</span>
+        <span>课程日历</span>
+      </div>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">教学管理</div>
+      <div class="nav-item active">
+        <span class="nav-icon">🎬</span>
+        <span>网课管理</span>
+        <span class="nav-badge">12</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">👨‍🏫</span>
+        <span>老师管理</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">👨‍🎓</span>
+        <span>学生管理</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📅</span>
+        <span>排课管理</span>
+      </div>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">订单财务</div>
+      <div class="nav-item">
+        <span class="nav-icon">💰</span>
+        <span>订单管理</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">💳</span>
+        <span>财务管理</span>
+      </div>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">系统设置</div>
+      <div class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>机构设置</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>账号管理</span>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">陈</div>
+      <div class="user-details">
+        <div class="user-name">陈校长</div>
+        <div class="user-role">机构管理员</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- 右侧主内容区 -->
+<main class="main-content">
+  <!-- 顶部工具栏 -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <h1 class="page-title">网课管理</h1>
+    </div>
+    <div class="top-bar-right">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="搜索课程名称...">
+      </div>
+      <button class="btn btn-primary" onclick="openModal()">
+        <span>+</span>
+        新建网课
+      </button>
+    </div>
+  </header>
+  
+  <!-- 内容区域 -->
+  <div class="content-area">
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon orange">🎬</div>
+          <div class="stat-trend up">↑ 12%</div>
+        </div>
+        <div class="stat-value">12</div>
+        <div class="stat-label">全部课程</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon purple">👨‍🏫</div>
+          <div class="stat-trend up">↑ 8%</div>
+        </div>
+        <div class="stat-value">8</div>
+        <div class="stat-label">课管老师</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon teal">👨‍🎓</div>
+          <div class="stat-trend up">↑ 23%</div>
+        </div>
+        <div class="stat-value">156</div>
+        <div class="stat-label">在学学员</div>
+      </div>
+      <div class="stat-card clickable" onclick="openMonthlyStatsModal()">
+        <div class="stat-header">
+          <div class="stat-icon green">📅</div>
+          <div class="stat-trend up">↑ 8</div>
+        </div>
+        <div class="stat-value">68节</div>
+        <div class="stat-label clickable-label"><span>本月已上课</span><span class="click-hint">👆</span></div>
+      </div>
+    </div>
+    
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="filter-pills">
+          <button class="pill active">全部 (12)</button>
+          <button class="pill">已开课 (8)</button>
+          <button class="pill">待开课 (2)</button>
+          <button class="pill">已结课 (2)</button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <button class="today-btn" onclick="openTodayModal()">
+          <span class="live-dot"></span>
+          今日课程
+          <span style="background: var(--teal); color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px;">5</span>
+        </button>
+        <select class="sort-select">
+          <option>按创建时间排序</option>
+          <option>按学员数量排序</option>
+          <option>按收入排序</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- 课程表格 -->
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>课程信息</th>
+            <th>课管老师</th>
+            <th>课程类型</th>
+            <th>课程进度</th>
+            <th>在学学员</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 直播中 -->
+          <tr>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb">🎻</div>
+                <div class="course-info">
+                  <div class="course-name">小提琴演奏进阶班</div>
+                  <div class="course-create-time">创建于 2026-03-15</div>
+                  <div class="course-meta">
+                    <span class="course-tag tag-1v1">1v1</span>
+                    <span>16节课</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>李婉清</td>
+            <td><span class="course-tag tag-1v1">1v1</span></td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-bar"><div class="progress-fill" style="width: 43%;"></div></div>
+                <div class="progress-text">7/16 课时</div>
+              </div>
+            </td>
+            <td>3人</td>
+            <td><span class="status-badge live">🟢 已开课</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="课节设置" onclick="openLessonSettingsModal('course001')">📋</button>
+                <button class="action-btn" title="学员管理" onclick="window.location.href='机构端-学员管理详情.html'">👥</button>
+                <button class="action-btn" title="编辑" onclick="openEditCourseModal('course001','小提琴演奏进阶班','violin')">✏️</button>
+                <button class="action-btn danger" title="删除" onclick="confirmDeleteCourse('course001','小提琴演奏进阶班',3)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- 已上线 -->
+          <tr>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb">🎹</div>
+                <div class="course-info">
+                  <div class="course-name">钢琴即兴伴奏课</div>
+                  <div class="course-create-time">创建于 2026-02-20</div>
+                  <div class="course-meta">
+                    <span class="course-tag tag-1v1">1v1</span>
+                    <span>20节课</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>陈艺</td>
+            <td><span class="course-tag tag-1v1">1v1</span></td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-bar"><div class="progress-fill" style="width: 60%; background: linear-gradient(90deg, #4ECDC4, #7FE8E0);"></div></div>
+                <div class="progress-text">12/20 课时</div>
+              </div>
+            </td>
+            <td>5人</td>
+            <td><span class="status-badge active">🟢 已开课</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="课节设置" onclick="openLessonSettingsModal('course002')">📋</button>
+                <button class="action-btn" title="学员管理" onclick="window.location.href='机构端-学员管理详情.html'">👥</button>
+                <button class="action-btn" title="编辑" onclick="openEditCourseModal('course002','钢琴即兴伴奏课','piano')">✏️</button>
+                <button class="action-btn danger" title="删除" onclick="confirmDeleteCourse('course002','钢琴即兴伴奏课',5)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb">🎸</div>
+                <div class="course-info">
+                  <div class="course-name">古典吉他入门</div>
+                  <div class="course-create-time">创建于 2026-03-28</div>
+                  <div class="course-meta">
+                    <span class="course-tag tag-1vn">1v多</span>
+                    <span>12节课</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>林涛</td>
+            <td><span class="course-tag tag-1vn">1v多</span></td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-bar"><div class="progress-fill" style="width: 25%; background: linear-gradient(90deg, #FF6B35, #FF9B6A);"></div></div>
+                <div class="progress-text">3/12 课时</div>
+              </div>
+            </td>
+            <td>8人</td>
+            <td><span class="status-badge active">🟢 已开课</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="课节设置" onclick="openLessonSettingsModal('course003')">📋</button>
+                <button class="action-btn" title="学员管理" onclick="window.location.href='机构端-学员管理详情.html'">👥</button>
+                <button class="action-btn" title="编辑" onclick="openEditCourseModal('course003','古典吉他入门','guitar')">✏️</button>
+                <button class="action-btn danger" title="删除" onclick="confirmDeleteCourse('course003','古典吉他入门',8)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb">🎺</div>
+                <div class="course-info">
+                  <div class="course-name">竹笛基础课</div>
+                  <div class="course-create-time">创建于 2026-04-02</div>
+                  <div class="course-meta">
+                    <span class="course-tag tag-1vn">1v多</span>
+                    <span>10节课</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>刘芳</td>
+            <td><span class="course-tag tag-1vn">1v多</span></td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-bar"><div class="progress-fill" style="width: 20%; background: linear-gradient(90deg, #B06EFF, #C99EFF);"></div></div>
+                <div class="progress-text">2/10 课时</div>
+              </div>
+            </td>
+            <td>6人</td>
+            <td><span class="status-badge active">🟢 已开课</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="课节设置" onclick="openLessonSettingsModal('course004')">📋</button>
+                <button class="action-btn" title="学员管理" onclick="window.location.href='机构端-学员管理详情.html'">👥</button>
+                <button class="action-btn" title="编辑" onclick="openEditCourseModal('course004','竹笛基础课','flute')">✏️</button>
+                <button class="action-btn danger" title="删除" onclick="confirmDeleteCourse('course004','竹笛基础课',6)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb">🎻</div>
+                <div class="course-info">
+                  <div class="course-name">大提琴重奏课</div>
+                  <div class="course-create-time">创建于 2026-04-05</div>
+                  <div class="course-meta">
+                    <span class="course-tag tag-1vn">1v6</span>
+                    <span>8节课</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>周明</td>
+            <td><span class="course-tag tag-1vn">1v6</span></td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-bar"><div class="progress-fill" style="width: 50%; background: linear-gradient(90deg, #60A5FA, #93C5FD);"></div></div>
+                <div class="progress-text">4/8 课时</div>
+              </div>
+            </td>
+            <td>4人</td>
+            <td><span class="status-badge pending">🔴 待开课</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="课节设置" onclick="openLessonSettingsModal('course005')">📋</button>
+                <button class="action-btn" title="学员管理" onclick="window.location.href='机构端-学员管理详情.html'">👥</button>
+                <button class="action-btn" title="编辑" onclick="openEditCourseModal('course005','大提琴重奏课','cello')">✏️</button>
+                <button class="action-btn danger" title="删除" onclick="confirmDeleteCourse('course005','大提琴重奏课',4)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="done-row">
+            <td>
+              <div class="course-cell">
+                <div class="course-thumb">🪕</div>
+                <div class="course-info">
+                  <div class="course-name">尤克里里基础课</div>
+                  <div class="course-create-time">创建于 2026-01-10</div>
+                  <div class="course-meta">
+                    <span class="course-tag tag-1v1">1v1</span>
+                    <span>10节课</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>周瑶</td>
+            <td><span class="course-tag tag-1v1">1v1</span></td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%; background: var(--text-3);"></div></div>
+                <div class="progress-text">10/10 已结课</div>
+              </div>
+            </td>
+            <td>2人</td>
+            <td><span class="status-badge done">⚫ 已结课</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="课节设置" onclick="openLessonSettingsModal('course006')">📋</button>
+                <button class="action-btn" title="学员管理" onclick="window.location.href='机构端-学员管理详情.html'">👥</button>
+                <button class="action-btn" title="编辑" onclick="openEditCourseModal('course006','尤克里里基础课','ukulele')">✏️</button>
+                <button class="action-btn danger" title="删除" onclick="confirmDeleteCourse('course006','尤克里里基础课',2)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- 分页 -->
+      <div class="pagination">
+        <div class="pagination-info">
+          共 12 条记录，第 1/2 页
+        </div>
+        <div class="pagination-controls">
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 新建/编辑课程弹窗 -->
+<div class="modal-overlay" id="courseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">新建网课</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label required">课程名称</label>
+          <input type="text" class="form-input" placeholder="请输入课程名称">
+        </div>
+        <div class="form-group">
+          <label class="form-label required">课程类型</label>
+          <select class="form-select">
+            <option value="">请选择</option>
+            <option value="1v1">1v1 专属课</option>
+            <option value="1vn">1v多 小组课</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">课管老师</label>
+          <select class="form-select">
+            <option value="">不指定</option>
+            <option value="1">李婉清</option>
+            <option value="2">陈艺</option>
+            <option value="3">林涛</option>
+            <option value="4">刘芳</option>
+            <option value="5">周明</option>
+            <option value="6">周瑶</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">乐器类型</label>
+          <div class="instrument-type-input-wrap">
+            <select class="form-select" id="instrumentSelect" onchange="toggleInstrumentCustom()">
+              <option value="">请选择</option>
+              <option value="violin">🎻 小提琴</option>
+              <option value="piano">🎹 钢琴</option>
+              <option value="guitar">🎸 吉他</option>
+              <option value="flute">🎺 竹笛</option>
+              <option value="cello">🎻 大提琴</option>
+              <option value="ukulele">🪕 尤克里里</option>
+              <option value="custom">📝 自定义</option>
+            </select>
+            <input type="text" class="form-input instrument-custom-input" id="instrumentCustomInput" placeholder="输入专业名称">
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label required">课程节数</label>
+          <input type="number" class="form-input" placeholder="如：16" min="1">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary">创建课程</button>
+    </div>
+  </div>
+</div>
+
+<!-- 编辑课程弹窗 -->
+<div class="modal-overlay" id="editCourseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">✏️ 编辑课程</h2>
+      <button class="modal-close" onclick="closeEditCourseModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label required">课程名称</label>
+        <input type="text" class="form-input" id="editCourseName" placeholder="请输入课程名称">
+      </div>
+      <div class="form-group">
+        <label class="form-label">乐器专业</label>
+        <div class="instrument-type-input-wrap">
+          <select class="form-select" id="editInstrumentSelect" onchange="toggleEditInstrumentCustom()">
+            <option value="">请选择</option>
+            <option value="violin">🎻 小提琴</option>
+            <option value="piano">🎹 钢琴</option>
+            <option value="guitar">🎸 吉他</option>
+            <option value="flute">🎺 竹笛</option>
+            <option value="cello">🎻 大提琴</option>
+            <option value="ukulele">🪕 尤克里里</option>
+            <option value="custom">📝 自定义</option>
+          </select>
+          <input type="text" class="form-input instrument-custom-input" id="editInstrumentCustomInput" placeholder="输入专业名称">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeEditCourseModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveEditCourse()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div class="modal-overlay" id="deleteConfirmModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 class="modal-title">⚠️ 删除课程</h2>
+      <button class="modal-close" onclick="closeDeleteModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="delete-confirm-text" id="deleteConfirmText">确定要删除这门课程吗？</p>
+      <p class="delete-warning-text" id="deleteWarningText" style="display:none;"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn" onclick="executeDeleteCourse()">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 本月上课数据弹窗 -->
+<div class="modal-overlay" id="monthlyStatsModal">
+  <div class="modal monthly-stats-modal">
+    <div class="modal-header">
+      <h2 class="modal-title">📅 2026年4月上课数据</h2>
+      <button class="modal-close" onclick="closeMonthlyStatsModal()">×</button>
+    </div>
+    <div class="modal-body monthly-stats-body">
+      <!-- 统计概览 -->
+      <div class="monthly-overview">
+        <div class="monthly-stat-item clickable" onclick="showStatDetail('all')">
+          <div class="monthly-stat-num">68</div>
+          <div class="monthly-stat-label">本月总课时</div>
+        </div>
+        <div class="monthly-stat-item clickable" onclick="showStatDetail('done')">
+          <div class="monthly-stat-num green">52</div>
+          <div class="monthly-stat-label">已完成</div>
+        </div>
+        <div class="monthly-stat-item clickable" onclick="showStatDetail('pending')">
+          <div class="monthly-stat-num orange">16</div>
+          <div class="monthly-stat-label">待上课</div>
+        </div>
+        <div class="monthly-stat-item clickable" onclick="showStatDetail('cancel')">
+          <div class="monthly-stat-num purple">6</div>
+          <div class="monthly-stat-label">取消/请假/未上课</div>
+        </div>
+      </div>
+      <!-- 日历视图 -->
+      <div class="monthly-calendar">
+        <div class="calendar-header">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div class="calendar-grid" id="monthlyCalendarGrid">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+      <!-- 图例 -->
+      <div class="calendar-legend">
+        <span class="legend-item"><span class="legend-dot done"></span>已完成</span>
+        <span class="legend-item"><span class="legend-dot live"></span>直播中</span>
+        <span class="legend-item"><span class="legend-dot pending"></span>待上课</span>
+        <span class="legend-item"><span class="legend-dot cancel"></span>取消/请假/未上课</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 日历日期详情弹窗 -->
+<div class="modal-overlay" id="dayDetailModal">
+  <div class="modal modal-sm day-detail-modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="dayDetailTitle">📅 4月10日课程</h2>
+      <button class="modal-close" onclick="closeDayDetailModal()">×</button>
+    </div>
+    <div class="modal-body day-detail-body" id="dayDetailBody">
+      <!-- 动态填充 -->
+    </div>
+  </div>
+</div>
+
+<!-- 统计详情弹窗 -->
+<div class="modal-overlay" id="statDetailModal">
+  <div class="modal stat-detail-modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="statDetailTitle">📋 课程详情</h2>
+      <button class="modal-close" onclick="closeStatDetailModal()">×</button>
+    </div>
+    <div class="modal-body stat-detail-body" id="statDetailBody">
+      <!-- 动态填充 -->
+    </div>
+  </div>
+</div>
+
+<!-- 今日课程弹窗 -->
+<div class="modal-overlay" id="todayModal">
+  <div class="modal today-modal">
+    <div class="modal-header">
+      <h2 class="modal-title">📅 今日课程</h2>
+      <button class="modal-close" onclick="closeTodayModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="today-list">
+        <!-- 正在直播 -->
+        <div class="today-course-item live">
+          <div class="today-time-block">
+            <div class="today-time">14:30</div>
+            <div class="today-duration">50分钟</div>
+          </div>
+          <div class="today-course-info">
+            <div class="today-course-name">
+              🎻 小提琴演奏进阶班
+              <span class="course-tag tag-1v1">1v1</span>
+            </div>
+            <div class="today-course-teacher">👩‍🏫 李婉清 老师</div>
+            <div class="today-course-students">学员：张小明 · 第7/16节</div>
+          </div>
+          <div class="today-status">
+            <span class="status-badge live">🔴 进行中</span>
+            <button class="enter-class-btn" onclick="enterClass('violin-advanced')">进入课堂</button>
+          </div>
+        </div>
+        
+        <!-- 已结束 -->
+        <div class="today-course-item">
+          <div class="today-time-block">
+            <div class="today-time">10:00</div>
+            <div class="today-duration">45分钟</div>
+          </div>
+          <div class="today-course-info">
+            <div class="today-course-name">
+              🎹 钢琴基础课
+              <span class="course-tag tag-1v1">1v1</span>
+            </div>
+            <div class="today-course-teacher">👩‍🏫 陈艺 老师</div>
+            <div class="today-course-students">学员：王小红 · 第5/20节</div>
+          </div>
+          <div class="today-status">
+            <span class="status-badge done">✅ 已结束</span>
+            <button class="enter-class-btn gray">查看回放</button>
+          </div>
+        </div>
+        
+        <!-- 待上课 -->
+        <div class="today-course-item">
+          <div class="today-time-block">
+            <div class="today-time">19:00</div>
+            <div class="today-duration">50分钟</div>
+          </div>
+          <div class="today-course-info">
+            <div class="today-course-name">
+              🎹 钢琴即兴伴奏课
+              <span class="course-tag tag-1v1">1v1</span>
+            </div>
+            <div class="today-course-teacher">👩‍🏫 陈艺 老师</div>
+            <div class="today-course-students">学员：李小龙 · 第13/20节</div>
+          </div>
+          <div class="today-status">
+            <span class="status-badge pending">🟡 待上课</span>
+            <button class="enter-class-btn teal">进入课堂</button>
+          </div>
+        </div>
+        
+        <!-- 待上课 1v多 -->
+        <div class="today-course-item">
+          <div class="today-time-block">
+            <div class="today-time">20:00</div>
+            <div class="today-duration">45分钟</div>
+          </div>
+          <div class="today-course-info">
+            <div class="today-course-name">
+              🎸 古典吉他入门
+              <span class="course-tag tag-1vn">1v多</span>
+            </div>
+            <div class="today-course-teacher">👨‍🏫 林涛 老师</div>
+            <div class="today-course-students">学员：8人 · 第4/12节</div>
+          </div>
+          <div class="today-status">
+            <span class="status-badge pending">🟡 待上课</span>
+            <button class="enter-class-btn teal">进入课堂</button>
+          </div>
+        </div>
+        
+        <!-- 待上课 1v多 -->
+        <div class="today-course-item">
+          <div class="today-time-block">
+            <div class="today-time">21:00</div>
+            <div class="today-duration">45分钟</div>
+          </div>
+          <div class="today-course-info">
+            <div class="today-course-name">
+              🎺 竹笛基础课
+              <span class="course-tag tag-1vn">1v多</span>
+            </div>
+            <div class="today-course-teacher">👩‍🏫 刘芳 老师</div>
+            <div class="today-course-students">学员：6人 · 第3/10节</div>
+          </div>
+          <div class="today-status">
+            <span class="status-badge pending">🟡 待上课</span>
+            <button class="enter-class-btn teal">进入课堂</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 课节设置弹窗 -->
+<div class="modal-overlay lesson-settings-modal" id="lessonSettingsModal">
+  <div class="modal">
+    <div class="lesson-settings-header">
+      <h2>📋 课节设置</h2>
+      <button class="modal-close" onclick="closeLessonSettingsModal()">×</button>
+    </div>
+    <div class="lesson-settings-body">
+      <!-- 课程信息概览 -->
+      <div class="lesson-course-info">
+        <div class="lesson-course-icon" id="lessonCourseIcon">🎻</div>
+        <div class="lesson-course-details">
+          <div class="lesson-course-name" id="lessonCourseName">小提琴演奏进阶班</div>
+          <div class="lesson-course-meta" id="lessonCourseMeta">👩‍🏫 李婉清 老师 · 1v1 · 16节课</div>
+        </div>
+        <div class="lesson-course-stats">
+          <div class="lesson-stat">
+            <div class="lesson-stat-value" id="lessonDoneCount">7</div>
+            <div class="lesson-stat-label">已上</div>
+          </div>
+          <div class="lesson-stat">
+            <div class="lesson-stat-value" id="lessonPendingCount">9</div>
+            <div class="lesson-stat-label">待上</div>
+          </div>
+          <div class="lesson-stat">
+            <div class="lesson-stat-value" id="lessonStudentCount">3</div>
+            <div class="lesson-stat-label">学员</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 课节列表 -->
+      <div class="lesson-list-section">
+        <div class="lesson-list-header">
+          <span class="lesson-list-title">📅 课节列表（共 <span id="lessonTotalCount">16</span> 节）</span>
+        </div>
+        
+        <div class="lesson-table-wrapper">
+          <table class="lesson-table">
+            <thead>
+              <tr>
+                <th class="lesson-num-col">#</th>
+                <th class="lesson-name-col">课节名称</th>
+                <th class="lesson-date-col">上课日期</th>
+                <th class="lesson-time-col">上课时间</th>
+                <th class="lesson-teacher-col">课管老师</th>
+                <th class="lesson-attend-col">学员出勤</th>
+                <th class="lesson-status-col">状态</th>
+                <th class="lesson-action-col">操作</th>
+              </tr>
+            </thead>
+            <tbody id="lessonTableBody">
+              <!-- 已上完的课节 -->
+              <tr class="disabled">
+                <td class="lesson-num">1</td>
+                <td class="lesson-name">握弓与站姿</td>
+                <td>2024.01.06</td>
+                <td>14:30-15:20</td>
+                <td>李婉清</td>
+                <td class="lesson-attendance-cell">
+                  <span class="lesson-attendance-text" onclick="showAttendanceDetail(1, '握弓与站姿')">3/3</span>
+                </td>
+                <td><span class="lesson-status-tag done">已上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn record" title="查看回放" onclick="viewPlayback(1)">▶️</button>
+                </td>
+              </tr>
+              <tr class="disabled">
+                <td class="lesson-num">2</td>
+                <td class="lesson-name">空弦练习</td>
+                <td>2024.01.13</td>
+                <td>14:30-15:20</td>
+                <td>李婉清</td>
+                <td class="lesson-attendance-cell">
+                  <span class="lesson-attendance-text" onclick="showAttendanceDetail(2, '空弦练习')">2/3</span>
+                </td>
+                <td><span class="lesson-status-tag done">已上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn record" title="查看回放" onclick="viewPlayback(2)">▶️</button>
+                </td>
+              </tr>
+              <tr class="disabled">
+                <td class="lesson-num">3</td>
+                <td class="lesson-name">D大调音阶</td>
+                <td>2024.01.20</td>
+                <td>14:30-15:20</td>
+                <td>李婉清</td>
+                <td class="lesson-attendance-cell">
+                  <span class="lesson-attendance-text" onclick="showAttendanceDetail(3, 'D大调音阶')">3/3</span>
+                </td>
+                <td><span class="lesson-status-tag done">已上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn record" title="查看回放" onclick="viewPlayback(3)">▶️</button>
+                </td>
+              </tr>
+              <tr class="disabled">
+                <td class="lesson-num">4</td>
+                <td class="lesson-name">G大调音阶</td>
+                <td>2024.02.03</td>
+                <td>14:30-15:20</td>
+                <td>李婉清</td>
+                <td class="lesson-attendance-cell">
+                  <span class="lesson-attendance-text" onclick="showAttendanceDetail(4, 'G大调音阶')">3/3</span>
+                </td>
+                <td><span class="lesson-status-tag done">已上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn record" title="查看回放" onclick="viewPlayback(4)">▶️</button>
+                </td>
+              </tr>
+              <tr class="disabled">
+                <td class="lesson-num">5</td>
+                <td class="lesson-name">第一弓法</td>
+                <td>2024.02.17</td>
+                <td>14:30-15:20</td>
+                <td>李婉清</td>
+                <td class="lesson-attendance-cell">
+                  <span class="lesson-attendance-text" onclick="showAttendanceDetail(5, '第一弓法')">3/3</span>
+                </td>
+                <td><span class="lesson-status-tag done">已上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn record" title="查看回放" onclick="viewPlayback(5)">▶️</button>
+                </td>
+              </tr>
+              <tr class="disabled">
+                <td class="lesson-num">6</td>
+                <td class="lesson-name">分弓练习</td>
+                <td>2024.02.24</td>
+                <td>14:30-15:20</td>
+                <td>李婉清</td>
+                <td class="lesson-attendance-cell">
+                  <span class="lesson-attendance-text" onclick="showAttendanceDetail(6, '分弓练习')">2/3</span>
+                </td>
+                <td><span class="lesson-status-tag done">已上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn record" title="查看回放" onclick="viewPlayback(6)">▶️</button>
+                </td>
+              </tr>
+              <tr class="disabled">
+                <td class="lesson-num">7</td>
+                <td class="lesson-name">连弓技巧</td>
+                <td>2024.03.02</td>
+                <td>14:30-15:20</td>
+                <td>李婉清</td>
+                <td class="lesson-attendance-cell">
+                  <span class="lesson-attendance-text" onclick="showAttendanceDetail(7, '连弓技巧')">3/3</span>
+                </td>
+                <td><span class="lesson-status-tag done">已上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn record" title="查看回放" onclick="viewPlayback(7)">▶️</button>
+                </td>
+              </tr>
+              
+              <!-- 待上的课节（可编辑） -->
+              <tr class="editable">
+                <td class="lesson-num">8</td>
+                <td><input type="text" class="lesson-name-input" value="揉弦入门"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-03-09"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(8)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(8)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">9</td>
+                <td><input type="text" class="lesson-name-input" value="揉弦技巧提升"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-03-16"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(9)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(9)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">10</td>
+                <td><input type="text" class="lesson-name-input" value="颤音练习"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-03-23"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(10)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(10)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">11</td>
+                <td><input type="text" class="lesson-name-input" value="节奏训练"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-03-30"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(11)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(11)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">12</td>
+                <td><input type="text" class="lesson-name-input" value="演奏技巧综合"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-04-06"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(12)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(12)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">13</td>
+                <td><input type="text" class="lesson-name-input" value="乐曲演奏（一）"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-04-13"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(13)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(13)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">14</td>
+                <td><input type="text" class="lesson-name-input" value="乐曲演奏（二）"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-04-20"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(14)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(14)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">15</td>
+                <td><input type="text" class="lesson-name-input" value="表演准备"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-04-27"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(15)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(15)">🗑️</button>
+                </td>
+              </tr>
+              <tr class="editable">
+                <td class="lesson-num">16</td>
+                <td><input type="text" class="lesson-name-input" value="结课汇报演出"></td>
+                <td><input type="date" class="lesson-date-input" value="2024-05-04"></td>
+                <td>
+                  <input type="time" class="lesson-time-input" value="14:30">
+                  <span class="lesson-time-sep">-</span>
+                  <input type="time" class="lesson-time-input" value="15:20">
+                  <span class="lesson-duration-unit">50分钟</span>
+                </td>
+                <td>
+                  <select class="lesson-teacher-select">
+                    <option value="li" selected>李婉清</option>
+                    <option value="wang">王明</option>
+                    <option value="zhang">张老师</option>
+                  </select>
+                </td>
+                <td class="lesson-attendance-cell">-</td>
+                <td><span class="lesson-status-tag pending">待上</span></td>
+                <td class="lesson-actions-cell">
+                  <button class="lesson-action-btn save" title="保存" onclick="saveLesson(16)">💾</button>
+                  <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(16)">🗑️</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- 固定在底部的按钮 -->
+    <div class="lesson-settings-footer">
+      <button class="lesson-add-btn" onclick="addNewLesson()">+ 添加课节</button>
+      <div>
+        <button class="btn btn-secondary" onclick="closeLessonSettingsModal()">关闭</button>
+        <button class="btn btn-primary" onclick="saveAllLessons()">保存全部</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 添加课节数量选择弹窗 -->
+<div class="modal-overlay add-lessons-modal" id="addLessonsModal">
+  <div class="modal">
+    <div class="add-lessons-header">
+      <h3>➕ 添加课节</h3>
+      <button class="modal-close" onclick="closeAddLessonsModal()">×</button>
+    </div>
+    <div class="add-lessons-body">
+      <div class="add-lessons-label">选择要添加的课节数量：</div>
+      <div class="add-lessons-options">
+        <div class="add-lessons-option" onclick="selectLessonOption(this, 4)">
+          <div class="add-lessons-option-num">4</div>
+          <div class="add-lessons-option-label">节课</div>
+        </div>
+        <div class="add-lessons-option" onclick="selectLessonOption(this, 8)">
+          <div class="add-lessons-option-num">8</div>
+          <div class="add-lessons-option-label">节课</div>
+        </div>
+        <div class="add-lessons-option" onclick="selectLessonOption(this, 12)">
+          <div class="add-lessons-option-num">12</div>
+          <div class="add-lessons-option-label">节课</div>
+        </div>
+      </div>
+      <div class="add-lessons-custom">
+        <span class="add-lessons-custom-label">自定义数量：</span>
+        <input type="number" class="add-lessons-custom-input" id="customLessonCount" min="1" max="100" placeholder="输入数量">
+        <span class="add-lessons-custom-unit">节</span>
+      </div>
+    </div>
+    <div class="add-lessons-footer">
+      <button class="btn btn-secondary" onclick="closeAddLessonsModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmAddLessons()">确认添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 学员出勤详情弹窗 -->
+<div class="modal-overlay attendance-detail-modal" id="attendanceDetailModal">
+  <div class="modal">
+    <div class="attendance-detail-header">
+      <h3>📋 第 <span id="detailLessonNum">1</span> 节「<span id="detailLessonName">握弓与站姿</span>」- 学员出勤</h3>
+      <button class="modal-close" onclick="closeAttendanceDetailModal()">×</button>
+    </div>
+    <div class="attendance-detail-body" id="attendanceDetailBody">
+      <!-- 动态填充 -->
+    </div>
+  </div>
+</div>
+
+<script>
+// 新建课程弹窗控制
+function openModal() {
+  document.getElementById('courseModal').classList.add('show');
+}
+
+// 乐器类型自定义输入切换
+function toggleInstrumentCustom() {
+  const select = document.getElementById('instrumentSelect');
+  const customInput = document.getElementById('instrumentCustomInput');
+  if (select.value === 'custom') {
+    customInput.classList.add('show');
+    customInput.focus();
+  } else {
+    customInput.classList.remove('show');
+    customInput.value = '';
+  }
+}
+
+// 关闭弹窗时重置乐器类型
+function closeModal() {
+  document.getElementById('courseModal').classList.remove('show');
+  // 重置乐器类型选择
+  const instrumentSelect = document.getElementById('instrumentSelect');
+  const instrumentCustomInput = document.getElementById('instrumentCustomInput');
+  if (instrumentSelect) instrumentSelect.value = '';
+  if (instrumentCustomInput) {
+    instrumentCustomInput.classList.remove('show');
+    instrumentCustomInput.value = '';
+  }
+}
+
+// ==================== 编辑课程弹窗 ====================
+let currentEditCourseId = '';
+
+function openEditCourseModal(courseId, courseName, instrument) {
+  currentEditCourseId = courseId;
+  document.getElementById('editCourseName').value = courseName;
+  document.getElementById('editInstrumentSelect').value = instrument;
+  document.getElementById('editInstrumentCustomInput').classList.remove('show');
+  document.getElementById('editInstrumentCustomInput').value = '';
+  document.getElementById('editCourseModal').classList.add('show');
+}
+
+function closeEditCourseModal() {
+  document.getElementById('editCourseModal').classList.remove('show');
+  currentEditCourseId = '';
+}
+
+function toggleEditInstrumentCustom() {
+  const select = document.getElementById('editInstrumentSelect');
+  const customInput = document.getElementById('editInstrumentCustomInput');
+  if (select.value === 'custom') {
+    customInput.classList.add('show');
+    customInput.focus();
+  } else {
+    customInput.classList.remove('show');
+    customInput.value = '';
+  }
+}
+
+function saveEditCourse() {
+  const name = document.getElementById('editCourseName').value.trim();
+  if (!name) {
+    alert('请输入课程名称');
+    return;
+  }
+  alert('课程信息已保存');
+  closeEditCourseModal();
+}
+
+// ==================== 删除课程弹窗 ====================
+let currentDeleteCourseId = '';
+let currentDeleteCourseName = '';
+
+function confirmDeleteCourse(courseId, courseName, studentCount) {
+  currentDeleteCourseId = courseId;
+  currentDeleteCourseName = courseName;
+  document.getElementById('deleteConfirmText').textContent = '确定要删除「' + courseName + '」吗？';
+  
+  const warningEl = document.getElementById('deleteWarningText');
+  const confirmBtn = document.getElementById('confirmDeleteBtn');
+  
+  if (studentCount > 0) {
+    warningEl.style.display = 'block';
+    warningEl.textContent = '⚠️ 该课程还有 ' + studentCount + ' 名学员未上完课，请先在学员管理中停课后再删除';
+    confirmBtn.disabled = true;
+    confirmBtn.style.opacity = '0.5';
+    confirmBtn.style.cursor = 'not-allowed';
+  } else {
+    warningEl.style.display = 'none';
+    confirmBtn.disabled = false;
+    confirmBtn.style.opacity = '1';
+    confirmBtn.style.cursor = 'pointer';
+  }
+  
+  document.getElementById('deleteConfirmModal').classList.add('show');
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteConfirmModal').classList.remove('show');
+  currentDeleteCourseId = '';
+  currentDeleteCourseName = '';
+}
+
+function executeDeleteCourse() {
+  if (!currentDeleteCourseId) return;
+  alert('「' + currentDeleteCourseName + '」已删除');
+  closeDeleteModal();
+}
+
+// ==================== 本月上课数据弹窗 ====================
+function openMonthlyStatsModal() {
+  document.getElementById('monthlyStatsModal').classList.add('show');
+  renderMonthlyCalendar();
+}
+
+function closeMonthlyStatsModal() {
+  document.getElementById('monthlyStatsModal').classList.remove('show');
+}
+
+// 模拟：本月每日课程详细数据
+const monthlyLessonData = {
+  1: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '王小明', time: '10:00', status: 'done' },
+    { name: '钢琴即兴伴奏课', icon: '🎹', student: '李小龙', time: '14:30', status: 'done' }
+  ],
+  2: [
+    { name: '古典吉他入门', icon: '🎸', student: '张思琪', time: '09:00', status: 'done' },
+    { name: '竹笛基础课', icon: '🎺', student: '陈小雨', time: '11:00', status: 'done' },
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '赵芳华', time: '15:00', status: 'done' }
+  ],
+  5: [
+    { name: '钢琴即兴伴奏课', icon: '🎹', student: '李小龙', time: '10:00', status: 'done' },
+    { name: '尤克里里基础课', icon: '🪕', student: '刘思远', time: '16:00', status: 'done' }
+  ],
+  6: [
+    { name: '大提琴重奏课', icon: '🎻', student: '周小雅', time: '14:00', status: 'done' }
+  ],
+  7: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '王小明', time: '10:00', status: 'done' },
+    { name: '古典吉他入门', icon: '🎸', student: '张思琪', time: '15:00', status: 'done' }
+  ],
+  8: [
+    { name: '钢琴即兴伴奏课', icon: '🎹', student: '李小龙', time: '09:30', status: 'done' },
+    { name: '竹笛基础课', icon: '🎺', student: '陈小雨', time: '11:00', status: 'done' },
+    { name: '尤克里里基础课', icon: '🪕', student: '刘思远', time: '16:00', status: 'done' }
+  ],
+  9: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '赵芳华', time: '10:00', status: 'done' },
+    { name: '大提琴重奏课', icon: '🎻', student: '周小雅', time: '14:30', status: 'done' }
+  ],
+  10: [
+    { name: '钢琴即兴伴奏课', icon: '🎹', student: '李小龙', time: '14:30', status: 'live' }
+  ],
+  12: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '王小明', time: '10:00', status: 'pending' },
+    { name: '古典吉他入门', icon: '🎸', student: '张思琪', time: '15:00', status: 'pending' }
+  ],
+  13: [
+    { name: '竹笛基础课', icon: '🎺', student: '陈小雨', time: '11:00', status: 'pending' }
+  ],
+  14: [
+    { name: '大提琴重奏课', icon: '🎻', student: '周小雅', time: '14:00', status: 'pending' },
+    { name: '钢琴即兴伴奏课', icon: '🎹', student: '李小龙', time: '16:00', status: 'pending' }
+  ],
+  15: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '赵芳华', time: '10:00', status: 'cancel', reason: '请假' }
+  ],
+  16: [
+    { name: '尤克里里基础课', icon: '🪕', student: '刘思远', time: '16:00', status: 'cancel', reason: '未上课' }
+  ],
+  17: [
+    { name: '古典吉他入门', icon: '🎸', student: '张思琪', time: '09:00', status: 'cancel', reason: '取消' }
+  ],
+  19: [
+    { name: '钢琴即兴伴奏课', icon: '🎹', student: '李小龙', time: '14:30', status: 'pending' }
+  ],
+  20: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '王小明', time: '10:00', status: 'pending' },
+    { name: '竹笛基础课', icon: '🎺', student: '陈小雨', time: '11:00', status: 'pending' }
+  ],
+  21: [
+    { name: '大提琴重奏课', icon: '🎻', student: '周小雅', time: '14:00', status: 'pending' }
+  ],
+  22: [
+    { name: '尤克里里基础课', icon: '🪕', student: '刘思远', time: '16:00', status: 'cancel', reason: '请假' }
+  ],
+  23: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '赵芳华', time: '10:00', status: 'cancel', reason: '未上课' }
+  ],
+  26: [
+    { name: '古典吉他入门', icon: '🎸', student: '张思琪', time: '15:00', status: 'pending' }
+  ],
+  27: [
+    { name: '钢琴即兴伴奏课', icon: '🎹', student: '李小龙', time: '09:30', status: 'pending' }
+  ],
+  28: [
+    { name: '小提琴演奏进阶班', icon: '🎻', student: '王小明', time: '10:00', status: 'pending' },
+    { name: '竹笛基础课', icon: '🎺', student: '陈小雨', time: '14:00', status: 'pending' }
+  ],
+  29: [
+    { name: '大提琴重奏课', icon: '🎻', student: '周小雅', time: '14:00', status: 'pending' }
+  ],
+  30: [
+    { name: '尤克里里基础课', icon: '🪕', student: '刘思远', time: '16:00', status: 'pending' }
+  ]
+};
+
+// 从详细数据中提取日期汇总
+function getMonthlyClassData() {
+  const data = {};
+  for (const [day, lessons] of Object.entries(monthlyLessonData)) {
+    const statuses = lessons.map(l => l.status);
+    if (statuses.includes('live')) {
+      data[day] = { count: lessons.length, status: 'live' };
+    } else if (statuses.includes('pending')) {
+      data[day] = { count: lessons.length, status: 'pending' };
+    } else if (statuses.includes('cancel')) {
+      data[day] = { count: lessons.length, status: 'cancel' };
+    } else {
+      data[day] = { count: lessons.length, status: 'done' };
+    }
+  }
+  return data;
+}
+
+function renderMonthlyCalendar() {
+  const grid = document.getElementById('monthlyCalendarGrid');
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const currentDay = today.getDate();
+  const classData = getMonthlyClassData();
+  
+  let html = '';
+  
+  // 空白格子
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="calendar-day empty"></div>';
+  }
+  
+  // 日期格子
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = d === currentDay;
+    const dayData = classData[d];
+    let classStr = 'calendar-day';
+    if (isToday) classStr += ' today';
+    if (dayData) {
+      classStr += ' has-class ' + dayData.status;
+      html += '<div class="' + classStr + '" onclick="showDayDetail(' + d + ')">';
+      html += '<span class="calendar-day-num">' + d + '</span>';
+      html += '<span class="calendar-day-count">' + dayData.count + '节</span>';
+      html += '</div>';
+    } else {
+      html += '<div class="' + classStr + '"><span class="calendar-day-num">' + d + '</span></div>';
+    }
+  }
+  
+  grid.innerHTML = html;
+}
+
+// ==================== 日历日期详情弹窗 ====================
+function showDayDetail(day) {
+  const lessons = monthlyLessonData[day];
+  if (!lessons) return;
+  
+  document.getElementById('dayDetailTitle').textContent = '📅 4月' + day + '日课程';
+  
+  const statusLabels = { done: '✅ 已完成', live: '🔴 直播中', pending: '🟡 待上课', cancel: '🟣 取消/请假/未上课' };
+  
+  let html = '';
+  lessons.forEach(function(lesson) {
+    const reasonTag = lesson.reason ? ' · ' + lesson.reason : '';
+    html += '<div class="day-lesson-item">';
+    html += '  <div class="day-lesson-icon">' + lesson.icon + '</div>';
+    html += '  <div class="day-lesson-info">';
+    html += '    <div class="day-lesson-name">' + lesson.name + '</div>';
+    html += '    <div class="day-lesson-student">👤 ' + lesson.student + reasonTag + '</div>';
+    html += '  </div>';
+    html += '  <div>';
+    html += '    <div class="day-lesson-time">' + lesson.time + '</div>';
+    html += '    <div class="day-lesson-status ' + lesson.status + '">' + statusLabels[lesson.status] + '</div>';
+    html += '  </div>';
+    html += '</div>';
+  });
+  
+  document.getElementById('dayDetailBody').innerHTML = html;
+  document.getElementById('dayDetailModal').classList.add('show');
+}
+
+function closeDayDetailModal() {
+  document.getElementById('dayDetailModal').classList.remove('show');
+}
+
+// ==================== 统计详情弹窗 ====================
+function showStatDetail(type) {
+  const titleMap = { all: '📋 本月全部课程', done: '✅ 已完成课程', pending: '🟡 待上课课程', cancel: '🟣 取消/请假/未上课' };
+  document.getElementById('statDetailTitle').textContent = titleMap[type] || '📋 课程详情';
+  
+  let filteredLessons = [];
+  for (const [day, lessons] of Object.entries(monthlyLessonData)) {
+    lessons.forEach(function(lesson) {
+      const match = type === 'all' || lesson.status === type || (type === 'cancel' && lesson.status === 'cancel');
+      if (match) {
+        filteredLessons.push({ ...lesson, day: parseInt(day) });
+      }
+    });
+  }
+  
+  // 按日期排序
+  filteredLessons.sort(function(a, b) { return a.day - b.day || a.time.localeCompare(b.time); });
+  
+  const statusLabels = { done: '✅ 已完成', live: '🔴 直播中', pending: '🟡 待上课', cancel: '🟣 取消/请假/未上课' };
+  
+  let html = '';
+  if (filteredLessons.length === 0) {
+    html = '<div style="text-align:center;color:var(--text-3);padding:40px 0;">暂无数据</div>';
+  } else {
+    filteredLessons.forEach(function(lesson) {
+      const reasonTag = lesson.reason ? ' · ' + lesson.reason : '';
+      html += '<div class="stat-lesson-card">';
+      html += '  <div class="stat-lesson-icon">' + lesson.icon + '</div>';
+      html += '  <div class="stat-lesson-content">';
+      html += '    <div class="stat-lesson-name">' + lesson.name + '</div>';
+      html += '    <div class="stat-lesson-meta">';
+      html += '      <span class="day-lesson-status ' + lesson.status + '">' + statusLabels[lesson.status] + '</span>';
+      html += '      <span>👤 ' + lesson.student + reasonTag + '</span>';
+      html += '    </div>';
+      html += '  </div>';
+      html += '  <div class="stat-lesson-extra">';
+      html += '    <div class="stat-lesson-student">' + lesson.time + '</div>';
+      html += '    <div class="stat-lesson-date">4月' + lesson.day + '日</div>';
+      html += '  </div>';
+      html += '</div>';
+    });
+  }
+  
+  document.getElementById('statDetailBody').innerHTML = html;
+  document.getElementById('statDetailModal').classList.add('show');
+}
+
+function closeStatDetailModal() {
+  document.getElementById('statDetailModal').classList.remove('show');
+}
+
+// 今日课程弹窗控制
+function openTodayModal() {
+  document.getElementById('todayModal').classList.add('show');
+}
+
+function closeTodayModal() {
+  document.getElementById('todayModal').classList.remove('show');
+}
+
+// 进入课堂
+function enterClass(courseId) {
+  alert('进入课堂：' + courseId);
+  // window.location.href = 'live-classroom.html?course=' + courseId;
+}
+
+// 点击弹窗背景关闭
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('show');
+    }
+  });
+});
+
+// 课节设置弹窗控制
+function openLessonSettingsModal(courseId) {
+  document.getElementById('lessonSettingsModal').classList.add('show');
+}
+
+function closeLessonSettingsModal() {
+  document.getElementById('lessonSettingsModal').classList.remove('show');
+}
+
+// 学员出勤详情弹窗
+function showAttendanceDetail(lessonNum, lessonName) {
+  document.getElementById('detailLessonNum').textContent = lessonNum;
+  document.getElementById('detailLessonName').textContent = lessonName;
+  
+  // 模拟学员出勤数据（可点击切换状态）
+  const students = [
+    { name: '张小明', avatar: '👦', status: 'present' },
+    { name: '李雨萱', avatar: '👧', status: 'present' },
+    { name: '王浩然', avatar: '👦', status: 'absent' }
+  ];
+  
+  // 根据课节号生成不同出勤
+  if (lessonNum === 2 || lessonNum === 6) {
+    students[2].status = 'leave';
+  }
+  
+  const body = document.getElementById('attendanceDetailBody');
+  body.innerHTML = students.map((s, idx) => `
+    <div class="attendance-student">
+      <div class="attendance-student-info">
+        <div class="attendance-student-avatar">${s.avatar}</div>
+        <div class="attendance-student-name">${s.name}</div>
+      </div>
+      <div class="attendance-status-buttons">
+        <button class="attendance-btn ${s.status === 'present' ? 'active present' : ''}" onclick="changeAttendance(${lessonNum}, ${idx}, 'present')">✓ 已上</button>
+        <button class="attendance-btn ${s.status === 'leave' ? 'active leave' : ''}" onclick="changeAttendance(${lessonNum}, ${idx}, 'leave')">○ 请假</button>
+        <button class="attendance-btn ${s.status === 'absent' ? 'active absent' : ''}" onclick="changeAttendance(${lessonNum}, ${idx}, 'absent')">✗ 未上</button>
+      </div>
+    </div>
+  `).join('');
+  
+  document.getElementById('attendanceDetailModal').classList.add('show');
+}
+
+function closeAttendanceDetailModal() {
+  document.getElementById('attendanceDetailModal').classList.remove('show');
+}
+
+// 切换学员出勤状态
+function changeAttendance(lessonNum, studentIdx, newStatus) {
+  // 更新按钮状态
+  const btns = document.querySelectorAll('.attendance-btn');
+  btns.forEach(btn => {
+    btn.classList.remove('active', 'present', 'leave', 'absent');
+  });
+  
+  const studentBtns = document.querySelectorAll(`[onclick^="changeAttendance(${lessonNum}, ${studentIdx}"]`);
+  studentBtns.forEach(btn => btn.classList.remove('active', 'present', 'leave', 'absent'));
+  
+  const activeBtn = document.querySelector(`[onclick="changeAttendance(${lessonNum}, ${studentIdx}, '${newStatus}')"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('active', newStatus);
+  }
+}
+
+// 保存单个课节
+function saveLesson(lessonNum) {
+  alert('第 ' + lessonNum + ' 节课节信息已保存');
+}
+
+// 删除课节
+function deleteLesson(lessonNum) {
+  if (confirm('确定要删除第 ' + lessonNum + ' 节吗？')) {
+    const rows = document.querySelectorAll('#lessonTableBody tr');
+    rows.forEach((row, index) => {
+      if (index + 1 === lessonNum) {
+        row.remove();
+      }
+    });
+    // 重新编号
+    const newRows = document.querySelectorAll('#lessonTableBody tr');
+    newRows.forEach((row, index) => {
+      const numCell = row.querySelector('.lesson-num');
+      if (numCell) {
+        numCell.textContent = index + 1;
+      }
+    });
+    document.getElementById('lessonTotalCount').textContent = newRows.length;
+  }
+}
+
+// 添加课节 - 打开数量选择弹窗
+function addNewLesson() {
+  // 重置选择状态
+  document.querySelectorAll('.add-lessons-option').forEach(opt => opt.classList.remove('selected'));
+  document.getElementById('customLessonCount').value = '';
+  document.getElementById('addLessonsModal').classList.add('show');
+}
+
+// 选择预设数量
+function selectLessonOption(el, num) {
+  document.querySelectorAll('.add-lessons-option').forEach(opt => opt.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('customLessonCount').value = num;
+}
+
+// 关闭添加课节弹窗
+function closeAddLessonsModal() {
+  document.getElementById('addLessonsModal').classList.remove('show');
+}
+
+// 确认添加课节
+function confirmAddLessons() {
+  let count = parseInt(document.getElementById('customLessonCount').value);
+  if (!count || count < 1) {
+    alert('请输入要添加的课节数量');
+    return;
+  }
+  if (count > 50) {
+    alert('单次最多添加50节课');
+    return;
+  }
+  
+  const tbody = document.getElementById('lessonTableBody');
+  const rows = tbody.querySelectorAll('tr');
+  const startNum = rows.length + 1;
+  const today = new Date();
+  
+  // 计算每节课的日期（假设每7天一次）
+  for (let i = 0; i < count; i++) {
+    const lessonDate = new Date(today);
+    lessonDate.setDate(today.getDate() + (i + 1) * 7);
+    const dateStr = lessonDate.toISOString().split('T')[0];
+    const newNum = startNum + i;
+    
+    const newRow = document.createElement('tr');
+    newRow.className = 'editable';
+    newRow.innerHTML = `
+      <td class="lesson-num">${newNum}</td>
+      <td><input type="text" class="lesson-name-input" value="" placeholder="课节名称"></td>
+      <td><input type="date" class="lesson-date-input" value="${dateStr}"></td>
+      <td>
+        <input type="time" class="lesson-time-input" value="14:30">
+        <span class="lesson-time-sep">-</span>
+        <input type="time" class="lesson-time-input" value="15:20">
+        <span class="lesson-duration-unit">50分钟</span>
+      </td>
+      <td>
+        <select class="lesson-teacher-select">
+          <option value="li" selected>李婉清</option>
+          <option value="wang">王明</option>
+          <option value="zhang">张老师</option>
+        </select>
+      </td>
+      <td class="lesson-attendance-cell">-</td>
+      <td><span class="lesson-status-tag unset">未设置</span></td>
+      <td class="lesson-actions-cell">
+        <button class="lesson-action-btn save" title="保存" onclick="saveLesson(${newNum})">💾</button>
+        <button class="lesson-action-btn delete" title="删除" onclick="deleteLesson(${newNum})">🗑️</button>
+      </td>
+    `;
+    tbody.appendChild(newRow);
+  }
+  
+  const totalCount = rows.length + count;
+  document.getElementById('lessonTotalCount').textContent = totalCount;
+  document.getElementById('lessonPendingCount').textContent = parseInt(document.getElementById('lessonPendingCount').textContent) + count;
+  
+  closeAddLessonsModal();
+}
+
+// 保存全部课节
+function saveAllLessons() {
+  alert('所有课节已保存');
+  closeLessonSettingsModal();
+}
+
+// 查看回放
+function viewPlayback(lessonNum) {
+  alert('查看第 ' + lessonNum + ' 节回放');
+}
+
+// 乐器选择
+document.querySelectorAll('.instrument-option').forEach(option => {
+  option.addEventListener('click', function() {
+    document.querySelectorAll('.instrument-option').forEach(o => o.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
+
+// 筛选标签切换
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// 导航切换
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
