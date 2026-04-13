@@ -15,19 +15,11 @@
   --primary: #FF6B35;
   --primary-dim: rgba(255,107,53,0.12);
   --accent: #FFD166;
-  --accent-dim: rgba(255,209,102,0.12);
   --purple: #B06EFF;
-  --purple-dim: rgba(176,110,255,0.12);
   --teal: #4ECDC4;
-  --teal-dim: rgba(78,205,196,0.12);
   --pink: #FF6B9D;
-  --pink-dim: rgba(255,107,157,0.12);
   --green: #10B981;
-  --green-dim: rgba(16,185,129,0.12);
   --blue: #60A5FA;
-  --blue-dim: rgba(96,165,250,0.12);
-  --orange: #FF6B35;
-  --orange-dim: rgba(255,107,53,0.12);
   --text-1: #FFFFFF;
   --text-2: #A8A0C8;
   --text-3: #6B6480;
@@ -40,7 +32,6 @@
 html, body { width: 100%; height: 100%; overflow: hidden; }
 body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--text-1); }
 
-/* 手机端 */
 .phone-frame {
   width: 100%; height: 100%;
   background: var(--bg);
@@ -48,7 +39,6 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
   display: flex; flex-direction: column;
 }
 
-/* 桌面端：手机外框 */
 @media (min-width: 800px) {
   body { background: #1a1a2e; display: flex; align-items: center; justify-content: center; }
   .phone-frame {
@@ -64,13 +54,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
   .course-grid { grid-template-columns: 1fr !important; }
   .top-nav { padding: 0 12px; }
 }
-@media (max-width: 400px) {
-  .course-grid { gap: 6px !important; }
-  .card-hero { padding: 6px 8px 4px; min-height: 50px; }
-  .card-body { padding: 5px 8px; }
-}
 
-/* TOP NAV */
 .top-nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 20px; height: 56px;
@@ -112,10 +96,8 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
   font-size: 13px; font-weight: 700; color: white; cursor: pointer;
 }
 
-/* BODY */
 .page-body { flex: 1; display: flex; overflow: hidden; }
 
-/* TODAY PANEL */
 .today-panel {
   width: 190px; min-width: 190px;
   background: var(--surface); border-right: 1px solid var(--border);
@@ -149,60 +131,31 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
   padding: 4px 6px; font-size: 10px; font-weight: 700;
   cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px;
   font-family: inherit;
-  animation: pulse-enter 2s ease-in-out infinite;
-}
-@keyframes pulse-enter {
-  0%, 100% { box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
-  50% { box-shadow: 0 2px 16px rgba(255,107,53,0.6), 0 0 0 4px rgba(255,107,53,0.12); }
 }
 .today-enter svg { width: 10px; height: 10px; }
 
-/* COURSE PANEL */
 .course-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 12px 16px 0; }
 .course-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; }
 .course-panel-title { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; }
 .course-count { font-size: 11px; color: var(--text-3); background: var(--surface2); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); }
-.filter-pills { display: flex; gap: 5px; margin-bottom: 10px; flex-shrink: 0; overflow-x: auto; }
-.filter-pills::-webkit-scrollbar { display: none; }
-.pill {
-  padding: 4px 12px; border-radius: 20px;
-  font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s;
-  border: 1px solid var(--border); background: var(--surface2); color: var(--text-2);
-  white-space: nowrap; font-family: inherit;
-}
-.pill.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 10px rgba(255,107,53,0.3); }
 .course-scroll { flex: 1; overflow-y: auto; padding-bottom: 8px; }
 .course-scroll::-webkit-scrollbar { width: 4px; }
-.course-scroll::-webkit-scrollbar-track { background: transparent; }
 .course-scroll::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
 
-/* COURSE GRID */
-.course-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 8px;
-}
+.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
 .course-card {
-  background: var(--surface);
-  border-radius: var(--radius-xs);
-  border: 1px solid var(--border);
-  overflow: hidden;
-  transition: all 0.2s;
-  cursor: pointer;
-  display: flex; flex-direction: column;
+  background: var(--surface); border-radius: var(--radius-xs); border: 1px solid var(--border);
+  overflow: hidden; transition: all 0.2s; cursor: pointer; display: flex; flex-direction: column;
 }
 .course-card:hover { border-color: rgba(255,107,53,0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
 .course-card.live-card { border-color: rgba(255,123,84,0.4); box-shadow: 0 4px 20px rgba(255,123,84,0.15); }
 .course-card.done-card { opacity: 0.65; }
 .card-hero {
-  padding: 8px 10px 6px;
-  position: relative;
-  border-bottom: 1px solid var(--border);
-  min-height: 58px;
-  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 8px 10px 6px; position: relative; border-bottom: 1px solid var(--border);
+  min-height: 58px; display: flex; flex-direction: column; justify-content: space-between;
 }
 .card-hero-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-.card-live-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 700; color: var(--primary); align-self: flex-start; }
+.card-live-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 700; color: var(--primary); }
 .card-hero-center { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
 .card-instrument-icon { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
 .card-course-name { font-size: 12px; font-weight: 700; color: var(--text-1); flex: 1; line-height: 1.25; }
@@ -213,189 +166,47 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
 .card-body { padding: 7px 10px; display: flex; flex-direction: column; gap: 5px; }
 .card-teacher { font-size: 10px; color: var(--text-2); }
 .card-progress { display: flex; align-items: center; gap: 5px; }
-.card-progress-label { font-size: 9px; color: var(--text-3); white-space: nowrap; }
+.card-progress-label { font-size: 9px; color: var(--text-3); }
 .card-progress-label span { color: var(--primary); font-weight: 700; }
 .card-progress-bar { flex: 1; height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden; min-width: 30px; }
 .card-progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
-.card-progress-pct { font-size: 9px; color: var(--text-3); white-space: nowrap; }
-.inst-tag { display: inline-flex; align-items: center; font-size: 9px; padding: 1px 4px; border-radius: 4px; margin-left: 3px; font-family: inherit; }
+.card-progress-pct { font-size: 9px; color: var(--text-3); }
+.inst-tag { display: inline-flex; align-items: center; font-size: 9px; padding: 1px 4px; border-radius: 4px; margin-left: 3px; }
 .card-next-strip { display: flex; align-items: center; justify-content: space-between; background: var(--surface2); border-radius: 6px; padding: 5px 8px; margin-top: 1px; }
 .card-next-strip.done-strip { background: rgba(255,255,255,0.02); }
 .card-next-info { display: flex; flex-direction: column; gap: 0px; }
 .card-next-label { font-size: 9px; font-weight: 700; color: var(--text-1); }
 .card-next-time { font-size: 9px; color: var(--text-3); }
 .card-enter-btn {
-  width: 24px; height: 24px; border-radius: 6px;
-  border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all 0.2s;
+  width: 24px; height: 24px; border-radius: 6px; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s;
 }
 .card-enter-btn svg { width: 11px; height: 11px; }
-.card-enter-btn.primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(255,107,53,0.3); animation: pulse-enter 2s ease-in-out infinite; }
-.card-enter-btn.teal { background: var(--teal); color: white; box-shadow: 0 2px 8px rgba(78,205,196,0.3); }
-.card-enter-btn.orange { background: var(--orange); color: white; box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
-.card-enter-btn.purple { background: var(--purple); color: white; box-shadow: 0 2px 8px rgba(176,110,255,0.3); }
+.card-enter-btn.primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
+.card-enter-btn.teal { background: var(--teal); color: white; }
+.card-enter-btn.orange { background: var(--primary); color: white; }
+.card-enter-btn.purple { background: var(--purple); color: white; }
 .card-enter-btn.ghost { background: transparent; color: var(--text-3); border: 1px solid var(--border); opacity: 0.4; cursor: default; }
 .card-enter-btn:hover { opacity: 0.85; transform: scale(1.05); }
 
-/* TAB NAV */
 .tab-nav {
-  display: flex; background: var(--surface);
-  border-top: 1px solid var(--border); padding: 6px 0;
+  display: flex; background: var(--surface); border-top: 1px solid var(--border); padding: 6px 0;
   flex-shrink: 0; z-index: 10;
 }
 .tab-item {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 3px; padding: 6px 0;
-  cursor: pointer; transition: all 0.2s;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 6px 0; cursor: pointer; transition: all 0.2s;
   border: none; background: transparent;
   color: var(--text-3); font-size: 10px; font-weight: 500; font-family: inherit;
 }
 .tab-item.active { color: var(--primary); }
-.tab-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
-.tab-item.active .tab-icon { background: var(--primary-dim); }
-
-/* ============================================================
-   MODAL SYSTEM
-   ============================================================ */
-.modal-overlay {
-  position: absolute; inset: 0;
-  background: rgba(12, 10, 20, 0.85);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-.modal-overlay.show { opacity: 1; pointer-events: all; }
-.modal-card {
-  width: 90%; max-width: 320px;
-  background: var(--surface);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
-  transform: scale(0.92) translateY(10px);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.modal-overlay.show .modal-card { transform: scale(1) translateY(0); }
-
-/* 登录弹窗 */
-.login-modal .modal-card { max-width: 300px; }
-.login-modal-icon {
-  width: 64px; height: 64px; margin: 28px auto 16px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; box-shadow: 0 8px 24px rgba(255,107,53,0.3);
-}
-.login-modal-title { text-align: center; font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-1); margin-bottom: 6px; }
-.login-modal-sub { text-align: center; font-size: 12px; color: var(--text-3); padding: 0 24px; line-height: 1.6; margin-bottom: 20px; }
-.login-modal-actions { padding: 0 20px 24px; display: flex; flex-direction: column; gap: 10px; }
-.btn-primary-full {
-  width: 100%; padding: 13px; border-radius: var(--radius-xs);
-  border: none; cursor: pointer;
-  font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 600;
-  background: linear-gradient(135deg, var(--primary), #FF8B5A); color: white;
-  box-shadow: 0 4px 16px rgba(255,107,53,0.3);
-  transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn-primary-full:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,53,0.4); }
-.btn-primary-full:active { transform: translateY(0); }
-.btn-ghost-full {
-  width: 100%; padding: 12px; border-radius: var(--radius-xs);
-  border: 1.5px solid var(--border); background: transparent; cursor: pointer;
-  font-family: 'Noto Sans SC', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-2);
-  transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.btn-ghost-full:hover { border-color: rgba(255,255,255,0.2); color: var(--text-1); background: rgba(255,255,255,0.04); }
-.btn-ghost-full .tourist-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--surface3); color: var(--text-3); }
-.login-modal-footer { padding: 12px 20px 20px; text-align: center; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); margin-top: 4px; }
-.login-modal-footer a { color: var(--primary); text-decoration: none; }
-
-/* 乐器选择弹窗 */
-.instrument-modal .modal-card { max-width: 340px; }
-.instrument-modal-header { padding: 20px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.instrument-modal-title { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.instrument-modal-title .icon { font-size: 18px; }
-.instrument-modal-badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; background: var(--primary-dim); color: var(--primary); font-weight: 600; }
-.instrument-modal-hint { padding: 10px 20px 0; font-size: 11px; color: var(--text-3); display: flex; align-items: center; gap: 5px; }
-.instrument-grid { padding: 14px 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.instrument-item {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 12px 6px; border-radius: var(--radius-xs);
-  border: 1.5px solid var(--border); background: var(--surface2);
-  cursor: pointer; transition: all 0.2s; position: relative;
-}
-.instrument-item:hover { border-color: rgba(255,107,53,0.3); background: var(--surface3); }
-.instrument-item.active { border-color: var(--primary); background: var(--primary-dim); box-shadow: 0 0 0 3px rgba(255,107,53,0.15); }
-.instrument-item .item-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-.instrument-item .item-name { font-size: 11px; font-weight: 600; color: var(--text-1); text-align: center; }
-.instrument-item .item-check {
-  position: absolute; top: 5px; right: 5px; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 9px; color: white;
-  opacity: 0; transform: scale(0); transition: all 0.2s;
-}
-.instrument-item.active .item-check { opacity: 1; transform: scale(1); }
-.instrument-item.disabled { opacity: 0.35; cursor: not-allowed; }
-.instrument-item.disabled:hover { border-color: var(--border); background: var(--surface2); }
-.instrument-modal-footer { padding: 0 16px 18px; display: flex; gap: 8px; }
-.instrument-modal-footer .btn-cancel {
-  flex: 1; padding: 11px; border-radius: var(--radius-xs);
-  border: 1.5px solid var(--border); background: transparent;
-  font-family: 'Noto Sans SC', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-2); cursor: pointer; transition: all 0.2s;
-}
-.instrument-modal-footer .btn-cancel:hover { border-color: rgba(255,255,255,0.2); color: var(--text-1); }
-.instrument-modal-footer .btn-confirm {
-  flex: 2; padding: 11px; border-radius: var(--radius-xs);
-  border: none; background: var(--primary);
-  font-family: 'Noto Sans SC', sans-serif; font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(255,107,53,0.25);
-}
-.instrument-modal-footer .btn-confirm:hover { opacity: 0.9; transform: translateY(-1px); }
-
-
-
-/* 会员升级弹窗 */
-.vip-modal .modal-card { max-width: 300px; }
-.vip-modal-icon { width: 56px; height: 56px; margin: 24px auto 14px; border-radius: 16px; background: linear-gradient(135deg, #FFD166, #FF6B35); display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 8px 20px rgba(255,209,102,0.3); }
-.vip-modal-title { text-align: center; font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
-.vip-modal-sub { text-align: center; font-size: 12px; color: var(--text-3); padding: 0 24px; line-height: 1.7; margin-bottom: 18px; }
-.vip-modal-actions { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 8px; }
-.vip-modal-actions .btn-primary-full { background: linear-gradient(135deg, #FFD166, #FF8B5A); box-shadow: 0 4px 16px rgba(255,209,102,0.3); }
-.vip-modal-actions .btn-primary-full:hover { box-shadow: 0 6px 20px rgba(255,209,102,0.45); }
-.vip-modal-actions .btn-ghost-full { margin-bottom: 0; }
-
-/* Toast */
-.toast-msg {
-  position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
-  background: rgba(30,24,53,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
-  padding: 10px 18px; font-size: 12px; font-weight: 500; color: var(--text-1); white-space: nowrap;
-  z-index: 2000; pointer-events: none; opacity: 0;
-  transition: opacity 0.3s, transform 0.3s;
-  backdrop-filter: blur(8px); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-.toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(-5px); }
-
-/* 用户状态徽章 */
-.user-state-badge { display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: all 0.2s; }
-.user-state-badge:hover { border-color: rgba(255,255,255,0.15); }
-.user-state-badge .avatar-dot { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
-.user-state-badge .badge-text { color: var(--text-2); }
-.user-state-badge.vip .badge-text { color: var(--accent); }
-.user-state-badge .arrow-icon { font-size: 10px; color: var(--text-3); transition: transform 0.2s; }
-.tourist-indicator { position: absolute; top: 56px; right: 16px; background: rgba(255,209,102,0.12); border: 1px solid rgba(255,209,102,0.25); border-radius: 20px; padding: 5px 12px; font-size: 10px; font-weight: 600; color: var(--accent); display: none; align-items: center; gap: 5px; z-index: 100; animation: slideDown 0.3s ease; }
-.tourist-indicator.show { display: flex; }
-@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.tab-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.tab-item.active .tab-icon { background: rgba(255,107,53,0.12); }
 </style>
 </head>
 <body>
 
 <div class="phone-frame">
-
   <header class="top-nav">
     <div class="top-nav-left">
       <button class="back-btn" onclick="goBack()">
@@ -404,17 +215,12 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
       <div class="nav-title">我的音乐课</div>
     </div>
     <div class="top-nav-right">
-      <button class="notif-btn" onclick="requireLogin('notif')">🔔<span class="notif-dot"></span></button>
-      <div class="user-state-badge" id="userBadge" onclick="requireLogin('profile')">
-        <div class="avatar-dot" id="avatarDot" style="background: linear-gradient(135deg, #A78BFA, #60A5FA);">?</div>
-        <span class="badge-text" id="badgeText">未登录</span>
-        <span class="arrow-icon">▾</span>
-      </div>
+      <button class="notif-btn">🔔<span class="notif-dot"></span></button>
+      <div class="nav-avatar">林</div>
     </div>
   </header>
 
   <div class="page-body">
-
     <aside class="today-panel">
       <div class="today-panel-header">
         <div class="today-panel-title">今日上课</div>
@@ -425,7 +231,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
           <div class="today-card-time">14:30 · 李婉清</div>
           <div class="live-row"><span class="live-dot"></span><span class="live-text">正在上课</span></div>
           <button class="today-enter" onclick="event.stopPropagation(); joinLive('小提琴演奏进阶班')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             进入
           </button>
         </div>
@@ -435,7 +241,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
           <div class="today-card-name">钢琴即兴伴奏课</div>
           <div class="today-card-time">19:00 · 陈艺</div>
           <button class="today-enter" style="background: #4ECDC4;" onclick="event.stopPropagation(); joinLive('钢琴即兴伴奏课')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             进入
           </button>
         </div>
@@ -449,7 +255,6 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
       </div>
       <div class="course-scroll">
         <div class="course-grid">
-
           <div class="course-card live-card" onclick="goToDetail('violin-advanced')">
             <div class="card-hero" style="background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,107,157,0.05));">
               <div class="card-hero-accent" style="background: #FF6B9D;"></div>
@@ -473,7 +278,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
                   <span class="card-next-time">剩余约38分钟</span>
                 </div>
                 <button class="card-enter-btn primary" onclick="event.stopPropagation(); joinLive('小提琴演奏进阶班')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
               </div>
             </div>
@@ -501,7 +306,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
                   <span class="card-next-time">第13/20节 · 流行歌曲伴奏</span>
                 </div>
                 <button class="card-enter-btn teal" onclick="event.stopPropagation(); joinLive('钢琴即兴伴奏课')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
               </div>
             </div>
@@ -529,7 +334,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
                   <span class="card-next-time">第4/12节 · 分解和弦</span>
                 </div>
                 <button class="card-enter-btn orange" onclick="event.stopPropagation(); joinLive('古典吉他入门')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
               </div>
             </div>
@@ -557,7 +362,7 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
                   <span class="card-next-time">第3/10节 · 气息训练</span>
                 </div>
                 <button class="card-enter-btn purple" onclick="event.stopPropagation(); joinLive('竹笛基础课')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
               </div>
             </div>
@@ -614,7 +419,6 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
@@ -637,212 +441,21 @@ body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: va
       <div class="tab-icon">🤖</div>AI小助手
     </button>
   </nav>
-
 </div>
-
-<!-- 登录弹窗 -->
-<div class="modal-overlay login-modal" id="loginModal">
-  <div class="modal-card">
-    <div class="login-modal-icon">🎵</div>
-    <div class="login-modal-title">欢迎来到我的音乐课</div>
-    <div class="login-modal-sub">登录后解锁全部乐器课程<br>游客模式可体验部分免费内容</div>
-    <div class="login-modal-actions">
-      <button class="btn-primary-full" onclick="doLogin()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        手机号登录
-      </button>
-      <button class="btn-ghost-full" onclick="doTourist()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        游客模式 <span class="tourist-badge">试用</span>
-      </button>
-    </div>
-    <div class="login-modal-footer">还没有账号？<a href="#">立即注册</a></div>
-  </div>
-</div>
-
-<!-- 乐器选择弹窗 -->
-<div class="modal-overlay instrument-modal" id="instrumentModal">
-  <div class="modal-card">
-    <div class="instrument-modal-header">
-      <div class="instrument-modal-title"><span class="icon">🎸</span><span>选择我的乐器</span></div>
-      <span class="instrument-modal-badge" id="userTypeBadge">游客</span>
-    </div>
-    <div class="instrument-modal-hint">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      <span id="instrumentHintText">切换乐器需重新登录</span>
-    </div>
-    <div class="instrument-grid" id="instrumentGrid"></div>
-    <div class="instrument-modal-footer">
-      <button class="btn-cancel" onclick="closeModal('instrumentModal')">取消</button>
-      <button class="btn-confirm" onclick="confirmInstrument()">确认选择</button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- 会员升级弹窗 -->
-<div class="modal-overlay vip-modal" id="vipModal">
-  <div class="modal-card">
-    <div class="vip-modal-icon">👑</div>
-    <div class="vip-modal-title" id="vipTitle">开通会员，解锁全部乐谱</div>
-    <div class="vip-modal-sub" id="vipSub">会员专享：全部乐器课程<br>无限乐谱库 · 离线下载 · AI陪练</div>
-    <div class="vip-modal-actions">
-      <button class="btn-primary-full" onclick="goToVip()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        立即开通会员
-      </button>
-      <button class="btn-ghost-full" onclick="closeModal('vipModal')">稍后再说</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast-msg" id="toastMsg"></div>
-
-<!-- 游客指示器 -->
-<div class="tourist-indicator" id="touristIndicator"><span>👤</span> 游客模式 · 试学免费内容</div>
 
 <script>
-const appState = { isLoggedIn: false, isTourist: false, isVip: false, currentInstrument: null };
-
-const allInstruments = [
-  { id: 'piano',    name: '钢琴',     icon: '🎹', color: '#4ECDC4', bg: 'rgba(78,205,196,0.15)' },
-  { id: 'violin',   name: '小提琴',   icon: '🎻', color: '#FF6B9D', bg: 'rgba(255,107,157,0.15)' },
-  { id: 'guitar',   name: '吉他',     icon: '🎸', color: '#FF6B35', bg: 'rgba(255,107,53,0.15)' },
-  { id: 'flute',    name: '竹笛',     icon: '🎺', color: '#B06EFF', bg: 'rgba(176,110,255,0.15)' },
-  { id: 'cello',    name: '大提琴',   icon: '🎻', color: '#60A5FA', bg: 'rgba(96,165,250,0.1)' },
-  { id: 'ukulele',  name: '尤克里里', icon: '🪕', color: '#FFD166', bg: 'rgba(255,209,102,0.15)' },
-  { id: 'erhu',     name: '二胡',     icon: '🎻', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)' },
-  { id: 'drum',     name: '架子鼓',   icon: '🥁', color: '#EF4444', bg: 'rgba(239,68,68,0.12)' },
-  { id: 'vocal',    name: '声乐',     icon: '🎤', color: '#EC4899', bg: 'rgba(236,72,153,0.12)' },
-];
-
-// 所有操作入口：未登录时弹出登录弹窗，已登录则放行
-function requireLogin() {
-  if (!appState.isLoggedIn) { openModal('loginModal'); return true; }
-  return false;
-}
-
-// 课程卡片点击 → 跳转详情页
 function goToDetail(courseId) {
-  if (requireLogin()) return;
   window.location.href = 'course-detail-v6.html?id=' + courseId;
 }
-
-// 进入直播间
 function joinLive(courseName) {
-  if (requireLogin()) return;
   window.location.href = 'live-classroom.html?course=' + encodeURIComponent(courseName);
 }
-
-// 课表页
 function goToSchedule() {
-  if (requireLogin()) return;
   window.location.href = 'schedule-page.html';
 }
-
-// 乐器选择弹窗
-function openInstrumentModal() {
-  const isLimited = appState.isTourist || !appState.isVip;
-  const badge = document.getElementById('userTypeBadge');
-  badge.textContent = appState.isVip ? 'VIP' : appState.isTourist ? '游客' : '普通';
-  badge.style.background = appState.isVip ? 'rgba(255,209,102,0.15)' : 'rgba(255,107,53,0.15)';
-  badge.style.color = appState.isVip ? 'var(--accent)' : 'var(--primary)';
-  document.getElementById('instrumentHintText').textContent = isLimited ? '切换乐器需开通会员' : '可切换任意乐器';
-  const container = document.getElementById('instrumentGrid');
-  container.innerHTML = allInstruments.map(inst => {
-    const isSelected = appState.currentInstrument === inst.id;
-    const isDisabled = isLimited && !isSelected;
-    return `<div class="instrument-item ${isSelected ? 'active' : ''} ${isDisabled ? 'disabled' : ''}"
-                onclick="${isDisabled ? `closeModal('instrumentModal');setTimeout(()=>openModal('vipModal'),200)` : `selectInstrument('${inst.id}')`}">
-      <div class="item-icon" style="background:${inst.bg};">${inst.icon}</div>
-      <div class="item-name">${inst.name}</div>
-      <div class="item-check">✓</div>
-    </div>`;
-  }).join('');
-  openModal('instrumentModal');
+function goBack() {
+  window.history.length > 1 ? window.history.back() : alert('返回 App 主页');
 }
-
-function selectInstrument(id) {
-  document.querySelectorAll('.instrument-item').forEach(el => el.classList.remove('active'));
-  const el = document.querySelector(`.instrument-item[onclick*="selectInstrument('${id}')"]`);
-  if (el) el.classList.add('active');
-  const inst = allInstruments.find(i => i.id === id);
-  appState.currentInstrument = id;
-  const dot = document.getElementById('avatarDot');
-  if (dot && inst) { dot.style.background = inst.color; dot.textContent = inst.icon; }
-  showToast('已选择：' + (inst?.name || ''));
-}
-
-function confirmInstrument() {
-  if (!appState.currentInstrument) { showToast('请先选择一个乐器'); return; }
-  closeModal('instrumentModal');
-  const inst = allInstruments.find(i => i.id === appState.currentInstrument);
-  showToast('已将 ' + (inst?.name || '') + ' 设为我的乐器');
-}
-
-// 登录 / 游客模式
-function doLogin() {
-  closeModal('loginModal');
-  setTimeout(() => {
-    appState.isLoggedIn = true; appState.isTourist = false; appState.isVip = false;
-    appState.currentInstrument = 'piano';
-    updateUserUI();
-    showToast('登录成功！请选择您的乐器');
-    openInstrumentModal();
-  }, 300);
-}
-
-function doTourist() {
-  closeModal('loginModal');
-  setTimeout(() => {
-    appState.isLoggedIn = true; appState.isTourist = true; appState.isVip = false;
-    appState.currentInstrument = 'piano';
-    updateUserUI();
-    showToast('已进入游客模式');
-    openInstrumentModal();
-  }, 300);
-}
-
-function updateUserUI() {
-  const dot = document.getElementById('avatarDot');
-  const text = document.getElementById('badgeText');
-  const badge = document.getElementById('userBadge');
-  const touristInd = document.getElementById('touristIndicator');
-  if (!appState.isLoggedIn) {
-    text.textContent = '未登录'; dot.style.background = 'linear-gradient(135deg, #A78BFA, #60A5FA)'; dot.textContent = '?';
-    badge.classList.remove('vip'); touristInd.classList.remove('show');
-  } else if (appState.isVip) {
-    text.textContent = 'VIP会员'; dot.style.background = 'linear-gradient(135deg, #FFD166, #FF8B5A)'; dot.textContent = '👑';
-    badge.classList.add('vip'); touristInd.classList.remove('show');
-  } else if (appState.isTourist) {
-    text.textContent = '游客'; dot.style.background = 'var(--surface3)'; dot.textContent = '👤';
-    badge.classList.remove('vip'); touristInd.classList.add('show');
-  } else {
-    text.textContent = '普通用户'; dot.style.background = 'linear-gradient(135deg, #A78BFA, #60A5FA)'; dot.textContent = '林';
-    badge.classList.remove('vip'); touristInd.classList.remove('show');
-  }
-}
-
-function goToVip() { closeModal('vipModal'); showToast('跳转会员开通页面…'); }
-
-// 弹窗通用
-function openModal(id) { document.getElementById(id).classList.add('show'); }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay') && e.target.classList.contains('show')) e.target.classList.remove('show'); });
-
-// Toast
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toastMsg');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-// 返回
-function goBack() { window.history.length > 1 ? window.history.back() : alert('返回 App 主页'); }
 </script>
 </body>
 </html>
